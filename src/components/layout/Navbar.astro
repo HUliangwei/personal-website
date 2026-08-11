@@ -1,0 +1,63 @@
+---
+import { NAVIGATION, SITE } from '../../config/site';
+
+const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
+---
+
+<header class="site-header">
+  <div class="container nav-shell">
+    <a class="brand" href="/" aria-label={`${SITE.name} home`}>
+      {SITE.name}
+    </a>
+
+    <button class="nav-toggle" type="button" aria-controls="primary-navigation" aria-expanded="false">
+      <span class="sr-only">Toggle navigation</span>
+      <span aria-hidden="true" class="nav-toggle-icon"></span>
+    </button>
+
+    <nav id="primary-navigation" class="primary-nav" aria-label="Primary navigation">
+      <ul>
+        {
+          NAVIGATION.map((item) => (
+            <li>
+              <a href={item.href} aria-current={currentPath === item.href ? 'page' : undefined}>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+        <li>
+          <a href={SITE.github} rel="external">
+            GitHub <span aria-hidden="true">↗</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<script>
+  document.documentElement.classList.add('js-enabled');
+
+  const toggle = document.querySelector<HTMLButtonElement>('.nav-toggle');
+  const navigation = document.querySelector<HTMLElement>('#primary-navigation');
+
+  const closeNavigation = () => {
+    toggle?.setAttribute('aria-expanded', 'false');
+    navigation?.removeAttribute('data-open');
+  };
+
+  toggle?.addEventListener('click', () => {
+    const isOpen = toggle.getAttribute('aria-expanded') === 'true';
+    toggle.setAttribute('aria-expanded', String(!isOpen));
+    navigation?.toggleAttribute('data-open', !isOpen);
+  });
+
+  navigation?.addEventListener('click', (event) => {
+    if ((event.target as HTMLElement).closest('a')) closeNavigation();
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') closeNavigation();
+  });
+</script>
