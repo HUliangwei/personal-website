@@ -1,47 +1,19 @@
 ---
-import "../styles/global.css";
-
-const name = "Liangwei Hu";
+import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
-    <title>{name}</title>
-  </head>
+<BaseLayout title="Liangwei Hu">
+  <section class="py-20">
+    <p class="mb-4 text-lg text-gray-500">
+      Hello, I'm
+    </p>
 
-  <body class="bg-gray-950 text-white">
-    <main
-      class="min-h-screen flex flex-col items-center justify-center px-6"
-    >
-      <p class="text-blue-400 text-lg mb-3">
-        Hello, I'm
-      </p>
+    <h1 class="text-5xl font-bold tracking-tight">
+      Liangwei Hu
+    </h1>
 
-      <h1 class="text-5xl font-bold tracking-tight">
-        {name}
-      </h1>
-
-      <p class="mt-6 text-xl text-gray-400">
-        Research · IC Design · Robotics
-      </p>
-
-      <div class="mt-8 flex gap-4">
-        <a
-          href="#projects"
-          class="rounded-lg bg-white px-5 py-3 text-black font-medium"
-        >
-          View Projects
-        </a>
-
-        <a
-          href="https://github.com/"
-          class="rounded-lg border border-gray-700 px-5 py-3"
-        >
-          GitHub
-        </a>
-      </div>
-    </main>
-  </body>
-</html>
+    <p class="mt-6 text-xl text-gray-600">
+      Graduate Student · Integrated Circuits · Robotics · Embodied AI
+    </p>
+  </section>
+</BaseLayout>
