@@ -213,6 +213,12 @@ a {
   color: var(--color-accent-strong);
 }
 
+.footer-content nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.25rem;
+}
+
 .sr-only {
   position: absolute;
   width: 1px;
@@ -533,12 +539,19 @@ a {
 .project-summary { color: var(--color-muted); font-size: 1.15rem; }
 
 .project-filter {
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
+  margin-bottom: 2rem;
+  padding: 0;
+  border: 0;
+}
+
+.project-filter-controls {
   display: flex;
   gap: 0.5rem;
-  margin-bottom: 2rem;
   overflow-x: auto;
   padding: 0.2rem 0.2rem 0.6rem;
-  border: 0;
   scrollbar-width: thin;
 }
 
@@ -580,6 +593,7 @@ a {
 .project-meta dd { overflow-wrap: anywhere; }
 .project-prose a { color: var(--color-accent-strong); font-weight: 650; text-underline-offset: 0.2em; }
 .project-prose code { border-radius: 0.25rem; background: #edf2f8; padding: 0.1em 0.35em; overflow-wrap: anywhere; }
+.project-links { margin-top: 3rem; border-top: 1px solid var(--color-line); padding-top: 2rem; }
 
 .capability-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 

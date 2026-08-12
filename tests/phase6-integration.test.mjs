@@ -14,12 +14,16 @@ function outputFor(href) {
   return join(dist, pathname.slice(1), 'index.html');
 }
 
-test('Phase 6 production output is complete, portable, and internally connected', () => {
+function buildSite() {
   execFileSync(process.execPath, ['node_modules/astro/bin/astro.mjs', 'build'], {
     cwd: root,
     encoding: 'utf8',
     stdio: 'pipe',
   });
+}
+
+test('Phase 6 production output is complete, portable, and internally connected', () => {
+  buildSite();
 
   const routes = ['/', '/about', '/projects', '/projects/spad', '/projects/ros2-robot', '/projects/lerobot', '/cv'];
   const htmlPages = routes.map((route) => [route, readFileSync(outputFor(route), 'utf8')]);
@@ -52,4 +56,28 @@ test('Phase 6 production output is complete, portable, and internally connected'
   assert.match(wrangler, /"name":\s*"personal-website"/);
   assert.match(wrangler, /"directory":\s*"\.\/dist"/);
   assert.doesNotMatch(wrangler, /main|compatibility_flags/);
+});
+
+test('project filters contain their scroll row within the mobile viewport', () => {
+  const component = readFileSync(join(root, 'src/components/projects/ProjectFilter.astro'), 'utf8');
+  const styles = readFileSync(join(root, 'src/styles/global.css'), 'utf8');
+
+  assert.match(component, /<fieldset[^>]*class="project-filter"[^>]*>[^]*<div class="project-filter-controls">/);
+  assert.match(styles, /\.project-filter\s*{[^}]*min-width:\s*0;[^}]*width:\s*100%;[^}]*max-width:\s*100%;/s);
+  assert.match(styles, /\.project-filter-controls\s*{[^}]*display:\s*flex;[^}]*overflow-x:\s*auto;/s);
+});
+
+test('final content semantics and truthful fallbacks are present', () => {
+  buildSite();
+
+  const home = readFileSync(join(root, 'dist', 'index.html'), 'utf8');
+  const projects = readFileSync(join(root, 'dist', 'projects', 'index.html'), 'utf8');
+  const robotics = readFileSync(join(root, 'dist', 'projects', 'ros2-robot', 'index.html'), 'utf8');
+
+  assert.match(projects, /<h2>ROS2 Mobile Robot<\/h2>/);
+  assert.match(home, /<h3>ROS2 Mobile Robot<\/h3>/);
+  assert.doesNotMatch(robotics, /an Robotics project/i);
+  assert.match(robotics, /TODO: Add verified project links/);
+  assert.match(home, /href="\/cv"[^>]*>CV<\/a>/);
+  assert.match(home, /Email:\s*TODO/);
 });

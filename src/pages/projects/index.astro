@@ -14,6 +14,6 @@ const categories = PROJECT_CATEGORIES.filter((category) => projects.some((projec
       <p>Project details remain explicitly marked TODO until verified.</p>
     </div>
     <ProjectFilter categories={categories} />
-    <div class="project-grid">{projects.map((project) => <ProjectCard project={project} />)}</div>
+    <div class="project-grid">{projects.map((project) => <ProjectCard project={project} headingLevel={2} />)}</div>
   </div></section>
 </BaseLayout>

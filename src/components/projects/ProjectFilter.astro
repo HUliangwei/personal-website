@@ -6,9 +6,11 @@ const filters = ['All', ...categories];
 ---
 <fieldset class="project-filter" data-project-filter>
   <legend class="sr-only">Filter projects by category</legend>
-  {filters.map((category, index) => (
-    <button type="button" data-category={category} aria-pressed={index === 0 ? 'true' : 'false'}>{category}</button>
-  ))}
+  <div class="project-filter-controls">
+    {filters.map((category, index) => (
+      <button type="button" data-category={category} aria-pressed={index === 0 ? 'true' : 'false'}>{category}</button>
+    ))}
+  </div>
 </fieldset>
 <script>
   const filter = document.querySelector<HTMLElement>('[data-project-filter]');
