@@ -1,0 +1,25 @@
+---
+const interests = [
+  ['Intelligent hardware', 'The relationship between sensing, signals, circuits, and computation.'],
+  ['Robotics', 'Systems that make perception and action work together in a physical setting.'],
+  ['Embodied AI', 'Learning and control that must account for a robot, its environment, and feedback.'],
+];
+---
+
+<section class="section section-bordered" aria-labelledby="interests-title">
+  <div class="container">
+    <div class="section-heading">
+      <p class="eyebrow">Questions worth returning to</p>
+      <h2 id="interests-title">Research interests</h2>
+    </div>
+    <div class="about-interest-grid">
+      {interests.map(([title, detail], index) => (
+        <article>
+          <span>0{index + 1}</span>
+          <h3>{title}</h3>
+          <p>{detail}</p>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>

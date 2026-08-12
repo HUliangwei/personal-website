@@ -1,0 +1,36 @@
+---
+const stages = [
+  ['Electronics / Hardware', 'A foundation for thinking about physical constraints, signals, and the building blocks of technical systems.'],
+  ['SPAD / IC', 'An interest in sensing and integrated-circuit questions: where a physical event becomes a usable signal.'],
+  ['Robotics', 'A shift toward systems that combine sensing, computation, and interaction with an environment.'],
+  ['Embodied AI', 'A continuing interest in learning and control when intelligence has to meet the constraints of a robot.'],
+];
+---
+
+<section class="section journey-section section-surface" aria-labelledby="journey-title">
+  <div class="container journey-layout">
+    <div class="journey-sticky">
+      <p class="eyebrow">A developing path</p>
+      <h2 id="journey-title">My journey</h2>
+      <p>Not a list of roles—just the questions that have gradually led from one layer of technology to another.</p>
+    </div>
+    <ol class="journey-timeline">
+      {stages.map(([title, detail], index) => (
+        <li class="journey-stage">
+          <span class="journey-index">0{index + 1}</span>
+          <div>
+            <h3>{title}</h3>
+            <p>{detail}</p>
+          </div>
+        </li>
+      ))}
+      <li class="journey-stage journey-stage-todo">
+        <span class="journey-index">?</span>
+        <div>
+          <h3>Quantum / emerging computing</h3>
+          <p>TODO: Place quantum work here only after its real learning or project context is confirmed.</p>
+        </div>
+      </li>
+    </ol>
+  </div>
+</section>

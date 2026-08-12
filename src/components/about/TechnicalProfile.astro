@@ -1,0 +1,24 @@
+---
+const profiles = [
+  ['Hardware & signals', 'Thinking from device and signal behaviour toward an implementable system.'],
+  ['System building', 'Connecting components across interfaces instead of treating them as isolated tools.'],
+  ['Research practice', 'Using experiments, iteration, and clear documentation to make questions testable.'],
+];
+---
+
+<section class="section section-surface" aria-labelledby="profile-title">
+  <div class="container about-split">
+    <div class="section-heading">
+      <p class="eyebrow">Working across layers</p>
+      <h2 id="profile-title">Technical profile</h2>
+    </div>
+    <div class="technical-profile-list">
+      {profiles.map(([title, description]) => (
+        <article>
+          <h3>{title}</h3>
+          <p>{description}</p>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>

@@ -1,15 +1,24 @@
 ---
-import BaseLayout from "../layouts/BaseLayout.astro";
+import AboutHero from '../components/about/AboutHero.astro';
+import CurrentFocus from '../components/about/CurrentFocus.astro';
+import Education from '../components/about/Education.astro';
+import InterestsConnection from '../components/about/InterestsConnection.astro';
+import JourneyTimeline from '../components/about/JourneyTimeline.astro';
+import OutsideResearch from '../components/about/OutsideResearch.astro';
+import PersonalStatement from '../components/about/PersonalStatement.astro';
+import ResearchInterests from '../components/about/ResearchInterests.astro';
+import TechnicalProfile from '../components/about/TechnicalProfile.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<BaseLayout title="About | Liangwei Hu">
-  <section>
-    <h1 class="text-4xl font-bold">
-      About Me
-    </h1>
-
-    <p class="mt-6 text-lg text-gray-600">
-      Welcome to my personal website.
-    </p>
-  </section>
+<BaseLayout title="About | Liangwei Hu" description="A developing technical path across intelligent hardware, robotics, and embodied AI.">
+  <AboutHero />
+  <PersonalStatement />
+  <JourneyTimeline />
+  <Education />
+  <ResearchInterests />
+  <InterestsConnection />
+  <TechnicalProfile />
+  <CurrentFocus />
+  <OutsideResearch />
 </BaseLayout>
