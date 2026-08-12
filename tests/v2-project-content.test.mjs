@@ -22,6 +22,22 @@ function projectLinks(html, prefix) {
     .map((match) => match[1]);
 }
 
+function textContent(html) {
+  return html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+function listItemContaining(html, label) {
+  return [...html.matchAll(/<li>[\s\S]*?<\/li>/gi)]
+    .map((match) => textContent(match[0]))
+    .find((item) => item.includes(label)) ?? '';
+}
+
+function projectCard(html, slug) {
+  return [...html.matchAll(/<article class="project-card"[\s\S]*?<\/article>/g)]
+    .map((match) => match[0])
+    .find((card) => card.includes(`/projects/${slug}`)) ?? '';
+}
+
 test('V2 publishes exactly four locale-specific case studies without the obsolete route', () => {
   execFileSync(process.execPath, ['node_modules/astro/bin/astro.mjs', 'build'], {
     cwd: root,
@@ -82,9 +98,14 @@ test('published project claims preserve evidence and measurement boundaries', ()
     assert.match(html, /(?:1\s*W[\s\S]*0\.1\s*W|1 W[\s\S]*0\.1 W)/i);
     assert.match(html, /(?:2\s*mW[\s\S]*200\s*mW|2 mW[\s\S]*200 mW)/i);
     assert.match(html, /不得解读为已经流片|must not be read as completed tapeout/i);
-    const postLayoutItem = html.match(/<li>[^<]*(?:版图后状态|Post-layout status)[\s\S]*?<\/li>/i)?.[0] ?? '';
+    const postLayoutItem = listItemContaining(html, html === zhSpad ? '版图后状态' : 'Post-layout status');
     assert.doesNotMatch(postLayoutItem, /\d+(?:\.\d+)?\s*(?:mW|W)\b/i);
   }
+  assert.match(listItemContaining('<ul><li><strong>Post-layout status:</strong> 12 mW</li></ul>', 'Post-layout status'), /12 mW/, 'post-layout result extraction includes tagged list-item content');
+  assert.match(zhSpad, /板级单像素\s*\/\s*通道平均功耗/);
+  assert.match(enSpad, /board-level per-pixel\s*\/\s*channel average power/i);
+  assert.doesNotMatch(zhSpad, /系统功耗由约\s*1\s*W/i);
+  assert.doesNotMatch(enSpad, /system power (?:decreasing|reduced) from approximately 1 W/i);
 
   const mobile = `${page('/projects/mobile-robot')}\n${page('/en/projects/mobile-robot')}`;
   for (const supported of ['Python', 'YOLO', 'ROS', 'MCU']) assert.match(mobile, new RegExp(supported));
@@ -94,7 +115,9 @@ test('published project claims preserve evidence and measurement boundaries', ()
   const quantum = `${page('/projects/quantum-hfss')}\n${page('/en/projects/quantum-hfss')}`;
   for (const supported of ['HFSS', 'mesh', 'sweep']) assert.match(quantum, new RegExp(supported, 'i'));
   assert.match(quantum, /仅限仿真|simulation only/i);
-  assert.doesNotMatch(quantum, /\bT1\b|\bT2\b|\bQ[- ]?factor\b|\bcoherence\b|\bfabricat(?:ed|ion)\b|\bmeasured result\b|实测结果|制备完成/i);
+  assert.doesNotMatch(quantum, /qubit frequency|量子比特频率|\bT1\b|\bT2\b|\bQ[- ]?factor\b|\bcoherence\b/i);
+  assert.doesNotMatch(quantum, /\d+(?:\.\d+)?\s*(?:GHz|MHz|kHz|ns|μs|us)\b/i);
+  assert.doesNotMatch(quantum, /(?:completed|performed|validated|achieved)[^.<]{0,50}(?:fabricat|tapeout|manufactur|measurement|measured)|(?:fabricated|taped out|manufactured|measured)[^.<]{0,50}(?:result|value|performance)|(?:完成|实现|开展)[^。]{0,30}(?:制备|流片|制造|实验测量|实测)|(?:实验结果为|实测(?:得到|结果为)|制备完成|流片完成)/i);
 
   const lerobot = `${page('/projects/lerobot')}\n${page('/en/projects/lerobot')}`;
   for (const pendingSection of ['Dataset', 'ACT', 'Training', 'Checkpoint', 'Inference', 'MuJoCo', 'PushT', 'Evaluation']) {
@@ -102,4 +125,16 @@ test('published project claims preserve evidence and measurement boundaries', ()
   }
   assert.match(lerobot, /待核实|TODO: Verification required/i);
   assert.doesNotMatch(lerobot, /training succeeded|successful inference|achieved accuracy|训练成功|推理成功|达到.{0,8}(?:准确率|成功率)/i);
+
+  for (const [locale, listRoute, detailRoute, status, role] of [
+    ['zh', '/projects', '/projects/lerobot', /学习项目\s*\/\s*进行中/, /待项目产物核实/],
+    ['en', '/en/projects', '/en/projects/lerobot', /Learning Project\s*\/\s*In Progress/, /artifact verification pending/i],
+  ]) {
+    const cardTech = projectCard(page(listRoute), 'lerobot').match(/<ul class="technology-list"[\s\S]*?<\/ul>/)?.[0] ?? '';
+    const detailMeta = page(detailRoute).match(/<dl class="project-meta">[\s\S]*?<\/dl>/)?.[0] ?? '';
+    assert.doesNotMatch(textContent(cardTech), /LeRobot|ACT|Imitation Learning/i, `${locale} card does not present unverified tools as normal technologies`);
+    assert.doesNotMatch(textContent(detailMeta.match(/<div><dt>[^<]*(?:技术|Technologies)[\s\S]*?<\/div>/)?.[0] ?? ''), /LeRobot|ACT|Imitation Learning/i, `${locale} detail metadata does not present unverified tools as normal technologies`);
+    assert.match(detailMeta, status);
+    assert.match(detailMeta, role);
+  }
 });
