@@ -1,7 +1,7 @@
 import type { Dictionary } from './types';
 
 const en = {
-  localeName: 'English', alternateLocaleName: '中文', htmlLang: 'en', ogLocale: 'en_US',
+  localeName: 'English', alternateLocaleName: '中文', htmlLang: 'en', ogLocale: 'en_US', siteName: 'Liangwei Hu',
   siteDescription: 'Liangwei Hu’s research and engineering portfolio across intelligent hardware, integrated circuits, robotics, and embodied AI.',
   skipLink: 'Skip to main content',
   navigation: {
@@ -52,7 +52,7 @@ const en = {
     filterLabel: 'Filter projects by category', allCategory: 'All', viewProject: 'View project', technologies: 'Technologies', coverPending: 'TODO: Add project cover image', coverAltSuffix: 'cover',
     categories: { 'Integrated Circuits': 'Integrated Circuits', Robotics: 'Robotics', 'Embodied AI': 'Embodied AI', Quantum: 'Quantum', Software: 'Software' },
     entries: { spad: { title: 'SPAD Readout ASIC', summary: 'TODO' }, 'ros2-robot': { title: 'Mobile Robot', summary: 'TODO' }, lerobot: { title: 'LeRobot / ACT', summary: 'TODO' } },
-    detail: { back: 'All projects', date: 'Date', status: 'Status', role: 'Role', technologies: 'Technologies', links: 'Links', linksPending: 'TODO: Add verified project links.', coverPending: 'Project cover pending', descriptionPending: 'Project case-study details remain pending verification.', sections: ['Overview', 'Problem / Motivation', 'My Role', 'Architecture', 'Design / Method', 'Implementation', 'Verification / Experiments', 'Results', 'Challenges & Decisions', 'What I Learned'] },
+    detail: { back: 'All projects', date: 'Date', status: 'Status', role: 'Role', technologies: 'Technologies', links: 'Links', linksPending: 'TODO: Add verified project links.', coverPending: 'Project cover pending', descriptionPending: 'Project case-study details remain pending verification.', descriptionSuffix: 'Unverified details are not published as fact.' },
   },
   cv: {
     eyebrow: 'CV', title: 'CVs for different technical directions.', intro: 'Select a track to preview, open, or download its PDF.',

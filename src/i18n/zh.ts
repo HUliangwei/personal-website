@@ -3,6 +3,7 @@ const zh = {
   alternateLocaleName: 'English',
   htmlLang: 'zh-CN',
   ogLocale: 'zh_CN',
+  siteName: '胡良玮',
   siteDescription: '胡良玮的研究与工程作品集，关注智能硬件、集成电路、机器人与具身智能。',
   skipLink: '跳至主要内容',
   navigation: {
@@ -195,7 +196,7 @@ const zh = {
       linksPending: '待核实：补充可公开的项目链接。',
       coverPending: '项目封面待补充',
       descriptionPending: '项目案例细节尚待核实。',
-      sections: ['概览', '问题 / 动机', '我的角色', '架构', '设计 / 方法', '实现', '验证 / 实验', '结果', '挑战与决策', '收获'],
+      descriptionSuffix: '未核实内容不会作为事实发布。',
     },
   },
   cv: {

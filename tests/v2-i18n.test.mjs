@@ -76,6 +76,12 @@ test('V2 publishes localized routes, route-preserving navigation, and complete l
   assert.match(page('/en/cv'), /<h1[^>]*>[^<]*CV/i);
   assert.doesNotMatch(page('/en/projects'), />[^<]*ROS2[^<]*</);
 
+  for (const route of ['/projects/spad', '/en/projects/spad']) {
+    const detail = page(route);
+    assert.match(detail, /<div class="project-prose"><h2[^>]*>Overview<\/h2>/, `${route} renders the collection MDX body`);
+    assert.match(detail, /<h2[^>]*>What I Learned<\/h2>/, `${route} preserves the full MDX case-study structure`);
+  }
+
   for (const route of routePairs.flat()) {
     const html = page(route);
     for (const href of html.matchAll(/href="(\/[^"#?]*)/g)) {
