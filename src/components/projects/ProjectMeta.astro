@@ -1,11 +1,13 @@
 ---
 import type { CollectionEntry } from 'astro:content';
-interface Props { project: CollectionEntry<'projects'>; }
-const { project } = Astro.props;
+import type { Dictionary } from '../../i18n/types';
+interface Props { project: CollectionEntry<'projects'>; dictionary: Dictionary; }
+const { project, dictionary } = Astro.props;
+const labels = dictionary.projects.detail;
 ---
 <dl class="project-meta">
-  <div><dt>Date</dt><dd>{project.data.date}</dd></div>
-  <div><dt>Status</dt><dd>{project.data.status}</dd></div>
-  <div><dt>Role</dt><dd>{project.data.role}</dd></div>
-  <div><dt>Technologies</dt><dd>{project.data.technologies.join(' · ')}</dd></div>
+  <div><dt>{labels.date}</dt><dd>{project.data.date}</dd></div>
+  <div><dt>{labels.status}</dt><dd>{project.data.status}</dd></div>
+  <div><dt>{labels.role}</dt><dd>{project.data.role}</dd></div>
+  <div><dt>{labels.technologies}</dt><dd>{project.data.technologies.join(' · ')}</dd></div>
 </dl>

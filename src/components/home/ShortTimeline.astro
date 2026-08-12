@@ -1,19 +1,17 @@
 ---
-const stages = [
-  ['Foundations', 'Devices, signals, and integrated circuits.'],
-  ['Systems', 'Sensing, compute, and autonomous systems.'],
-  ['Next directions', 'TODO: Add verified milestones and dates.'],
-];
+import type { Dictionary } from '../../i18n/types';
+interface Props { content: Dictionary['home']['timeline']; }
+const { content } = Astro.props;
 ---
 
 <section class="section" aria-labelledby="trajectory-title">
   <div class="container timeline-layout">
     <div class="section-heading">
-      <p class="eyebrow">04 / Path</p>
-      <h2 id="trajectory-title">Technical trajectory</h2>
+      <p class="eyebrow">{content.eyebrow}</p>
+      <h2 id="trajectory-title">{content.title}</h2>
     </div>
     <ol class="timeline">
-      {stages.map(([title, detail]) => (
+      {content.stages.map(([title, detail]) => (
         <li>
           <h3>{title}</h3>
           <p>{detail}</p>

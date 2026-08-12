@@ -1,10 +1,16 @@
+---
+import type { Dictionary, Locale } from '../../i18n/types';
+import { localizedPath } from '../../i18n/utils';
+interface Props { content: Dictionary['home']['contact']; locale: Locale; }
+const { content, locale } = Astro.props;
+---
 <section class="section contact-cta" aria-labelledby="contact-title">
   <div class="container contact-shell">
     <div>
-      <p class="eyebrow">05 / Contact</p>
-      <h2 id="contact-title">Continue the conversation</h2>
-      <p>Contact details are being prepared. TODO: Add a verified preferred contact method.</p>
+      <p class="eyebrow">{content.eyebrow}</p>
+      <h2 id="contact-title">{content.title}</h2>
+      <p>{content.description}</p>
     </div>
-    <a class="button button-secondary" href="/cv">View CV</a>
+    <a class="button button-secondary" href={localizedPath('/cv', locale)}>{content.action}</a>
   </div>
 </section>

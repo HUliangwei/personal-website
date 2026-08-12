@@ -1,14 +1,15 @@
 ---
 import type { ProjectCategory } from '../../config/projects';
-interface Props { categories: ProjectCategory[]; }
-const { categories } = Astro.props;
-const filters = ['All', ...categories];
+import type { Dictionary } from '../../i18n/types';
+interface Props { categories: ProjectCategory[]; dictionary: Dictionary; }
+const { categories, dictionary } = Astro.props;
+const filters = [{ value: 'All', label: dictionary.projects.allCategory }, ...categories.map((value) => ({ value, label: dictionary.projects.categories[value] }))];
 ---
 <fieldset class="project-filter" data-project-filter>
-  <legend class="sr-only">Filter projects by category</legend>
+  <legend class="sr-only">{dictionary.projects.filterLabel}</legend>
   <div class="project-filter-controls">
     {filters.map((category, index) => (
-      <button type="button" data-category={category} aria-pressed={index === 0 ? 'true' : 'false'}>{category}</button>
+      <button type="button" data-category={category.value} aria-pressed={index === 0 ? 'true' : 'false'}>{category.label}</button>
     ))}
   </div>
 </fieldset>

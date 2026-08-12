@@ -18,7 +18,7 @@ function buildSite() {
 test('Phase 3 about renders a readable technical journey without invented biography', () => {
   buildSite();
 
-  const about = readFileSync(join(projectRoot, 'dist', 'about', 'index.html'), 'utf8');
+  const about = readFileSync(join(projectRoot, 'dist', 'en', 'about', 'index.html'), 'utf8');
 
   for (const heading of [
     'A personal technical direction, still in progress.',

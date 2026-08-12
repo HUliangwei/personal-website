@@ -1,0 +1,22 @@
+---
+import { getCollection } from 'astro:content';
+import ProjectCard from '../projects/ProjectCard.astro';
+import ProjectFilter from '../projects/ProjectFilter.astro';
+import { PROJECT_CATEGORIES } from '../../config/projects';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getDictionary } from '../../i18n/utils';
+import type { Locale } from '../../i18n/types';
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const dictionary = getDictionary(locale);
+const projects = (await getCollection('projects')).sort((a, b) => a.data.slug.localeCompare(b.data.slug));
+const categories = PROJECT_CATEGORIES.filter((category) => projects.some((project) => project.data.category === category));
+const intro = dictionary.projects.intro;
+---
+<BaseLayout locale={locale} title={dictionary.meta.projects.title} description={dictionary.meta.projects.description}>
+  <section class="section projects-page" aria-labelledby="projects-heading"><div class="container">
+    <div class="projects-intro"><p class="eyebrow">{intro.eyebrow}</p><h1 id="projects-heading">{intro.title}</h1><p>{intro.description}</p></div>
+    <ProjectFilter categories={categories} dictionary={dictionary} />
+    <div class="project-grid">{projects.map((project) => <ProjectCard project={project} dictionary={dictionary} locale={locale} headingLevel={2} />)}</div>
+  </div></section>
+</BaseLayout>

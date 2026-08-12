@@ -1,20 +1,25 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import ProjectMeta from './ProjectMeta.astro';
-interface Props { project: CollectionEntry<'projects'>; }
-const { project } = Astro.props;
+import type { Dictionary } from '../../i18n/types';
+interface Props { project: CollectionEntry<'projects'>; dictionary: Dictionary; }
+const { project, dictionary } = Astro.props;
+const content = dictionary.projects;
+const entry = content.entries[project.data.slug as keyof typeof content.entries];
+const title = entry?.title ?? project.data.title;
+const summary = entry?.summary ?? project.data.summary;
 ---
 <header class="project-header">
-  <p class="eyebrow">{project.data.category}</p>
-  <h1>{project.data.title}</h1>
-  <p class="project-summary">{project.data.summary}</p>
-  <ProjectMeta project={project} />
+  <p class="eyebrow">{content.categories[project.data.category]}</p>
+  <h1>{title}</h1>
+  <p class="project-summary">{summary}</p>
+  <ProjectMeta project={project} dictionary={dictionary} />
   {
     project.data.cover !== 'TODO' ? (
-      <img class="project-detail-cover" src={project.data.cover} alt={`${project.data.title} cover`} loading="lazy" />
+      <img class="project-detail-cover" src={project.data.cover} alt={`${title} ${content.coverAltSuffix}`} loading="lazy" />
     ) : (
-      <div class="project-cover-placeholder" role="img" aria-label={`${project.data.title} cover placeholder`}>
-        <span>Cover</span><strong>{project.data.cover}</strong>
+      <div class="project-cover-placeholder" role="img" aria-label={`${title} ${content.detail.coverPending}`}>
+        <span>{content.detail.coverPending}</span><strong>TODO</strong>
       </div>
     )
   }

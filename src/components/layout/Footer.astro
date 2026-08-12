@@ -1,14 +1,19 @@
 ---
 import { SITE } from '../../config/site';
+import { getDictionary, localizedPath } from '../../i18n/utils';
+import type { Locale } from '../../i18n/types';
+interface Props { locale?: Locale; }
+const { locale = 'zh' } = Astro.props;
+const dictionary = getDictionary(locale);
 ---
 
 <footer class="site-footer">
   <div class="container footer-content">
     <p>© 2026 {SITE.name}</p>
-    <nav aria-label="Footer navigation">
-      <a href="/cv">CV</a>
+    <nav aria-label={dictionary.footer.label}>
+      <a href={localizedPath('/cv', locale)}>{dictionary.footer.cv}</a>
       <a href={SITE.github} rel="external">GitHub <span aria-hidden="true">↗</span></a>
-      <span>Email: TODO</span>
+      <span>{dictionary.footer.emailPending}</span>
     </nav>
   </div>
 </footer>

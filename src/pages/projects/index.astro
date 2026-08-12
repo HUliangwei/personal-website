@@ -1,19 +1,4 @@
 ---
-import { getCollection } from 'astro:content';
-import ProjectCard from '../../components/projects/ProjectCard.astro';
-import ProjectFilter from '../../components/projects/ProjectFilter.astro';
-import { PROJECT_CATEGORIES } from '../../config/projects';
-import BaseLayout from '../../layouts/BaseLayout.astro';
-const projects = (await getCollection('projects')).sort((a, b) => a.data.title.localeCompare(b.data.title));
-const categories = PROJECT_CATEGORIES.filter((category) => projects.some((project) => project.data.category === category));
+import ProjectsPage from '../../components/pages/ProjectsPage.astro';
 ---
-<BaseLayout title="Projects | Liangwei Hu" description="Engineering and research project case studies.">
-  <section class="section projects-page" aria-labelledby="projects-heading"><div class="container">
-    <div class="projects-intro">
-      <p class="eyebrow">Projects</p><h1 id="projects-heading">Engineering & Research Case Studies</h1>
-      <p>Project details remain explicitly marked TODO until verified.</p>
-    </div>
-    <ProjectFilter categories={categories} />
-    <div class="project-grid">{projects.map((project) => <ProjectCard project={project} headingLevel={2} />)}</div>
-  </div></section>
-</BaseLayout>
+<ProjectsPage locale="zh" />

@@ -1,21 +1,18 @@
 ---
-const areas = [
-  'Integrated Circuit Design',
-  'Robotics & Embodied AI',
-  'Intelligent Hardware',
-  'Quantum / Emerging Computing',
-];
+import type { Dictionary } from '../../i18n/types';
+interface Props { content: Dictionary['home']['focus']; }
+const { content } = Astro.props;
 ---
 
 <section class="section section-bordered" aria-labelledby="focus-title">
   <div class="container">
     <div class="section-heading">
-      <p class="eyebrow">01 / Direction</p>
-      <h2 id="focus-title">Current focus</h2>
-      <p>Research directions to develop and document.</p>
+      <p class="eyebrow">{content.eyebrow}</p>
+      <h2 id="focus-title">{content.title}</h2>
+      <p>{content.description}</p>
     </div>
     <ol class="focus-list">
-      {areas.map((area, index) => <li><span>{String(index + 1).padStart(2, '0')}</span>{area}</li>)}
+      {content.areas.map((area, index) => <li><span>{String(index + 1).padStart(2, '0')}</span>{area}</li>)}
     </ol>
   </div>
 </section>

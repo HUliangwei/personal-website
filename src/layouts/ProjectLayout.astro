@@ -2,24 +2,21 @@
 import type { CollectionEntry } from 'astro:content';
 import ProjectHeader from '../components/projects/ProjectHeader.astro';
 import BaseLayout from './BaseLayout.astro';
-interface Props { project: CollectionEntry<'projects'>; }
-const { project } = Astro.props;
-const description = project.data.summary === 'TODO'
-  ? `${project.data.title}, a project case study in ${project.data.category} with details marked for verification.`
-  : project.data.summary;
+import { getDictionary, localizedPath } from '../i18n/utils';
+import type { Locale } from '../i18n/types';
+interface Props { project: CollectionEntry<'projects'>; locale: Locale; }
+const { project, locale } = Astro.props;
+const dictionary = getDictionary(locale);
+const entry = dictionary.projects.entries[project.data.slug as keyof typeof dictionary.projects.entries];
+const title = entry?.title ?? project.data.title;
+const description = `${title}：${entry?.summary ?? dictionary.projects.detail.descriptionPending} ${locale === 'zh' ? '未核实内容不会作为事实发布。' : 'Unverified details are not published as fact.'}`;
+const detail = dictionary.projects.detail;
 ---
-<BaseLayout title={`${project.data.title} | Liangwei Hu`} description={description} openGraph={{ type: 'article' }}>
+<BaseLayout locale={locale} title={`${title} | ${locale === 'zh' ? '胡良玮' : 'Liangwei Hu'}`} description={description} openGraph={{ type: 'article' }}>
   <article class="section project-detail"><div class="container project-detail-container">
-    <a class="text-link project-back" href="/projects">← All projects</a>
-    <ProjectHeader project={project} />
-    <div class="project-prose"><slot /></div>
-    <section class="project-links" aria-labelledby="project-links-heading">
-      <h2 id="project-links-heading">Links</h2>
-      {project.data.links.length > 0 ? (
-        <ul>{project.data.links.map((link) => <li><a href={link.url}>{link.label}</a></li>)}</ul>
-      ) : (
-        <p>TODO: Add verified project links.</p>
-      )}
-    </section>
+    <a class="text-link project-back" href={localizedPath('/projects', locale)}>← {detail.back}</a>
+    <ProjectHeader project={project} dictionary={dictionary} />
+    <div class="project-prose">{detail.sections.map((heading) => <section><h2>{heading}</h2><p>{locale === 'zh' ? '待核实' : 'TODO'}</p></section>)}</div>
+    <section class="project-links" aria-labelledby="project-links-heading"><h2 id="project-links-heading">{detail.links}</h2>{project.data.links.length > 0 ? <ul>{project.data.links.map((link) => <li><a href={link.url}>{link.label}</a></li>)}</ul> : <p>{detail.linksPending}</p>}</section>
   </div></article>
 </BaseLayout>

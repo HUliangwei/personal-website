@@ -1,20 +1,27 @@
+---
+import type { Dictionary, Locale } from '../../i18n/types';
+import { localizedPath } from '../../i18n/utils';
+interface Props { content: Dictionary['home']['hero']; locale: Locale; }
+const { content, locale } = Astro.props;
+const [device, signal, compute, system] = content.diagramLabels;
+---
 <section class="section hero" aria-labelledby="hero-title">
   <div class="container hero-grid">
     <div class="hero-copy">
-      <p class="eyebrow">Liangwei Hu</p>
-      <h1 id="hero-title">Research &amp; Engineering</h1>
-      <p class="hero-summary">A portfolio spanning intelligent hardware, compute, and autonomous systems.</p>
-      <p class="hero-disciplines">Integrated Circuits <span aria-hidden="true">·</span> Robotics <span aria-hidden="true">·</span> Embodied AI</p>
+      <p class="eyebrow">{content.eyebrow}</p>
+      <h1 id="hero-title">{content.title}</h1>
+      <p class="hero-summary">{content.summary}</p>
+      <p class="hero-disciplines">{content.disciplines.map((item, index) => <>{index > 0 && <span aria-hidden="true"> · </span>}{item}</>)}</p>
       <div class="hero-actions">
-        <a class="button button-primary" href="/projects">Explore projects <span aria-hidden="true">→</span></a>
-        <a class="button button-secondary" href="/cv">View CV</a>
+        <a class="button button-primary" href={localizedPath('/projects', locale)}>{content.projectsAction} <span aria-hidden="true">→</span></a>
+        <a class="button button-secondary" href={localizedPath('/cv', locale)}>{content.cvAction}</a>
       </div>
     </div>
 
     <div class="system-visual">
       <svg viewBox="0 0 640 390" role="img" aria-labelledby="system-diagram-title system-diagram-description" xmlns="http://www.w3.org/2000/svg">
-        <title id="system-diagram-title">Device to intelligent system diagram</title>
-        <desc id="system-diagram-description">A conceptual flow from device and sensor inputs through signal and integrated circuit compute stages to an intelligent system or robot.</desc>
+        <title id="system-diagram-title">{content.diagramTitle}</title>
+        <desc id="system-diagram-description">{content.diagramDescription}</desc>
         <defs>
           <linearGradient id="signal-gradient" x1="0" x2="1">
             <stop offset="0" stop-color="#0b63ce" stop-opacity=".35" />
@@ -25,19 +32,18 @@
         <g class="diagram-node">
           <rect x="28" y="118" width="98" height="118" rx="12" />
           <path d="M52 152h50M52 177h50M52 202h28" />
-          <text x="77" y="271" text-anchor="middle">Device</text>
-          <text x="77" y="291" text-anchor="middle">/ Sensor</text>
+          <text x="77" y="281" text-anchor="middle">{device}</text>
         </g>
         <g class="diagram-node diagram-signal">
           <circle cx="240" cy="177" r="46" />
           <path d="M213 177h12l8-22 15 44 12-22h8" />
-          <text x="240" y="271" text-anchor="middle">Signal</text>
+          <text x="240" y="281" text-anchor="middle">{signal}</text>
         </g>
         <g class="diagram-node">
           <rect x="354" y="123" width="92" height="108" rx="12" />
           <rect x="375" y="144" width="50" height="66" rx="5" />
           <path d="M367 137v-10M382 137v-10M397 137v-10M412 137v-10M427 137v-10M367 217v10M382 217v10M397 217v10M412 217v10M427 217v10M368 157h7M368 177h7M368 197h7M425 157h7M425 177h7M425 197h7" />
-          <text x="400" y="271" text-anchor="middle">IC / Compute</text>
+          <text x="400" y="281" text-anchor="middle">{compute}</text>
         </g>
         <g class="diagram-node diagram-robot">
           <path d="M538 169v-23a22 22 0 0 1 44 0v23" />
@@ -45,8 +51,7 @@
           <circle cx="547" cy="194" r="5" />
           <circle cx="573" cy="194" r="5" />
           <path d="M548 210h24M560 146v-15M560 131l-8-8M560 131l8-8" />
-          <text x="560" y="271" text-anchor="middle">Intelligent System</text>
-          <text x="560" y="291" text-anchor="middle">/ Robot</text>
+          <text x="560" y="281" text-anchor="middle">{system}</text>
         </g>
         <circle class="signal-pulse" cx="160" cy="177" r="5" />
         <circle class="signal-pulse pulse-two" cx="320" cy="177" r="5" />

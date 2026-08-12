@@ -25,11 +25,11 @@ function hash(filePath) {
 test('Phase 5 publishes accessible multi-track CV downloads without inventing a quantum PDF', () => {
   execFileSync(process.execPath, ['node_modules/astro/bin/astro.mjs', 'build'], { cwd: root, stdio: 'pipe' });
 
-  const cv = readFileSync(join(root, 'dist/cv/index.html'), 'utf8');
-  const home = readFileSync(join(root, 'dist/index.html'), 'utf8');
+  const cv = readFileSync(join(root, 'dist/en/cv/index.html'), 'utf8');
+  const home = readFileSync(join(root, 'dist/en/index.html'), 'utf8');
 
   assert.ok(existsSync(join(root, 'dist/cv/index.html')), 'the /cv route is generated');
-  assert.match(home, /href="\/cv"/);
+  assert.match(home, /href="\/en\/cv"/);
   for (const track of ['Integrated Circuits', 'Embodied AI', 'Quantum Computing']) {
     assert.match(cv, new RegExp(`<h2[^>]*>${track}</h2>`));
   }

@@ -1,0 +1,22 @@
+---
+import Capabilities from '../home/Capabilities.astro';
+import ContactCTA from '../home/ContactCTA.astro';
+import CurrentFocus from '../home/CurrentFocus.astro';
+import Hero from '../home/Hero.astro';
+import SelectedProjects from '../home/SelectedProjects.astro';
+import ShortTimeline from '../home/ShortTimeline.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getDictionary } from '../../i18n/utils';
+import type { Locale } from '../../i18n/types';
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const dictionary = getDictionary(locale);
+---
+<BaseLayout locale={locale} title={dictionary.meta.home.title} description={dictionary.meta.home.description}>
+  <Hero content={dictionary.home.hero} locale={locale} />
+  <CurrentFocus content={dictionary.home.focus} />
+  <SelectedProjects content={dictionary.home.projects} dictionary={dictionary} locale={locale} />
+  <Capabilities content={dictionary.home.capabilities} />
+  <ShortTimeline content={dictionary.home.timeline} />
+  <ContactCTA content={dictionary.home.contact} locale={locale} />
+</BaseLayout>

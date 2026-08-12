@@ -2,15 +2,16 @@
 interface Props {
   title: string;
   pdf: string;
+  labels: { preview: string; hidePreview: string; fallbackPrefix: string; fallbackLink: string };
 }
 
-const { title, pdf } = Astro.props;
+const { title, pdf, labels } = Astro.props;
 const previewId = `pdf-preview-${title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
 ---
 
 <div class="pdf-preview">
-  <button class="button button-secondary" type="button" data-pdf-preview data-pdf-url={pdf} data-pdf-title={title} aria-controls={previewId} aria-expanded="false" hidden>
-    Preview PDF
+  <button class="button button-secondary" type="button" data-pdf-preview data-pdf-url={pdf} data-pdf-title={title} data-preview-label={labels.preview} data-hide-label={labels.hidePreview} data-fallback-prefix={labels.fallbackPrefix} data-fallback-link={labels.fallbackLink} aria-controls={previewId} aria-expanded="false" hidden>
+    {labels.preview}
   </button>
   <div id={previewId} class="pdf-preview-frame" data-pdf-preview-frame hidden aria-live="polite"></div>
 </div>
@@ -30,17 +31,19 @@ const previewId = `pdf-preview-${title.toLowerCase().replace(/[^a-z0-9]+/g, '-')
         preview.data = pdf;
         preview.type = 'application/pdf';
         preview.setAttribute('aria-label', `${title} PDF preview`);
-        preview.innerHTML = `Your browser cannot display this PDF inline. <a href="${pdf}" target="_blank" rel="noopener">Open ${title} PDF</a> instead.`;
+        const fallbackPrefix = button.dataset.fallbackPrefix ?? '';
+        const fallbackLink = button.dataset.fallbackLink ?? '';
+        preview.innerHTML = `${fallbackPrefix} <a href="${pdf}" target="_blank" rel="noopener">${fallbackLink}</a>`;
         frame.replaceChildren(preview);
         frame.hidden = false;
         button.setAttribute('aria-expanded', 'true');
-        button.textContent = 'Hide preview';
+        button.textContent = button.dataset.hideLabel ?? '';
         return;
       }
 
       frame.hidden = true;
       button.setAttribute('aria-expanded', 'false');
-      button.textContent = 'Preview PDF';
+      button.textContent = button.dataset.previewLabel ?? '';
     });
   });
 </script>

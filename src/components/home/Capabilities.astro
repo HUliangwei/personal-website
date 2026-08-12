@@ -1,21 +1,18 @@
 ---
-const capabilities = [
-  ['Hardware & circuits', 'TODO: Add verified methods and tools.'],
-  ['Sensing & signals', 'TODO: Add verified methods and tools.'],
-  ['Systems & robotics', 'TODO: Add verified methods and tools.'],
-  ['Research practice', 'TODO: Add verified methods and tools.'],
-];
+import type { Dictionary } from '../../i18n/types';
+interface Props { content: Dictionary['home']['capabilities']; }
+const { content } = Astro.props;
 ---
 
 <section class="section section-surface" aria-labelledby="capabilities-title">
   <div class="container">
     <div class="section-heading">
-      <p class="eyebrow">03 / Practice</p>
-      <h2 id="capabilities-title">Capabilities</h2>
-      <p>A working map of technical areas; supporting details will be added from verified experience.</p>
+      <p class="eyebrow">{content.eyebrow}</p>
+      <h2 id="capabilities-title">{content.title}</h2>
+      <p>{content.description}</p>
     </div>
     <div class="capability-grid">
-      {capabilities.map(([title, detail]) => (
+      {content.items.map(([title, detail]) => (
         <article>
           <h3>{title}</h3>
           <p>{detail}</p>

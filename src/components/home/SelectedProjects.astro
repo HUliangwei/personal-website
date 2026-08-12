@@ -1,11 +1,14 @@
 ---
 import { getCollection } from 'astro:content';
 import ProjectCard from '../projects/ProjectCard.astro';
+import type { Dictionary, Locale } from '../../i18n/types';
+interface Props { content: Dictionary['home']['projects']; dictionary: Dictionary; locale: Locale; }
+const { content, dictionary, locale } = Astro.props;
 const projects = (await getCollection('projects')).filter((project) => project.data.featured);
 ---
 <section class="section" aria-labelledby="projects-title"><div class="container">
   <div class="section-heading section-heading-row"><div>
-    <p class="eyebrow">02 / Work</p><h2 id="projects-title">Selected projects</h2>
-  </div><a class="text-link" href="/projects">All projects <span aria-hidden="true">→</span></a></div>
-  <div class="project-grid">{projects.map((project) => <ProjectCard project={project} />)}</div>
+    <p class="eyebrow">{content.eyebrow}</p><h2 id="projects-title">{content.title}</h2>
+  </div><a class="text-link" href={locale === 'en' ? '/en/projects' : '/projects'}>{content.all} <span aria-hidden="true">→</span></a></div>
+  <div class="project-grid">{projects.map((project) => <ProjectCard project={project} dictionary={dictionary} locale={locale} />)}</div>
 </div></section>

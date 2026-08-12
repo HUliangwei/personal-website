@@ -1,32 +1,41 @@
 ---
-import { NAVIGATION, SITE } from '../../config/site';
+import { SITE } from '../../config/site';
+import { alternatePath, getDictionary, localizedPath, stripLocalePrefix } from '../../i18n/utils';
+import type { Locale } from '../../i18n/types';
 
-const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
+interface Props { locale?: Locale; }
+const { locale = 'zh' } = Astro.props;
+const dictionary = getDictionary(locale);
+
+const currentPath = stripLocalePrefix(Astro.url.pathname);
 const isActive = (href: string) => currentPath === href || (href !== '/' && currentPath.startsWith(`${href}/`));
 ---
 
 <header class="site-header">
   <div class="container nav-shell">
-    <a class="brand" href="/" aria-label={`${SITE.name} home`}>
+    <a class="brand" href={localizedPath('/', locale)} aria-label={SITE.name}>
       {SITE.name}
     </a>
 
-    <button class="nav-toggle" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation menu">
-      <span class="sr-only">Toggle navigation</span>
+    <button class="nav-toggle" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label={dictionary.navigation.open} data-open-label={dictionary.navigation.open} data-close-label={dictionary.navigation.close}>
+      <span class="sr-only">{dictionary.navigation.toggle}</span>
       <span aria-hidden="true" class="nav-toggle-icon"></span>
     </button>
 
-    <nav id="primary-navigation" class="primary-nav" aria-label="Primary navigation">
+    <nav id="primary-navigation" class="primary-nav" aria-label={dictionary.navigation.label}>
       <ul>
         {
-          NAVIGATION.map((item) => (
+          dictionary.navigation.items.map((item) => (
             <li>
-              <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
+              <a href={localizedPath(item.path, locale)} aria-current={isActive(item.path) ? 'page' : undefined}>
                 {item.label}
               </a>
             </li>
           ))
         }
+        <li>
+          <a href={alternatePath(Astro.url.pathname)} data-language-switch>{dictionary.navigation.languageSwitch}</a>
+        </li>
         <li>
           <a href={SITE.github} rel="external">
             GitHub <span aria-hidden="true">↗</span>
@@ -45,14 +54,14 @@ const isActive = (href: string) => currentPath === href || (href !== '/' && curr
 
   const closeNavigation = () => {
     toggle?.setAttribute('aria-expanded', 'false');
-    toggle?.setAttribute('aria-label', 'Open navigation menu');
+    toggle?.setAttribute('aria-label', toggle.dataset.openLabel ?? '');
     navigation?.removeAttribute('data-open');
   };
 
   toggle?.addEventListener('click', () => {
     const isOpen = toggle.getAttribute('aria-expanded') === 'true';
     toggle.setAttribute('aria-expanded', String(!isOpen));
-    toggle.setAttribute('aria-label', isOpen ? 'Open navigation menu' : 'Close navigation menu');
+    toggle.setAttribute('aria-label', isOpen ? (toggle.dataset.openLabel ?? '') : (toggle.dataset.closeLabel ?? ''));
     navigation?.toggleAttribute('data-open', !isOpen);
   });
 

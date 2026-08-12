@@ -1,18 +1,4 @@
 ---
-import Capabilities from '../components/home/Capabilities.astro';
-import ContactCTA from '../components/home/ContactCTA.astro';
-import CurrentFocus from '../components/home/CurrentFocus.astro';
-import Hero from '../components/home/Hero.astro';
-import SelectedProjects from '../components/home/SelectedProjects.astro';
-import ShortTimeline from '../components/home/ShortTimeline.astro';
-import BaseLayout from '../layouts/BaseLayout.astro';
+import HomePage from '../components/pages/HomePage.astro';
 ---
-
-<BaseLayout title="Liangwei Hu | Research & Engineering" description="A personal research and engineering portfolio spanning intelligent hardware and autonomous systems.">
-  <Hero />
-  <CurrentFocus />
-  <SelectedProjects />
-  <Capabilities />
-  <ShortTimeline />
-  <ContactCTA />
-</BaseLayout>
+<HomePage locale="zh" />

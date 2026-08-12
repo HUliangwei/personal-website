@@ -70,15 +70,16 @@ test('project filters contain their scroll row within the mobile viewport', () =
 test('final content semantics and truthful fallbacks are present', () => {
   buildSite();
 
-  const home = readFileSync(join(root, 'dist', 'index.html'), 'utf8');
-  const projects = readFileSync(join(root, 'dist', 'projects', 'index.html'), 'utf8');
-  const robotics = readFileSync(join(root, 'dist', 'projects', 'ros2-robot', 'index.html'), 'utf8');
+  const home = readFileSync(join(root, 'dist', 'en', 'index.html'), 'utf8');
+  const projects = readFileSync(join(root, 'dist', 'en', 'projects', 'index.html'), 'utf8');
+  const robotics = readFileSync(join(root, 'dist', 'en', 'projects', 'ros2-robot', 'index.html'), 'utf8');
 
-  assert.match(projects, /<h2>ROS2 Mobile Robot<\/h2>/);
-  assert.match(home, /<h3>ROS2 Mobile Robot<\/h3>/);
+  assert.match(projects, /<h2>Mobile Robot<\/h2>/);
+  assert.match(home, /<h3>Mobile Robot<\/h3>/);
+  assert.doesNotMatch(projects, />[^<]*ROS2[^<]*</);
   assert.doesNotMatch(robotics, /an Robotics project/i);
   assert.match(robotics, /TODO: Add verified project links/);
-  assert.match(home, /href="\/cv"[^>]*>CV<\/a>/);
+  assert.match(home, /href="\/en\/cv"[^>]*>CV<\/a>/);
   assert.match(home, /Email:\s*TODO/);
 
   const projectLayout = readFileSync(join(root, 'src/layouts/ProjectLayout.astro'), 'utf8');

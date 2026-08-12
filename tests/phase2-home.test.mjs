@@ -18,7 +18,7 @@ function buildSite() {
 test('Phase 2 home renders a research portfolio overview without scaffold copy', () => {
   buildSite();
 
-  const home = readFileSync(join(projectRoot, 'dist', 'index.html'), 'utf8');
+  const home = readFileSync(join(projectRoot, 'dist', 'en', 'index.html'), 'utf8');
 
   for (const heading of [
     'Research &amp; Engineering',
@@ -31,14 +31,14 @@ test('Phase 2 home renders a research portfolio overview without scaffold copy',
     assert.match(home, new RegExp(`<h[1-2][^>]*>${heading}</h[1-2]>`));
   }
 
-  for (const href of ['/projects', '/cv', '/projects/spad', '/projects/ros2-robot', '/projects/lerobot']) {
+  for (const href of ['/en/projects', '/en/cv', '/en/projects/spad', '/en/projects/ros2-robot', '/en/projects/lerobot']) {
     assert.match(home, new RegExp(`<a[^>]*href="${href}"`));
   }
 
   assert.match(home, /<svg[^>]*role="img"[^>]*aria-labelledby="system-diagram-title system-diagram-description"/);
   assert.match(home, /<title id="system-diagram-title">Device to intelligent system diagram<\/title>/);
   assert.match(home, /<desc id="system-diagram-description">A conceptual flow from device and sensor inputs through signal and integrated circuit compute stages to an intelligent system or robot.<\/desc>/);
-  assert.match(home, /<text[^>]*>Device<\/text><text[^>]*>\/ Sensor<\/text>/);
-  assert.match(home, /<text[^>]*>Intelligent System<\/text><text[^>]*>\/ Robot<\/text>/);
+  assert.match(home, /<text[^>]*>Device \/ Sensor<\/text>/);
+  assert.match(home, /<text[^>]*>Intelligent System \/ Robot<\/text>/);
   assert.doesNotMatch(home, /Hello, I(?:'|&#x27;)m|Graduate Student|Cloudflare deployment test/);
 });

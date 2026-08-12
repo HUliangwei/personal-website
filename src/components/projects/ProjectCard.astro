@@ -1,24 +1,31 @@
 ---
 import type { CollectionEntry } from 'astro:content';
-interface Props { project: CollectionEntry<'projects'>; headingLevel?: 2 | 3; }
-const { project, headingLevel = 3 } = Astro.props;
+import type { Dictionary, Locale } from '../../i18n/types';
+import { localizedPath } from '../../i18n/utils';
+interface Props { project: CollectionEntry<'projects'>; dictionary: Dictionary; locale: Locale; headingLevel?: 2 | 3; }
+const { project, dictionary, locale, headingLevel = 3 } = Astro.props;
 const Heading = `h${headingLevel}` as const;
+const content = dictionary.projects;
+const entry = content.entries[project.data.slug as keyof typeof content.entries];
+const title = entry?.title ?? project.data.title;
+const summary = entry?.summary ?? project.data.summary;
+const category = content.categories[project.data.category];
 ---
 <article class="project-card" data-project-card data-category={project.data.category}>
   {
     project.data.cover !== 'TODO' ? (
-      <img class="project-card-cover" src={project.data.cover} alt={`${project.data.title} cover`} loading="lazy" />
+      <img class="project-card-cover" src={project.data.cover} alt={`${title} ${content.coverAltSuffix}`} loading="lazy" />
     ) : (
-      <div class="project-cover-todo" role="img" aria-label={`${project.data.title} cover placeholder`}>
-        TODO: Add project cover image
+      <div class="project-cover-todo" role="img" aria-label={`${title} ${content.coverPending}`}>
+        {content.coverPending}
       </div>
     )
   }
-  <p class="project-category">{project.data.category}</p>
-  <Heading>{project.data.title}</Heading>
-  <p>{project.data.summary}</p>
-  <ul class="technology-list" aria-label="Technologies">
+  <p class="project-category">{category}</p>
+  <Heading>{title}</Heading>
+  <p>{summary}</p>
+  <ul class="technology-list" aria-label={content.technologies}>
     {project.data.technologies.map((technology) => <li>{technology}</li>)}
   </ul>
-  <a href={`/projects/${project.data.slug}`}>View project <span aria-hidden="true">→</span></a>
+  <a href={localizedPath(`/projects/${project.data.slug}`, locale)}>{content.viewProject} <span aria-hidden="true">→</span></a>
 </article>
