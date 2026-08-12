@@ -9,7 +9,7 @@ const previewId = `pdf-preview-${title.toLowerCase().replace(/[^a-z0-9]+/g, '-')
 ---
 
 <div class="pdf-preview">
-  <button class="button button-secondary" type="button" data-pdf-preview data-pdf-url={pdf} data-pdf-title={title} aria-controls={previewId} aria-expanded="false">
+  <button class="button button-secondary" type="button" data-pdf-preview data-pdf-url={pdf} data-pdf-title={title} aria-controls={previewId} aria-expanded="false" hidden>
     Preview PDF
   </button>
   <div id={previewId} class="pdf-preview-frame" data-pdf-preview-frame hidden aria-live="polite"></div>
@@ -17,6 +17,7 @@ const previewId = `pdf-preview-${title.toLowerCase().replace(/[^a-z0-9]+/g, '-')
 
 <script>
   document.querySelectorAll<HTMLButtonElement>('[data-pdf-preview]').forEach((button) => {
+    button.hidden = false;
     button.addEventListener('click', () => {
       const frame = document.getElementById(button.getAttribute('aria-controls') ?? '');
       const pdf = button.dataset.pdfUrl;

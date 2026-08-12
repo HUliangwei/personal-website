@@ -40,12 +40,15 @@ const openGraphImage = openGraph.image ? new URL(openGraph.image, SITE.url).toSt
     <meta charset="UTF-8" />
     <meta name="viewport" content={viewport} />
     <meta name="description" content={description} />
+    <meta name="theme-color" content="#fbfcfe" />
     <link rel="canonical" href={canonical} />
     <link rel="icon" href={favicon} />
     <meta property="og:title" content={openGraphTitle} />
     <meta property="og:description" content={openGraphDescription} />
     <meta property="og:type" content={openGraphType} />
     <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content={SITE.name} />
+    <meta name="twitter:card" content="summary" />
     {openGraphImage && <meta property="og:image" content={openGraphImage} />}
     <title>{title}</title>
   </head>

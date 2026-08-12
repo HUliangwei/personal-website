@@ -4,8 +4,11 @@ import ProjectHeader from '../components/projects/ProjectHeader.astro';
 import BaseLayout from './BaseLayout.astro';
 interface Props { project: CollectionEntry<'projects'>; }
 const { project } = Astro.props;
+const description = project.data.summary === 'TODO'
+  ? `${project.data.title}, an ${project.data.category} project case study with details marked for verification.`
+  : project.data.summary;
 ---
-<BaseLayout title={`${project.data.title} | Liangwei Hu`} description={project.data.summary}>
+<BaseLayout title={`${project.data.title} | Liangwei Hu`} description={description} openGraph={{ type: 'article' }}>
   <article class="section project-detail"><div class="container project-detail-container">
     <a class="text-link project-back" href="/projects">← All projects</a>
     <ProjectHeader project={project} />

@@ -11,7 +11,7 @@ const isActive = (href: string) => currentPath === href || (href !== '/' && curr
       {SITE.name}
     </a>
 
-    <button class="nav-toggle" type="button" aria-controls="primary-navigation" aria-expanded="false">
+    <button class="nav-toggle" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation menu">
       <span class="sr-only">Toggle navigation</span>
       <span aria-hidden="true" class="nav-toggle-icon"></span>
     </button>
@@ -45,12 +45,14 @@ const isActive = (href: string) => currentPath === href || (href !== '/' && curr
 
   const closeNavigation = () => {
     toggle?.setAttribute('aria-expanded', 'false');
+    toggle?.setAttribute('aria-label', 'Open navigation menu');
     navigation?.removeAttribute('data-open');
   };
 
   toggle?.addEventListener('click', () => {
     const isOpen = toggle.getAttribute('aria-expanded') === 'true';
     toggle.setAttribute('aria-expanded', String(!isOpen));
+    toggle.setAttribute('aria-label', isOpen ? 'Open navigation menu' : 'Close navigation menu');
     navigation?.toggleAttribute('data-open', !isOpen);
   });
 
@@ -59,6 +61,16 @@ const isActive = (href: string) => currentPath === href || (href !== '/' && curr
   });
 
   document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') closeNavigation();
+    if (event.key === 'Escape' && toggle?.getAttribute('aria-expanded') === 'true') {
+      closeNavigation();
+      toggle.focus();
+    }
   });
+
+  document.addEventListener('click', (event) => {
+    const target = event.target as Node;
+    if (!toggle?.contains(target) && !navigation?.contains(target)) closeNavigation();
+  });
+
+  window.matchMedia('(min-width: 44.0625rem)').addEventListener('change', closeNavigation);
 </script>

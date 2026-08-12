@@ -9,7 +9,13 @@ const { project } = Astro.props;
   <h1>{project.data.title}</h1>
   <p class="project-summary">{project.data.summary}</p>
   <ProjectMeta project={project} />
-  <div class="project-cover-placeholder" role="img" aria-label={`${project.data.title} cover placeholder`}>
-    <span>Cover</span><strong>{project.data.cover}</strong>
-  </div>
+  {
+    project.data.cover !== 'TODO' ? (
+      <img class="project-detail-cover" src={project.data.cover} alt={`${project.data.title} cover`} loading="lazy" />
+    ) : (
+      <div class="project-cover-placeholder" role="img" aria-label={`${project.data.title} cover placeholder`}>
+        <span>Cover</span><strong>{project.data.cover}</strong>
+      </div>
+    )
+  }
 </header>
