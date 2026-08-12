@@ -182,9 +182,10 @@ const zh = {
       Software: '软件',
     },
     entries: {
-      spad: { title: 'SPAD 读出 ASIC', summary: '待核实：项目案例细节将在证据确认后补充。' },
-      'ros2-robot': { title: '移动机器人', summary: '待核实：项目案例细节将在证据确认后补充。' },
-      lerobot: { title: 'LeRobot / ACT 学习项目', summary: '待核实：项目案例细节将在证据确认后补充。' },
+      spad: { title: '1×16 通道 SPAD 单光子探测器读出芯片', summary: '面向 SPAD 单光子探测的 1×16 通道混合信号读出芯片设计，当前处于版图后仿真与流片前阶段。' },
+      lerobot: { title: 'LeRobot / ACT 学习项目', summary: '围绕机器人学习工作流建立的在研学习项目；尚无产物佐证的环节均明确标记待核实。' },
+      'mobile-robot': { title: '基于 ROS 的移动机器人', summary: '本科阶段完成的移动机器人项目，连接 Python / YOLO 视觉、ROS、MCU 电机控制与任务闭环。' },
+      'quantum-hfss': { title: '超导量子芯片 HFSS 电磁仿真', summary: '百度实习期间开展的超导量子芯片相关微波结构 HFSS 三维电磁仿真与几何优化工作。' },
     },
     detail: {
       back: '返回全部项目',

@@ -1,0 +1,66 @@
+---
+title: 1×16-Channel SPAD Readout IC
+slug: spad
+locale: en
+category: Integrated Circuits
+summary: A 1×16-channel mixed-signal readout IC for SPAD single-photon detection, currently at post-layout simulation and pre-tapeout stage.
+date: 2024.09–Present
+status: Post-layout simulation / Pre-tapeout
+role: Core Designer (Verified Resume)
+technologies:
+  - SMIC 180 nm BCD
+  - Cadence Virtuoso
+  - Spectre
+  - Calibre
+  - FPGA
+featured: true
+---
+
+## Overview
+
+This project develops a 1×16-channel SPAD readout IC in SMIC 180 nm BCD. Its publication-safe scope spans the analog front end, discrimination, quench and reset, digital control, high-/low-voltage interfaces, I/O and ESD, and FPGA integration. It is at the **post-layout simulation / pre-tapeout** stage; this must not be read as completed tapeout or silicon measurement.
+
+## Problem / Motivation
+
+A SPAD readout must turn a transient single-photon event into a signal that can be discriminated, reset, and consumed by a digital system. The engineering problem connects 1.8 V logic, 5 V circuitry, and interfaces associated with an external approximately 60 V bias while keeping their boundaries explicit and verifiable.
+
+## My Role
+
+The resume records the role as **Core Designer (Verified Resume)**. Publication-safe responsibilities include architecture decomposition, key circuit design and simulation, floorplanning, power-network work, verification, and FPGA integration. Undocumented team allocation or contribution percentages are not inferred.
+
+## Architecture
+
+The disclosed per-channel chain is: SPAD interface → analog front end (AFE) → discriminator → quench / reset → digital readout and control. The IC also includes high-/low-voltage interfaces and I/O / ESD, with FPGA-based board control and data-path integration.
+
+## Design / Method
+
+- Voltage domains: 1.8 V, 5 V, and interfaces associated with an external approximately 60 V bias.
+- Channel organization: 1×16. The source resume uses “pixel” and “channel” inconsistently for a board-power statement, so this page retains the “pixel / channel” caveat and labels the measurement level.
+- Design tools: Cadence Virtuoso, Spectre, and Calibre.
+- Physical implementation: floorplan and power-network work with DRC, LVS, and PEX flows.
+
+## Implementation
+
+Implementation covers the AFE, discriminator, quench, reset, digital logic, high-/low-voltage interfaces, I/O / ESD, and FPGA interface. No PDK, process rules, GDS, complete netlist, proprietary dimensions, or unreleased layout is published.
+
+## Verification / Experiments
+
+The verification flow includes circuit simulation in Virtuoso / Spectre, Calibre DRC / LVS / PEX, and board-level FPGA integration. Board measurement, pre-layout simulation, and post-layout status are treated as different evidence types rather than interchangeable results.
+
+## Results
+
+- **Measured (board-level):** the resume records system power decreasing from approximately 1 W to approximately 0.1 W. Because the source mixes “pixel” and “channel,” this is described only as a pixel / channel board-level chain and not as per-channel ASIC power.
+- **Pre-layout simulation:** approximately 2 mW static power per IC channel and approximately 200 mW peak power during the quench transient.
+- **Post-layout status:** post-layout simulation and pre-tapeout work are in progress; no verified post-layout numeric result is published.
+
+## Challenges & Decisions
+
+The central challenge is coordinating fast transients, multiple voltage domains, replicated channels, power integrity, and verifiable interfaces. The publication decision is to preserve evidence boundaries instead of collapsing board optimization, pre-layout simulation, and post-layout progress into one performance claim.
+
+## What I Learned
+
+The work reinforced a cross-layer method from device events through analog and digital circuits to physical implementation and board integration. It also made precise separation of simulation, measurement, and project stage essential to technical communication.
+
+## Links
+
+TODO: Add a verified public project link that contains no confidential design material.

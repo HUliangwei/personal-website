@@ -5,7 +5,8 @@ import type { Dictionary, Locale } from '../../i18n/types';
 import { localizedPath } from '../../i18n/utils';
 interface Props { content: Dictionary['home']['projects']; dictionary: Dictionary; locale: Locale; }
 const { content, dictionary, locale } = Astro.props;
-const projects = (await getCollection('projects')).filter((project) => project.data.featured);
+const projects = (await getCollection('projects', ({ data }) => data.locale === locale))
+  .filter((project) => project.data.featured);
 ---
 <section class="section" aria-labelledby="projects-title"><div class="container">
   <div class="section-heading section-heading-row"><div>

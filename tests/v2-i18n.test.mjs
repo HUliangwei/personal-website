@@ -32,8 +32,9 @@ test('V2 publishes localized routes, route-preserving navigation, and complete l
     ['/projects', '/en/projects'],
     ['/cv', '/en/cv'],
     ['/projects/spad', '/en/projects/spad'],
-    ['/projects/ros2-robot', '/en/projects/ros2-robot'],
     ['/projects/lerobot', '/en/projects/lerobot'],
+    ['/projects/mobile-robot', '/en/projects/mobile-robot'],
+    ['/projects/quantum-hfss', '/en/projects/quantum-hfss'],
   ];
 
   for (const [zhRoute, enRoute] of routePairs) {
@@ -76,7 +77,7 @@ test('V2 publishes localized routes, route-preserving navigation, and complete l
   assert.match(page('/en/cv'), /<h1[^>]*>[^<]*CV/i);
   assert.doesNotMatch(page('/en/projects'), />[^<]*ROS2[^<]*</);
 
-  for (const route of ['/projects/spad', '/en/projects/spad']) {
+  for (const route of ['/en/projects/spad']) {
     const detail = page(route);
     assert.match(detail, /<div class="project-prose"><h2[^>]*>Overview<\/h2>/, `${route} renders the collection MDX body`);
     assert.match(detail, /<h2[^>]*>What I Learned<\/h2>/, `${route} preserves the full MDX case-study structure`);

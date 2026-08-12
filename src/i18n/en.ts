@@ -51,7 +51,12 @@ const en = {
     intro: { eyebrow: 'Engineering & Research', title: 'Projects', description: 'Project details remain explicitly marked TODO until verified.' },
     filterLabel: 'Filter projects by category', allCategory: 'All', viewProject: 'View project', technologies: 'Technologies', coverPending: 'TODO: Add project cover image', coverAltSuffix: 'cover',
     categories: { 'Integrated Circuits': 'Integrated Circuits', Robotics: 'Robotics', 'Embodied AI': 'Embodied AI', Quantum: 'Quantum', Software: 'Software' },
-    entries: { spad: { title: 'SPAD Readout ASIC', summary: 'TODO' }, 'ros2-robot': { title: 'Mobile Robot', summary: 'TODO' }, lerobot: { title: 'LeRobot / ACT', summary: 'TODO' } },
+    entries: {
+      spad: { title: '1×16-Channel SPAD Readout IC', summary: 'A 1×16-channel mixed-signal readout IC for SPAD single-photon detection, now at post-layout simulation and pre-tapeout stage.' },
+      lerobot: { title: 'LeRobot / ACT Learning Project', summary: 'An in-progress robot-learning project whose unsupported stages remain explicitly pending verification.' },
+      'mobile-robot': { title: 'ROS-Based Mobile Robot', summary: 'An undergraduate mobile-robot project connecting Python / YOLO vision, ROS, MCU motor control, and a task loop.' },
+      'quantum-hfss': { title: 'HFSS Electromagnetic Simulation for Quantum-Chip Structures', summary: 'HFSS 3D electromagnetic simulation and geometry optimization for superconducting-quantum-chip-related microwave structures during a Baidu internship.' },
+    },
     detail: { back: 'All projects', date: 'Date', status: 'Status', role: 'Role', technologies: 'Technologies', links: 'Links', linksPending: 'TODO: Add verified project links.', coverPending: 'Project cover pending', descriptionPending: 'Project case-study details remain pending verification.', descriptionSuffix: 'Unverified details are not published as fact.' },
   },
   cv: {

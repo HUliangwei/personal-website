@@ -15,7 +15,7 @@ const summary = entry?.summary ?? project.data.summary;
   <p class="project-summary">{summary}</p>
   <ProjectMeta project={project} dictionary={dictionary} />
   {
-    project.data.cover !== 'TODO' ? (
+    project.data.cover ? (
       <img class="project-detail-cover" src={project.data.cover} alt={`${title} ${content.coverAltSuffix}`} loading="lazy" />
     ) : (
       <div class="project-cover-placeholder" role="img" aria-label={`${title} ${content.detail.coverPending}`}>

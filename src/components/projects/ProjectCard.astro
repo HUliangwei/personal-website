@@ -13,7 +13,7 @@ const category = content.categories[project.data.category];
 ---
 <article class="project-card" data-project-card data-category={project.data.category}>
   {
-    project.data.cover !== 'TODO' ? (
+    project.data.cover ? (
       <img class="project-card-cover" src={project.data.cover} alt={`${title} ${content.coverAltSuffix}`} loading="lazy" />
     ) : (
       <div class="project-cover-todo" role="img" aria-label={`${title} ${content.coverPending}`}>

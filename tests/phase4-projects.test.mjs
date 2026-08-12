@@ -15,10 +15,10 @@ test('Phase 4 builds collection-backed project list, filters, and case studies',
   for (const category of ['All', 'Integrated Circuits', 'Robotics', 'Embodied AI']) {
     assert.match(list, new RegExp(`<button[^>]*data-category="${category}"`));
   }
-  for (const emptyCategory of ['Quantum', 'Software']) {
+  for (const emptyCategory of ['Software']) {
     assert.doesNotMatch(list, new RegExp(`<button[^>]*data-category="${emptyCategory}"`));
   }
-  for (const slug of ['spad', 'ros2-robot', 'lerobot']) {
+  for (const slug of ['spad', 'lerobot', 'mobile-robot', 'quantum-hfss']) {
     assert.ok(existsSync(join(root, `dist/projects/${slug}/index.html`)), `${slug} route exists`);
     assert.match(list, new RegExp(`href="/en/projects/${slug}"`));
   }
@@ -41,7 +41,7 @@ test('Phase 4 builds collection-backed project list, filters, and case studies',
 
 test('ProjectCard renders a lazy accessible image when a verified cover is supplied', () => {
   const card = readFileSync(join(root, 'src/components/projects/ProjectCard.astro'), 'utf8');
-  assert.match(card, /project\.data\.cover !== 'TODO'/);
+  assert.match(card, /project\.data\.cover \?/);
   assert.match(card, /<img[^>]*src=\{project\.data\.cover\}[^>]*alt=\{`\$\{title\} \$\{content\.coverAltSuffix\}`\}[^>]*loading="lazy"/s);
   assert.match(card, /content\.coverPending/);
 });
@@ -52,7 +52,7 @@ test('Phase 4 schema keeps booleans and arrays typed while accepting TODO string
   assert.match(config, /from 'astro\/zod'/);
   assert.match(config, /featured:\s*z\.boolean\(\)/);
   assert.match(config, /technologies:\s*z\.array\(z\.string\(\)\)/);
-  assert.match(config, /links:\s*z\.array\(/);
+  assert.match(config, /links:\s*z\.array\([\s\S]*?\)\.optional\(\)/);
   assert.doesNotMatch(config, /z\.any\(|z\.unknown\(/);
 
   const categories = readFileSync(join(root, 'src/config/projects.ts'), 'utf8');

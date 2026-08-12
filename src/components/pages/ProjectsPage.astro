@@ -2,14 +2,15 @@
 import { getCollection } from 'astro:content';
 import ProjectCard from '../projects/ProjectCard.astro';
 import ProjectFilter from '../projects/ProjectFilter.astro';
-import { PROJECT_CATEGORIES } from '../../config/projects';
+import { PROJECT_CATEGORIES, PROJECT_SLUGS } from '../../config/projects';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getDictionary } from '../../i18n/utils';
 import type { Locale } from '../../i18n/types';
 interface Props { locale: Locale; }
 const { locale } = Astro.props;
 const dictionary = getDictionary(locale);
-const projects = (await getCollection('projects')).sort((a, b) => a.data.slug.localeCompare(b.data.slug));
+const projects = (await getCollection('projects', ({ data }) => data.locale === locale))
+  .sort((a, b) => PROJECT_SLUGS.indexOf(a.data.slug) - PROJECT_SLUGS.indexOf(b.data.slug));
 const categories = PROJECT_CATEGORIES.filter((category) => projects.some((project) => project.data.category === category));
 const intro = dictionary.projects.intro;
 ---

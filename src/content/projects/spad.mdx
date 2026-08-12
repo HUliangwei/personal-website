@@ -1,60 +1,66 @@
 ---
-title: SPAD Readout ASIC
+title: 1×16 通道 SPAD 单光子探测器读出芯片
 slug: spad
+locale: zh
 category: Integrated Circuits
-summary: TODO
-date: TODO
-status: TODO
-role: TODO
-cover: TODO
+summary: 面向 SPAD 单光子探测的 1×16 通道混合信号读出芯片设计，当前处于版图后仿真与流片前阶段。
+date: 2024.09–至今
+status: 版图后仿真 / 流片前
+role: 核心设计者（Verified Resume）
 technologies:
+  - SMIC 180 nm BCD
   - Cadence Virtuoso
+  - Spectre
   - Calibre
-  - Mixed-Signal IC
+  - FPGA
 featured: true
-links: []
 ---
 
-## Overview
+## 项目概览
 
-TODO
+该项目是一款采用 SMIC 180 nm BCD 工艺设计的 1×16 通道 SPAD 单光子探测器读出芯片。公开信息覆盖从模拟前端、判别与淬火复位，到数字控制、高低压接口、I/O 与 ESD、FPGA 联调的系统链路。项目当前处于**版图后仿真 / 流片前**阶段；不得解读为已经流片或完成硅后测试。
 
-## Problem / Motivation
+## 问题 / 动机
 
-TODO
+SPAD 探测需要把瞬态单光子事件转换为可判别、可复位并可由数字系统读取的信号。工程重点是让 1.8 V 逻辑域、5 V 电路域以及外部约 60 V 偏置相关接口在同一读出系统中形成清晰、可验证的边界。
 
-## My Role
+## 我的角色
 
-TODO
+简历材料将本人角色记为**核心设计者（Verified Resume）**。可公开的工作范围包括系统架构拆解、关键电路设计与仿真、版图规划、电源网络、验证流程以及 FPGA 联调；未公开的团队分工和贡献比例不作推断。
 
-## Architecture
+## 系统架构
 
-TODO
+每通道公开功能链路包括：SPAD 接口 → 模拟前端（AFE）→ 判别器 → 淬火 / 复位 → 数字读出与控制。芯片还包含高压 / 低压域接口、I/O 与 ESD 设计，并通过 FPGA 完成板级控制和数据链路联调。
 
-## Design / Method
+## 设计 / 方法
 
-TODO
+- 电压域：1.8 V、5 V，以及外部约 60 V 偏置相关接口。
+- 通道组织：1×16 通道；简历中的板级功耗表述存在“pixel / channel”术语混用，因此本文保留为“像素 / 通道”并标注测量层级。
+- 设计工具：Cadence Virtuoso、Spectre 与 Calibre。
+- 物理实现：完成 floorplan、电源网络规划，并开展 DRC、LVS 与 PEX 流程。
 
-## Implementation
+## 实现
 
-TODO
+实现工作围绕 AFE、判别、淬火、复位、数字逻辑、高压 / 低压接口、I/O / ESD 与 FPGA 接口展开。这里不公开 PDK、工艺规则、GDS、完整网表、专有尺寸或未发布版图。
 
-## Verification / Experiments
+## 验证 / 实验
 
-TODO
+验证流程包含 Virtuoso / Spectre 电路仿真、Calibre DRC / LVS / PEX，以及板级 FPGA 联调。不同结果严格按证据类型区分：板级实测、版图前仿真和版图后状态不互相替代。
 
-## Results
+## 结果
 
-TODO
+- **实测（板级）：** 简历记录系统功耗由约 1 W 降至约 0.1 W；原始材料对 pixel / channel 的用词存在冲突，因此这里只称“像素 / 通道级板上链路”，不把它写成 ASIC 单通道功耗。
+- **版图前仿真：** 芯片单通道静态功耗约 2 mW，淬火瞬态峰值约 200 mW。
+- **版图后状态：** 已进入版图后仿真与流片前阶段；当前没有可公开且经核实的版图后数值。
 
-## Challenges & Decisions
+## 挑战与决策
 
-TODO
+核心挑战是同时处理快速瞬态、不同电压域、重复通道、电源完整性和可验证接口。公开叙述选择保留测量层级与状态边界，避免把板级优化、版图前仿真和版图后进展合并成一个“性能结果”。
 
-## What I Learned
+## 收获与反思
 
-TODO
+该项目强化了从器件事件、模拟电路、数字控制到物理实现和板级联调的跨层设计方法，也说明技术写作必须把仿真、实测和项目阶段明确分开。
 
-## Links
+## 链接
 
-TODO
+TODO：补充经确认可公开、且不含保密设计数据的项目链接。

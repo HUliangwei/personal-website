@@ -1,0 +1,61 @@
+---
+title: ROS-Based Mobile Robot
+slug: mobile-robot
+locale: en
+category: Robotics
+summary: An undergraduate mobile-robot project connecting Python / YOLO vision, ROS, upper/lower-controller communication, MCU motor control, and a task loop.
+date: "Undergraduate stage (TODO: Verify exact dates)"
+status: Completed (Verified Resume)
+role: Project Member; award is a resume-sourced claim
+technologies:
+  - Python
+  - YOLO
+  - ROS
+  - MCU
+  - Motor Control
+featured: true
+---
+
+## Overview
+
+This was an undergraduate mobile-robot project. Its supported public stack is Python, YOLO, ROS, upper/lower-controller communication, MCU control, motor control, and a task loop. The case study does not expand the work into other unsupported platforms.
+
+## Problem / Motivation
+
+The project connected visual recognition, upper-controller task logic, lower-controller execution, and motor actuation into a loop in which the mobile robot could perceive, decide, act, and advance its task state.
+
+## My Role
+
+The available material supports project participation and system-implementation work but does not support an undocumented contribution percentage. The Hubei Provincial College Student Electronic Design Contest second prize is presented only as a **resume-sourced claim**; no certificate was supplied for this audit, so it is not labeled independently verified.
+
+## Architecture
+
+Python / YOLO vision → ROS upper-controller task logic → upper/lower-controller communication → MCU lower controller → motor control → robot motion and the next task-loop state.
+
+## Design / Method
+
+YOLO provides visual recognition information; Python and ROS organize the upper-controller task flow. Communication carries commands to the MCU, where motor control produces physical action and advances the task loop.
+
+## Implementation
+
+The publication-safe implementation scope is limited to Python, YOLO, ROS, the communication interface, MCU work, and motor control. TODO: Verify software versions, message interfaces, and the exact personally owned modules.
+
+## Verification / Experiments
+
+The resume supports project completion and contest participation, but the audit found no public test log, dataset description, or quantitative evaluation. TODO: Add a publication-safe task-flow record and reproducible experiment.
+
+## Results
+
+The resume claims a second prize in the Hubei Provincial College Student Electronic Design Contest. No speed, recognition accuracy, task success rate, or other unsupported metric is published.
+
+## Challenges & Decisions
+
+The system challenge was the interface across vision, ROS task logic, controller communication, and motor execution. The content decision is to stay within the ROS mobile-robot scope supported by the current resume and not merge conflicting descriptions from another source version.
+
+## What I Learned
+
+The project provided undergraduate practice in connecting perception software, a task loop, and embedded actuation into a complete robot system. TODO: Add the owner’s verified retrospective on specific technical trade-offs.
+
+## Links
+
+TODO: Add a verified public project link.

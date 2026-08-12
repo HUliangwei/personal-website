@@ -25,7 +25,7 @@ function buildSite() {
 test('Phase 6 production output is complete, portable, and internally connected', () => {
   buildSite();
 
-  const routes = ['/', '/about', '/projects', '/projects/spad', '/projects/ros2-robot', '/projects/lerobot', '/cv'];
+  const routes = ['/', '/about', '/projects', '/projects/spad', '/projects/lerobot', '/projects/mobile-robot', '/projects/quantum-hfss', '/cv'];
   const htmlPages = routes.map((route) => [route, readFileSync(outputFor(route), 'utf8')]);
 
   assert.ok(existsSync(join(dist, 'robots.txt')), 'robots.txt is published');
@@ -72,10 +72,10 @@ test('final content semantics and truthful fallbacks are present', () => {
 
   const home = readFileSync(join(root, 'dist', 'en', 'index.html'), 'utf8');
   const projects = readFileSync(join(root, 'dist', 'en', 'projects', 'index.html'), 'utf8');
-  const robotics = readFileSync(join(root, 'dist', 'en', 'projects', 'ros2-robot', 'index.html'), 'utf8');
+  const robotics = readFileSync(join(root, 'dist', 'en', 'projects', 'mobile-robot', 'index.html'), 'utf8');
 
-  assert.match(projects, /<h2>Mobile Robot<\/h2>/);
-  assert.match(home, /<h3>Mobile Robot<\/h3>/);
+  assert.match(projects, /<h2>ROS-Based Mobile Robot<\/h2>/);
+  assert.match(home, /<h3>ROS-Based Mobile Robot<\/h3>/);
   assert.doesNotMatch(projects, />[^<]*ROS2[^<]*</);
   assert.doesNotMatch(robotics, /an Robotics project/i);
   assert.match(robotics, /TODO: Add verified project links/);
