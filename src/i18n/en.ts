@@ -49,7 +49,7 @@ const en = {
   },
   projects: {
     intro: { eyebrow: 'Engineering & Research', title: 'Projects', description: 'Project details remain explicitly marked TODO until verified.' },
-    filterLabel: 'Filter projects by category', allCategory: 'All', viewProject: 'View project', technologies: 'Technologies', coverPending: 'TODO: Add project cover image', coverAltSuffix: 'cover',
+    filterLabel: 'Filter projects by category', emptyState: 'No projects in this category yet.', allCategory: 'All', viewProject: 'View project', technologies: 'Technologies', coverPending: 'TODO: Add project cover image', coverAltSuffix: 'cover',
     categories: { 'Integrated Circuits': 'Integrated Circuits', Robotics: 'Robotics', 'Embodied AI': 'Embodied AI', Quantum: 'Quantum', Software: 'Software' },
     entries: {
       spad: { title: '1×16-Channel SPAD Readout IC', summary: 'A 1×16-channel mixed-signal readout IC for SPAD single-photon detection, now at post-layout simulation and pre-tapeout stage.' },

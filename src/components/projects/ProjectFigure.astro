@@ -1,0 +1,30 @@
+---
+import type { Locale } from '../../i18n/types';
+
+export type ProjectFigureType = 'real' | 'conceptual' | 'simulation' | 'measured';
+
+interface Props {
+  type: 'real' | 'conceptual' | 'simulation' | 'measured';
+  locale: Locale;
+  caption: string;
+  alt: string;
+  compact?: boolean;
+}
+
+const { type, locale, caption, alt, compact = false } = Astro.props;
+const figureLabels = {
+  zh: { real: '实物', conceptual: '概念', simulation: '仿真', measured: '实测' },
+  en: { real: 'Real', conceptual: 'Conceptual', simulation: 'Simulation', measured: 'Measured' },
+} as const;
+---
+<figure
+  class:list={['project-figure', compact && 'project-figure-compact']}
+  data-figure-type={type}
+  aria-label={alt}
+>
+  <div class="project-figure-canvas"><slot /></div>
+  <figcaption>
+    <span class={`project-figure-badge project-figure-badge-${type}`}>{figureLabels[locale][type]}</span>
+    <span>{caption}</span>
+  </figcaption>
+</figure>

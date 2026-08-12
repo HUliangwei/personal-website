@@ -2,6 +2,7 @@
 import type { CollectionEntry } from 'astro:content';
 import type { Dictionary, Locale } from '../../i18n/types';
 import { localizedPath } from '../../i18n/utils';
+import ProjectVisual from './ProjectVisual.astro';
 interface Props { project: CollectionEntry<'projects'>; dictionary: Dictionary; locale: Locale; headingLevel?: 2 | 3; }
 const { project, dictionary, locale, headingLevel = 3 } = Astro.props;
 const Heading = `h${headingLevel}` as const;
@@ -10,22 +11,25 @@ const entry = content.entries[project.data.slug as keyof typeof content.entries]
 const title = entry?.title ?? project.data.title;
 const summary = entry?.summary ?? project.data.summary;
 const category = content.categories[project.data.category];
+const projectHref = localizedPath(`/projects/${project.data.slug}`, locale);
 ---
 <article class="project-card" data-project-card data-category={project.data.category}>
   {
     project.data.cover ? (
-      <img class="project-card-cover" src={project.data.cover} alt={`${title} ${content.coverAltSuffix}`} loading="lazy" />
+      <div class="project-card-media"><img class="project-card-cover" src={project.data.cover} alt={`${title} ${content.coverAltSuffix}`} loading="lazy" /></div>
     ) : (
-      <div class="project-cover-todo" role="img" aria-label={`${title} ${content.coverPending}`}>
-        {content.coverPending}
-      </div>
+      <ProjectVisual slug={project.data.slug} locale={locale} compact />
     )
   }
-  <p class="project-category">{category}</p>
+  <div class="project-card-meta-line">
+    <p class="project-category">{category}</p>
+    <p class="project-date"><span class="sr-only">{content.detail.date}: </span>{project.data.date}</p>
+  </div>
   <Heading>{title}</Heading>
-  <p>{summary}</p>
+  <p class="project-status"><span class="sr-only">{content.detail.status}: </span>{project.data.status}</p>
+  <p class="project-summary">{summary}</p>
   <ul class="technology-list" aria-label={content.technologies}>
     {project.data.technologies.map((technology) => <li>{technology}</li>)}
   </ul>
-  <a href={localizedPath(`/projects/${project.data.slug}`, locale)}>{content.viewProject} <span aria-hidden="true">→</span></a>
+  <a class="project-card-link" href={projectHref}>{content.viewProject} <span aria-hidden="true">→</span></a>
 </article>

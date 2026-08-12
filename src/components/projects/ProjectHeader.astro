@@ -1,9 +1,10 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import ProjectMeta from './ProjectMeta.astro';
-import type { Dictionary } from '../../i18n/types';
-interface Props { project: CollectionEntry<'projects'>; dictionary: Dictionary; }
-const { project, dictionary } = Astro.props;
+import type { Dictionary, Locale } from '../../i18n/types';
+import ProjectVisual from './ProjectVisual.astro';
+interface Props { project: CollectionEntry<'projects'>; dictionary: Dictionary; locale: Locale; }
+const { project, dictionary, locale } = Astro.props;
 const content = dictionary.projects;
 const entry = content.entries[project.data.slug as keyof typeof content.entries];
 const title = entry?.title ?? project.data.title;
@@ -18,9 +19,7 @@ const summary = entry?.summary ?? project.data.summary;
     project.data.cover ? (
       <img class="project-detail-cover" src={project.data.cover} alt={`${title} ${content.coverAltSuffix}`} loading="lazy" />
     ) : (
-      <div class="project-cover-placeholder" role="img" aria-label={`${title} ${content.detail.coverPending}`}>
-        <span>{content.detail.coverPending}</span><strong>TODO</strong>
-      </div>
+      <ProjectVisual slug={project.data.slug} locale={locale} />
     )
   }
 </header>

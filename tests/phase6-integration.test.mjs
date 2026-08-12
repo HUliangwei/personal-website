@@ -62,7 +62,7 @@ test('project filters contain their scroll row within the mobile viewport', () =
   const component = readFileSync(join(root, 'src/components/projects/ProjectFilter.astro'), 'utf8');
   const styles = readFileSync(join(root, 'src/styles/global.css'), 'utf8');
 
-  assert.match(component, /<fieldset[^>]*class="project-filter"[^>]*>[^]*<div class="project-filter-controls">/);
+  assert.match(component, /<fieldset[^>]*class="project-filter"[^>]*>[^]*<div class="project-filter-controls"[^>]*>/);
   assert.match(styles, /\.project-filter\s*{[^}]*min-width:\s*0;[^}]*width:\s*100%;[^}]*max-width:\s*100%;/s);
   assert.match(styles, /\.project-filter-controls\s*{[^}]*display:\s*flex;[^}]*overflow-x:\s*auto;/s);
 });

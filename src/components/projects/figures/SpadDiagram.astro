@@ -1,0 +1,26 @@
+---
+import type { Locale } from '../../../i18n/types';
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const titleId = `spad-title-${locale}`;
+const descId = `spad-desc-${locale}`;
+const title = locale === 'zh' ? 'SPAD 读出芯片概念架构' : 'Conceptual SPAD readout architecture';
+const description = locale === 'zh'
+  ? '概念图展示 SPAD 阵列经模拟前端、判别、电压域隔离、数字控制到 IO 和 FPGA，并表示外部高压偏置及淬火复位支路。'
+  : 'A conceptual chain from the SPAD array through AFE, discrimination, voltage-domain isolation, digital control, and IO/FPGA, with external high-voltage bias and quench/reset paths.';
+---
+<svg class="project-visual-svg" role="img" aria-labelledby={`${titleId} ${descId}`} viewBox="0 0 960 360" xmlns="http://www.w3.org/2000/svg">
+  <title id={titleId}>{title}</title><desc id={descId}>{description}</desc>
+  <g class="diagram-rail" aria-hidden="true"><path d="M102 112H854"/><path d="M125 257H405V162"/><path d="M405 257H680V162"/></g>
+  <g class="diagram-nodes">
+    <g transform="translate(34 72)"><rect width="135" height="80" rx="14"/><text x="67.5" y="38">SPAD Array</text><text x="67.5" y="57">1×16 channels</text></g>
+    <g transform="translate(194 72)"><rect width="120" height="80" rx="14"/><text x="60" y="48">AFE</text></g>
+    <g transform="translate(339 72)"><rect width="135" height="80" rx="14"/><text x="67.5" y="48">Discriminator</text></g>
+    <g transform="translate(499 72)"><rect width="135" height="80" rx="14"/><text x="67.5" y="38">HV/LV</text><text x="67.5" y="57">Isolation</text></g>
+    <g transform="translate(659 72)"><rect width="130" height="80" rx="14"/><text x="65" y="38">Digital</text><text x="65" y="57">Control</text></g>
+    <g transform="translate(814 72)"><rect width="112" height="80" rx="14"/><text x="56" y="48">IO/FPGA</text></g>
+    <g class="diagram-node-secondary" transform="translate(55 228)"><rect width="140" height="58" rx="12"/><text x="70" y="36">External HV</text></g>
+    <g class="diagram-node-secondary" transform="translate(325 228)"><rect width="160" height="58" rx="12"/><text x="80" y="36">Quench/Reset</text></g>
+    <g class="diagram-node-secondary" transform="translate(620 228)"><rect width="120" height="58" rx="12"/><text x="60" y="36">SPAD</text></g>
+  </g>
+</svg>

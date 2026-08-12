@@ -1,0 +1,17 @@
+---
+import type { Locale } from '../../../i18n/types';
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const titleId = `mobile-title-${locale}`;
+const descId = `mobile-desc-${locale}`;
+const title = locale === 'zh' ? '基于 ROS 的移动机器人概念架构' : 'Conceptual ROS-based mobile robot architecture';
+const description = locale === 'zh' ? '摄像头信号经 YOLO 感知和 ROS 任务逻辑进入决策与硬件通信，再由 MCU 和电机驱动机器人。' : 'Camera data flows through YOLO perception and ROS task logic into decisions and hardware communication, then to the MCU, motors, and robot.';
+const nodes = ['Camera', 'YOLO Perception', 'ROS', 'Decision', 'Hardware Communication', 'MCU', 'Motor', 'Robot'];
+---
+<svg class="project-visual-svg" role="img" aria-labelledby={`${titleId} ${descId}`} viewBox="0 0 960 360" xmlns="http://www.w3.org/2000/svg">
+  <title id={titleId}>{title}</title><desc id={descId}>{description}</desc>
+  <path class="diagram-rail" d="M75 180H895" aria-hidden="true"/>
+  <g class="diagram-nodes diagram-nodes-small">
+    {nodes.map((node, index) => <g transform={`translate(${22 + index * 117} 140)`}><rect width="104" height="80" rx="13"/><text x="52" y={node === 'Hardware Communication' ? '34' : '48'}>{node === 'Hardware Communication' ? <><tspan x="52">Hardware</tspan><tspan x="52" dy="20">Communication</tspan></> : node}</text></g>)}
+  </g>
+</svg>

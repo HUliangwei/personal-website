@@ -169,6 +169,7 @@ const zh = {
       description: '项目细节在得到证据支持之前，会明确标记为待核实。',
     },
     filterLabel: '按类别筛选项目',
+    emptyState: '该分类暂无项目。',
     allCategory: '全部',
     viewProject: '查看项目',
     technologies: '技术',

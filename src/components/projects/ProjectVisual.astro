@@ -1,0 +1,41 @@
+---
+import type { Locale } from '../../i18n/types';
+import type { ProjectSlug } from '../../config/projects';
+import ProjectFigure from './ProjectFigure.astro';
+import SpadDiagram from './figures/SpadDiagram.astro';
+import LeRobotDiagram from './figures/LeRobotDiagram.astro';
+import MobileRobotDiagram from './figures/MobileRobotDiagram.astro';
+import QuantumHfssDiagram from './figures/QuantumHfssDiagram.astro';
+
+interface Props { slug: ProjectSlug; locale: Locale; compact?: boolean; }
+const { slug, locale, compact = false } = Astro.props;
+const diagrams = { spad: SpadDiagram, lerobot: LeRobotDiagram, 'mobile-robot': MobileRobotDiagram, 'quantum-hfss': QuantumHfssDiagram };
+const Diagram = diagrams[slug];
+const compactSteps = {
+  spad: ['SPAD', 'AFE', 'Control', 'FPGA'],
+  lerobot: ['Dataset', 'ACT', 'Inference', 'Action'],
+  'mobile-robot': ['Camera', 'YOLO', 'ROS', 'Robot'],
+  'quantum-hfss': ['Geometry', 'HFSS', 'Sweep', 'Optimize'],
+} as const;
+const labels = {
+  zh: {
+    caption: '项目概念示意图',
+    alt: { spad: 'SPAD 读出芯片功能链路概念图', lerobot: 'LeRobot 待核实学习流程概念图', 'mobile-robot': '移动机器人感知至执行链路概念图', 'quantum-hfss': 'HFSS 电磁仿真工作流概念图' },
+  },
+  en: {
+    caption: 'Conceptual project diagram',
+    alt: { spad: 'Conceptual SPAD readout functional chain', lerobot: 'Conceptual pending LeRobot learning workflow', 'mobile-robot': 'Conceptual mobile-robot perception-to-action chain', 'quantum-hfss': 'Conceptual HFSS electromagnetic simulation workflow' },
+  },
+} as const;
+---
+<div class="project-visual" data-project-visual={slug}>
+  <ProjectFigure type="conceptual" locale={locale} caption={labels[locale].caption} alt={labels[locale].alt[slug]} compact={compact}>
+    {compact ? (
+      <ol class="project-visual-flow" aria-hidden="true">
+        {compactSteps[slug].map((step) => <li>{step}</li>)}
+      </ol>
+    ) : (
+      <Diagram locale={locale} />
+    )}
+  </ProjectFigure>
+</div>

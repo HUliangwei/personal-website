@@ -29,7 +29,8 @@ test('Phase 4 builds collection-backed project list, filters, and case studies',
   assert.match(list, /<fieldset[^>]*data-project-filter/);
   assert.match(list, /<legend[^>]*>Filter projects by category<\/legend>/);
   assert.match(list, /aria-pressed="true"/);
-  assert.match(list, /TODO: Add project cover image/);
+  assert.match(list, /Conceptual project diagram/);
+  assert.doesNotMatch(list, /TODO: Add project cover image/);
   assert.doesNotMatch(list, /<img[^>]*src="TODO"/);
 
   const home = readFileSync(join(root, 'dist/en/index.html'), 'utf8');
@@ -43,7 +44,7 @@ test('ProjectCard renders a lazy accessible image when a verified cover is suppl
   const card = readFileSync(join(root, 'src/components/projects/ProjectCard.astro'), 'utf8');
   assert.match(card, /project\.data\.cover \?/);
   assert.match(card, /<img[^>]*src=\{project\.data\.cover\}[^>]*alt=\{`\$\{title\} \$\{content\.coverAltSuffix\}`\}[^>]*loading="lazy"/s);
-  assert.match(card, /content\.coverPending/);
+  assert.match(card, /<ProjectVisual[^>]*slug=\{project\.data\.slug\}[^>]*locale=\{locale\}[^>]*compact/);
 });
 
 test('Phase 4 schema keeps booleans and arrays typed while accepting TODO strings only where intended', () => {

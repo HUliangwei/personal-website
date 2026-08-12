@@ -454,7 +454,8 @@ a {
 
 .project-card {
   display: flex;
-  min-height: 23rem;
+  min-width: 0;
+  min-height: 32rem;
   flex-direction: column;
   border: 1px solid var(--color-line);
   border-radius: 0.8rem;
@@ -468,6 +469,9 @@ a {
   box-shadow: var(--shadow-soft);
   transform: translateY(-3px);
 }
+
+.project-card:hover .project-card-cover,
+.project-card:hover .project-visual-svg { transform: scale(1.018); }
 
 .project-card:focus-within {
   border-color: rgb(11 99 206 / 0.65);
@@ -488,16 +492,51 @@ a {
   place-items: center;
 }
 
-.project-card-cover,
-.project-cover-todo {
+.project-card-media,
+.project-card .project-figure {
   width: 100%;
-  height: 9rem;
-  margin-bottom: auto;
+  margin-bottom: 1rem;
   border-radius: 0.65rem;
 }
 
-.project-card-cover { display: block; object-fit: cover; }
-.project-cover-todo { display: grid; border: 1px dashed var(--color-line); background: #e8f1fc; color: var(--color-accent-strong); padding: 1rem; font-size: 0.8rem; font-weight: 700; place-items: center; text-align: center; }
+.project-card-media { overflow: hidden; aspect-ratio: 8 / 3; background: #e8f1fc; }
+.project-card-cover { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform 180ms ease-out; }
+
+.project-figure {
+  overflow: hidden;
+  margin: 3rem 0;
+  border: 1px solid var(--color-line);
+  border-radius: 1rem;
+  background: linear-gradient(145deg, #eef5fd, #fff 68%);
+  box-shadow: var(--shadow-soft);
+}
+
+.project-figure-compact { margin: 0; border-radius: 0.65rem; box-shadow: none; }
+.project-figure-canvas { overflow: hidden; }
+.project-visual-flow { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.35rem; min-height: 7.5rem; margin: 0; padding: 1rem; list-style: none; background: linear-gradient(145deg, #eef5fd, #fff 68%); }
+.project-visual-flow li { display: grid; position: relative; min-width: 0; border: 1px solid var(--color-line); border-radius: 0.55rem; background: var(--color-surface); color: var(--color-ink); padding: 0.55rem 0.3rem; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: clamp(0.68rem, 2.8vw, 0.8rem); font-weight: 700; line-height: 1.25; overflow-wrap: anywhere; place-items: center; text-align: center; }
+.project-visual-flow li:not(:last-child)::after { position: absolute; z-index: 1; right: -0.45rem; color: var(--color-accent); content: '→'; }
+.project-visual-svg { display: block; width: 100%; max-width: 100%; height: auto; color: var(--color-accent-strong); transition: transform 180ms ease-out; }
+.project-figure figcaption { display: flex; align-items: center; gap: 0.55rem; border-top: 1px solid var(--color-line); padding: 0.7rem 0.85rem; color: var(--color-muted); font-size: 0.78rem; }
+.project-figure-badge { flex: none; border: 1px solid currentColor; border-radius: 999px; color: var(--color-accent-strong); padding: 0.12rem 0.42rem; font-size: 0.68rem; font-weight: 750; letter-spacing: 0.06em; text-transform: uppercase; }
+.project-figure-badge-simulation { color: #6750a4; }
+.project-figure-badge-measured { color: #087a55; }
+.project-figure-badge-real { color: var(--color-ink); }
+.diagram-rail { fill: none; stroke: currentColor; stroke-width: 2; }
+.diagram-rail-dashed { stroke-dasharray: 7 8; }
+.diagram-nodes rect { fill: var(--color-surface); stroke: currentColor; stroke-width: 1.5; }
+.diagram-nodes text { fill: var(--color-ink); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; font-weight: 650; text-anchor: middle; }
+.diagram-node-secondary { opacity: 0.78; }
+.diagram-nodes-pending rect { stroke-dasharray: 5 5; }
+.diagram-nodes-simulation rect { fill: rgb(103 80 164 / 0.05); }
+.diagram-disclosure { fill: var(--color-muted); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 14px; font-weight: 650; text-anchor: middle; }
+.project-figure-compact .diagram-disclosure { font-size: 19px; }
+
+.project-card-meta-line { display: flex; align-items: baseline; justify-content: space-between; gap: 0.75rem; }
+.project-card-meta-line p { margin-block: 0; }
+.project-date { flex: none; color: var(--color-muted); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.72rem; }
+.project-status { margin: 0.45rem 0 0; color: var(--color-accent-strong) !important; font-size: 0.78rem; font-weight: 680; }
+.project-card .project-summary { margin: 0.75rem 0 0; font-size: 0.93rem; }
 
 .project-card h3,
 .capability-grid h3,
@@ -514,6 +553,7 @@ a {
 }
 
 .project-card > a { margin-top: 0.75rem; }
+.project-card-link { align-self: flex-start; }
 
 .technology-list {
   display: flex;
@@ -554,6 +594,7 @@ a {
   padding: 0.2rem 0.2rem 0.6rem;
   scrollbar-width: thin;
 }
+.project-filter-empty { margin: 0.5rem 0 0; color: var(--color-muted); }
 
 .project-filter button {
   flex: none;
@@ -782,6 +823,8 @@ a {
   .connection-flow { align-items: flex-start; flex-direction: column; }
   .connection-flow b { transform: rotate(90deg); }
   .project-meta { grid-template-columns: 1fr; }
+  .project-detail .project-figure-canvas { overflow-x: auto; }
+  .project-detail .project-visual-svg { width: 48rem; max-width: none; }
   .cv-card-copy { align-items: flex-start; flex-direction: column; }
   .pdf-preview-frame { min-height: 28rem; }
   .pdf-preview-frame object { height: 28rem; }
@@ -873,6 +916,11 @@ a {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .project-card,
+  .project-card-cover,
+  .project-visual-svg {
+    transform: none !important;
+  }
   *,
   *::before,
   *::after {
@@ -888,7 +936,10 @@ a {
   .project-card,
   .cv-card,
   .system-visual,
-  .about-hero-visual { border: 1px solid CanvasText; }
+  .about-hero-visual,
+  .project-figure { border: 1px solid CanvasText; }
+  .project-figure-badge,
+  .diagram-nodes rect { border-color: CanvasText; stroke: CanvasText; }
   .timeline li::before,
   .signal-pulse { background: Highlight; fill: Highlight; }
 }

@@ -15,7 +15,7 @@ const detail = dictionary.projects.detail;
 <BaseLayout locale={locale} title={`${title} | ${dictionary.siteName}`} description={description} openGraph={{ type: 'article' }}>
   <article class="section project-detail"><div class="container project-detail-container">
     <a class="text-link project-back" href={localizedPath('/projects', locale)}>← {detail.back}</a>
-    <ProjectHeader project={project} dictionary={dictionary} />
+    <ProjectHeader project={project} dictionary={dictionary} locale={locale} />
     <div class="project-prose"><slot /></div>
     <section class="project-links" aria-labelledby="project-links-heading"><h2 id="project-links-heading">{detail.links}</h2>{project.data.links?.length ? <ul>{project.data.links.map((link) => <li><a href={link.url}>{link.label}</a></li>)}</ul> : <p>{detail.linksPending}</p>}</section>
   </div></article>
