@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { readdir } from 'node:fs/promises';
+import { readFile, readdir } from 'node:fs/promises';
 import test from 'node:test';
 
 async function loadEducation() {
@@ -15,12 +15,37 @@ async function publicFiles(directory = new URL('../public/', import.meta.url)) {
   const nested = await Promise.all(
     entries.map((entry) => {
       const url = new URL(entry.name + (entry.isDirectory() ? '/' : ''), directory);
-      return entry.isDirectory() ? publicFiles(url) : [decodeURIComponent(url.pathname)];
+      return entry.isDirectory() ? publicFiles(url) : [url];
     }),
   );
 
   return nested.flat();
 }
+
+const allowedCourses = {
+  undergraduate: [
+    ['mathematical-methods-for-physics', '数学物理方法'],
+    ['computational-physics', '计算物理'],
+    ['c-programming', 'C语言程序设计'],
+    ['quantum-mechanics', '量子力学'],
+    ['calculus', '微积分（上、下）'],
+    ['linear-algebra', '线性代数B'],
+    ['electrodynamics', '电动力学'],
+    ['digital-logic-circuits', '数字逻辑电路'],
+    ['digital-logic-lab', '数字逻辑电路实验'],
+    ['probability-and-statistics', '概率论与数理统计B'],
+    ['circuit-analysis', '电路分析'],
+  ],
+  graduate: [
+    ['programmable-logic-devices', '可编程逻辑器件原理及应用'],
+    ['physical-electronics-logic-lab', '物理电子学逻辑设计与仿真实验'],
+    ['computational-physics', '计算物理'],
+    ['digital-signal-processing-ii', '数字信号处理 II'],
+    ['semiconductor-device-physics', '半导体器件原理'],
+    ['quantum-materials-and-devices', '量子材料与器件'],
+    ['quantum-optics', '量子光学'],
+  ],
+};
 
 test('publishes transcript-supported GPA values with an official source classification', async () => {
   const { educationByLocale } = await loadEducation();
@@ -52,7 +77,7 @@ test('keeps the resume-only undergraduate rank explicitly non-official', async (
   }
 });
 
-test('provides matching bilingual labels only for transcript-supported courses', async () => {
+test('separates official course evidence from localized label provenance', async () => {
   const { educationByLocale } = await loadEducation();
 
   for (const id of ['undergraduate', 'graduate']) {
@@ -62,23 +87,37 @@ test('provides matching bilingual labels only for transcript-supported courses',
       zh.coursework.map((course) => course.id),
       en.coursework.map((course) => course.id),
     );
-    assert.ok(zh.coursework.every((course) => course.source === 'Official' && /[\u3400-\u9fff]/u.test(course.label)));
-    assert.ok(en.coursework.every((course) => course.source === 'Official' && /^[\x20-\x7e]+$/u.test(course.label)));
+    assert.ok(zh.coursework.every((course) => course.evidenceSource === 'Official' && course.labelSource === 'Official Chinese'));
+    assert.ok(en.coursework.every((course) => course.evidenceSource === 'Official' && course.labelSource === 'Editorial Translation'));
   }
-
-  assert.equal(
-    educationByLocale.zh.find((record) => record.id === 'graduate').coursework.find((course) => course.id === 'digital-signal-processing-ii').label,
-    '数字信号处理 II',
-  );
-  assert.equal(
-    educationByLocale.en.find((record) => record.id === 'graduate').coursework.find((course) => course.id === 'digital-signal-processing-ii').label,
-    'Digital Signal Processing II',
-  );
 });
 
-test('never places transcripts or CET6 records in public assets', async () => {
-  const files = await publicFiles();
-  const sensitiveName = /transcript|cet[-_ ]?6|成绩单|六级/i;
+test('publishes exactly the audited course ids and official Chinese labels', async () => {
+  const { educationByLocale } = await loadEducation();
 
-  assert.deepEqual(files.filter((file) => sensitiveName.test(file)), []);
+  for (const [id, expected] of Object.entries(allowedCourses)) {
+    const zh = educationByLocale.zh.find((record) => record.id === id);
+    const en = educationByLocale.en.find((record) => record.id === id);
+    assert.deepEqual(zh.coursework.map(({ id: courseId, label }) => [courseId, label]), expected);
+    assert.deepEqual(en.coursework.map((course) => course.id), expected.map(([courseId]) => courseId));
+  }
+});
+
+test('keeps transcript and identity fingerprints out of public assets and publication data', async () => {
+  const files = await publicFiles();
+  const sensitiveFingerprint = /transcript|cet[-_ ]?6|成绩单|六级|2020302021136|SA24234107|2002-03-11/i;
+  const publicMatches = [];
+
+  for (const file of files) {
+    const content = await readFile(file);
+    const displayPath = decodeURIComponent(file.pathname);
+    if (sensitiveFingerprint.test(displayPath) || sensitiveFingerprint.test(content.toString('utf8'))) {
+      publicMatches.push(displayPath);
+    }
+  }
+
+  const educationSource = await readFile(new URL('../src/data/education.ts', import.meta.url), 'utf8');
+
+  assert.deepEqual(publicMatches, []);
+  assert.doesNotMatch(educationSource, /D:\\Desktop|2020302021136|SA24234107|2002-03-11/i);
 });

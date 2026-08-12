@@ -25,7 +25,8 @@ export interface RankRecord {
 export interface CourseworkRecord {
   id: string;
   label: string;
-  source: 'Official';
+  evidenceSource: 'Official';
+  labelSource: 'Official Chinese' | 'Editorial Translation';
 }
 
 export interface ResearchFocusRecord {
@@ -95,8 +96,11 @@ const graduateCoursework = {
   ],
 } as const;
 
-const courses = (records: ReadonlyArray<readonly [string, string]>): CourseworkRecord[] =>
-  records.map(([id, label]) => ({ id, label, source: 'Official' }));
+const courses = (
+  records: ReadonlyArray<readonly [string, string]>,
+  labelSource: CourseworkRecord['labelSource'],
+): CourseworkRecord[] =>
+  records.map(([id, label]) => ({ id, label, evidenceSource: 'Official', labelSource }));
 
 const rankByLocale: Record<Locale, RankRecord> = {
   zh: {
@@ -130,7 +134,7 @@ export const educationByLocale: Record<Locale, EducationRecord[]> = {
         context: '官方研究生成绩单所列全部课程 GPA。',
       },
       rank: null,
-      coursework: courses(graduateCoursework.zh),
+      coursework: courses(graduateCoursework.zh, 'Official Chinese'),
       researchFocus: {
         label: '半导体单光子探测器及读出电路',
         source: 'Verified Resume',
@@ -149,7 +153,7 @@ export const educationByLocale: Record<Locale, EducationRecord[]> = {
         context: '官方成绩单打印于 2023-12-12；该值是打印时点 GPA，不应表述为最终毕业 GPA。',
       },
       rank: rankByLocale.zh,
-      coursework: courses(undergraduateCoursework.zh),
+      coursework: courses(undergraduateCoursework.zh, 'Official Chinese'),
     },
   ],
   en: [
@@ -166,7 +170,7 @@ export const educationByLocale: Record<Locale, EducationRecord[]> = {
         context: 'GPA for all courses shown on the official graduate transcript.',
       },
       rank: null,
-      coursework: courses(graduateCoursework.en),
+      coursework: courses(graduateCoursework.en, 'Editorial Translation'),
       researchFocus: {
         label: 'Semiconductor single-photon detectors and readout circuits',
         source: 'Verified Resume',
@@ -185,7 +189,7 @@ export const educationByLocale: Record<Locale, EducationRecord[]> = {
         context: 'Official transcript printed 2023-12-12; this is the GPA at print time, not necessarily the final graduation GPA.',
       },
       rank: rankByLocale.en,
-      coursework: courses(undergraduateCoursework.en),
+      coursework: courses(undergraduateCoursework.en, 'Editorial Translation'),
     },
   ],
 };

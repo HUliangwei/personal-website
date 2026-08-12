@@ -10,6 +10,8 @@ This internal ledger records the provenance and publication status of facts used
 - **Calculated** - a value derived from cited inputs with the method retained.
 - **TODO** - conflicting, incomplete, or unsupported evidence; publish only an explicit verification note.
 
+For coursework, `evidenceSource: Official` means the course exists on the official transcript. Label provenance is separate: Chinese labels are `Official Chinese`, while English labels are `Editorial Translation` and must not be presented as official school-issued English titles.
+
 ## Academic facts
 
 | Field | Public value | Source and location | Class | Publication decision |
