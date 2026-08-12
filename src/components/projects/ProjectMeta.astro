@@ -1,0 +1,11 @@
+---
+import type { CollectionEntry } from 'astro:content';
+interface Props { project: CollectionEntry<'projects'>; }
+const { project } = Astro.props;
+---
+<dl class="project-meta">
+  <div><dt>Date</dt><dd>{project.data.date}</dd></div>
+  <div><dt>Status</dt><dd>{project.data.status}</dd></div>
+  <div><dt>Role</dt><dd>{project.data.role}</dd></div>
+  <div><dt>Technologies</dt><dd>{project.data.technologies.join(' · ')}</dd></div>
+</dl>

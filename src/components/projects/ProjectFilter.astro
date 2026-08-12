@@ -1,0 +1,19 @@
+---
+import { PROJECT_FILTERS } from '../../config/projects';
+---
+<div class="project-filter" data-project-filter aria-label="Filter projects by category">
+  {PROJECT_FILTERS.map((category, index) => (
+    <button type="button" data-category={category} aria-pressed={index === 0 ? 'true' : 'false'}>{category}</button>
+  ))}
+</div>
+<script>
+  const filter = document.querySelector<HTMLElement>('[data-project-filter]');
+  const cards = [...document.querySelectorAll<HTMLElement>('[data-project-card]')];
+  filter?.addEventListener('click', (event) => {
+    const button = (event.target as HTMLElement).closest<HTMLButtonElement>('button[data-category]');
+    if (!button) return;
+    const category = button.dataset.category;
+    filter.querySelectorAll('button').forEach((item) => item.setAttribute('aria-pressed', String(item === button)));
+    cards.forEach((card) => { card.hidden = category !== 'All' && card.dataset.category !== category; });
+  });
+</script>

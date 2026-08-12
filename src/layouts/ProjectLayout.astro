@@ -1,0 +1,14 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import ProjectHeader from '../components/projects/ProjectHeader.astro';
+import BaseLayout from './BaseLayout.astro';
+interface Props { project: CollectionEntry<'projects'>; }
+const { project } = Astro.props;
+---
+<BaseLayout title={`${project.data.title} | Liangwei Hu`} description={project.data.summary}>
+  <article class="section project-detail"><div class="container project-detail-container">
+    <a class="text-link project-back" href="/projects">← All projects</a>
+    <ProjectHeader project={project} />
+    <div class="project-prose"><slot /></div>
+  </div></article>
+</BaseLayout>

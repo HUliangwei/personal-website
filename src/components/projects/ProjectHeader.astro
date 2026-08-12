@@ -1,0 +1,15 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import ProjectMeta from './ProjectMeta.astro';
+interface Props { project: CollectionEntry<'projects'>; }
+const { project } = Astro.props;
+---
+<header class="project-header">
+  <p class="eyebrow">{project.data.category}</p>
+  <h1>{project.data.title}</h1>
+  <p class="project-summary">{project.data.summary}</p>
+  <ProjectMeta project={project} />
+  <div class="project-cover-placeholder" role="img" aria-label={`${project.data.title} cover placeholder`}>
+    <span>Cover</span><strong>{project.data.cover}</strong>
+  </div>
+</header>
