@@ -45,6 +45,7 @@ src/
   components/            Page sections and shared layout components
   config/                Site metadata, navigation, and project categories
   content/projects/      One MDX case study per project
+  data/                  Verified, typed academic data for page consumers
   layouts/               Shared HTML and project-detail shells
   pages/                 Astro routes
   styles/global.css      Global design and responsive behavior
@@ -96,3 +97,5 @@ Do not change the Worker name, assets directory, or Astro static-output mode wit
 - Treat files under `public/` as public internet assets. Remove metadata or private information from documents and images before adding them.
 - Keep external links intentional and use safe new-tab attributes where applicable.
 - Review dependency and lockfile changes, and use repository or CI secret storage for all credentials.
+
+Academic facts are centralized in `src/data/education.ts` rather than page templates. Each GPA, rank state, course label, study period, and research focus has an evidence classification; the non-public provenance and conflict record lives in `docs/CONTENT_SOURCES.md`. Never move transcripts or CET6 records into `public/`.
