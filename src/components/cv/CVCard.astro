@@ -1,0 +1,33 @@
+---
+import PDFPreview from './PDFPreview.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  pdf?: string;
+  available?: boolean;
+}
+
+const { title, description, pdf, available = false } = Astro.props;
+---
+
+<article class:list={['cv-card', { 'cv-card-unavailable': !available }]}>
+  <div class="cv-card-copy">
+    <h2>{title}</h2>
+    <p>{description}</p>
+  </div>
+
+  {
+    available && pdf ? (
+      <>
+        <PDFPreview title={title} pdf={pdf} />
+        <div class="cv-actions" aria-label={`${title} PDF actions`}>
+          <a class="button button-secondary" href={pdf} target="_blank" rel="noopener">Open PDF</a>
+          <a class="button button-primary" href={pdf} download>Download PDF</a>
+        </div>
+      </>
+    ) : (
+      <p class="cv-coming-soon" role="status">Coming soon — TODO: add the verified Quantum Computing CV PDF when it is available.</p>
+    )
+  }
+</article>

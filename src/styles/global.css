@@ -697,6 +697,23 @@ a {
 .about-focus > p:not(.eyebrow) { max-width: 48rem; margin: 1.25rem 0 0; }
 .outside-research { padding-bottom: clamp(5rem, 10vw, 8rem); }
 
+.cv-page { padding-top: clamp(4rem, 10vw, 8rem); padding-bottom: clamp(5rem, 10vw, 8rem); }
+.cv-intro { max-width: 48rem; margin-bottom: 3rem; }
+.cv-intro h1 { margin: 0; font-size: clamp(2.75rem, 7vw, 5.75rem); letter-spacing: -0.055em; line-height: 1; }
+.cv-intro > p:last-child { max-width: 36rem; color: var(--color-muted); font-size: 1.15rem; }
+.cv-grid { display: grid; gap: 1.5rem; }
+.cv-card { border: 1px solid var(--color-line); border-radius: 1rem; background: var(--color-surface); padding: clamp(1.25rem, 4vw, 2rem); }
+.cv-card-copy { display: flex; align-items: baseline; justify-content: space-between; gap: 1.5rem; margin-bottom: 1.5rem; }
+.cv-card h2 { margin: 0; font-size: clamp(1.5rem, 3vw, 2rem); letter-spacing: -0.035em; }
+.cv-card-copy p { max-width: 34rem; margin: 0; color: var(--color-muted); }
+.pdf-preview { overflow: hidden; min-height: 40rem; border: 1px solid var(--color-line); border-radius: 0.65rem; background: #f3f6fa; }
+.pdf-preview object { display: block; width: 100%; height: 40rem; }
+.pdf-preview p { padding: 1rem; color: var(--color-muted); }
+.pdf-preview a { color: var(--color-accent-strong); font-weight: 700; }
+.cv-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1rem; }
+.cv-card-unavailable { border-style: dashed; background: linear-gradient(145deg, #edf5ff, #fff); }
+.cv-coming-soon { margin: 0; color: var(--color-accent-strong); font-weight: 650; }
+
 @media (max-width: 44rem) {
   .about-hero-grid,
   .journey-layout,
@@ -710,6 +727,8 @@ a {
   .connection-flow { align-items: flex-start; flex-direction: column; }
   .connection-flow b { transform: rotate(90deg); }
   .project-meta { grid-template-columns: 1fr; }
+  .cv-card-copy { align-items: flex-start; flex-direction: column; }
+  .pdf-preview { display: none; }
 }
 
 @keyframes dash { to { stroke-dashoffset: -32; } }

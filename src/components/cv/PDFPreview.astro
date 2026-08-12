@@ -1,0 +1,17 @@
+---
+interface Props {
+  title: string;
+  pdf: string;
+}
+
+const { title, pdf } = Astro.props;
+---
+
+<div class="pdf-preview">
+  <object data={pdf} type="application/pdf" aria-label={`${title} PDF preview`}>
+    <p>
+      Your browser cannot display this PDF inline.
+      <a href={pdf} target="_blank" rel="noopener">Open {title} PDF</a> instead.
+    </p>
+  </object>
+</div>
