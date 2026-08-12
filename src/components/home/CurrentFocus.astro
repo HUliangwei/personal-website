@@ -1,0 +1,21 @@
+---
+const areas = [
+  'Integrated Circuit Design',
+  'Robotics & Embodied AI',
+  'Intelligent Hardware',
+  'Quantum / Emerging Computing',
+];
+---
+
+<section class="section section-bordered" aria-labelledby="focus-title">
+  <div class="container">
+    <div class="section-heading">
+      <p class="eyebrow">01 / Direction</p>
+      <h2 id="focus-title">Current focus</h2>
+      <p>Research directions to develop and document.</p>
+    </div>
+    <ol class="focus-list">
+      {areas.map((area, index) => <li><span>{String(index + 1).padStart(2, '0')}</span>{area}</li>)}
+    </ol>
+  </div>
+</section>

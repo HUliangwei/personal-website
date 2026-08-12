@@ -1,21 +1,18 @@
 ---
-import BaseLayout from "../layouts/BaseLayout.astro";
+import Capabilities from '../components/home/Capabilities.astro';
+import ContactCTA from '../components/home/ContactCTA.astro';
+import CurrentFocus from '../components/home/CurrentFocus.astro';
+import Hero from '../components/home/Hero.astro';
+import SelectedProjects from '../components/home/SelectedProjects.astro';
+import ShortTimeline from '../components/home/ShortTimeline.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<BaseLayout title="Liangwei Hu">
-  <section class="py-20">
-    <p class="mb-4 text-lg text-gray-500">
-      Hello, I'm
-    </p>
-
-    <h1 class="text-5xl font-bold tracking-tight">
-      Liangwei Hu
-    </h1>
-
-    <p class="mt-6 text-xl text-gray-600">
-      Graduate Student · Integrated Circuits · Robotics · Embodied AI
-    </p>
-    
-    <p>Cloudflare deployment test</p>
-  </section>
+<BaseLayout title="Liangwei Hu | Research & Engineering" description="A personal research and engineering portfolio spanning intelligent hardware and autonomous systems.">
+  <Hero />
+  <CurrentFocus />
+  <SelectedProjects />
+  <Capabilities />
+  <ShortTimeline />
+  <ContactCTA />
 </BaseLayout>

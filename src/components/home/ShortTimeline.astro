@@ -1,0 +1,24 @@
+---
+const stages = [
+  ['Foundations', 'Devices, signals, and integrated circuits.'],
+  ['Systems', 'Sensing, compute, and autonomous systems.'],
+  ['Next directions', 'TODO: Add verified milestones and dates.'],
+];
+---
+
+<section class="section" aria-labelledby="trajectory-title">
+  <div class="container timeline-layout">
+    <div class="section-heading">
+      <p class="eyebrow">04 / Path</p>
+      <h2 id="trajectory-title">Technical trajectory</h2>
+    </div>
+    <ol class="timeline">
+      {stages.map(([title, detail]) => (
+        <li>
+          <h3>{title}</h3>
+          <p>{detail}</p>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
