@@ -4,7 +4,15 @@ interface Props { project: CollectionEntry<'projects'>; }
 const { project } = Astro.props;
 ---
 <article class="project-card" data-project-card data-category={project.data.category}>
-  <div class="project-mark" aria-hidden="true">{project.data.category.slice(0, 2).toUpperCase()}</div>
+  {
+    project.data.cover !== 'TODO' ? (
+      <img class="project-card-cover" src={project.data.cover} alt={`${project.data.title} cover`} loading="lazy" />
+    ) : (
+      <div class="project-cover-todo" role="img" aria-label={`${project.data.title} cover placeholder`}>
+        TODO: Add project cover image
+      </div>
+    )
+  }
   <p class="project-category">{project.data.category}</p>
   <h3>{project.data.title}</h3>
   <p>{project.data.summary}</p>

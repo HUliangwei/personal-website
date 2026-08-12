@@ -1,11 +1,15 @@
 ---
-import { PROJECT_FILTERS } from '../../config/projects';
+import type { ProjectCategory } from '../../config/projects';
+interface Props { categories: ProjectCategory[]; }
+const { categories } = Astro.props;
+const filters = ['All', ...categories];
 ---
-<div class="project-filter" data-project-filter aria-label="Filter projects by category">
-  {PROJECT_FILTERS.map((category, index) => (
+<fieldset class="project-filter" data-project-filter>
+  <legend class="sr-only">Filter projects by category</legend>
+  {filters.map((category, index) => (
     <button type="button" data-category={category} aria-pressed={index === 0 ? 'true' : 'false'}>{category}</button>
   ))}
-</div>
+</fieldset>
 <script>
   const filter = document.querySelector<HTMLElement>('[data-project-filter]');
   const cards = [...document.querySelectorAll<HTMLElement>('[data-project-card]')];

@@ -12,8 +12,11 @@ test('Phase 4 builds collection-backed project list, filters, and case studies',
   const list = readFileSync(join(root, 'dist/projects/index.html'), 'utf8');
   const detail = readFileSync(join(root, 'dist/projects/spad/index.html'), 'utf8');
 
-  for (const category of ['All', 'Integrated Circuits', 'Robotics', 'Embodied AI', 'Quantum', 'Software']) {
+  for (const category of ['All', 'Integrated Circuits', 'Robotics', 'Embodied AI']) {
     assert.match(list, new RegExp(`<button[^>]*data-category="${category}"`));
+  }
+  for (const emptyCategory of ['Quantum', 'Software']) {
+    assert.doesNotMatch(list, new RegExp(`<button[^>]*data-category="${emptyCategory}"`));
   }
   for (const slug of ['spad', 'ros2-robot', 'lerobot']) {
     assert.ok(existsSync(join(root, `dist/projects/${slug}/index.html`)), `${slug} route exists`);
@@ -23,14 +26,24 @@ test('Phase 4 builds collection-backed project list, filters, and case studies',
     assert.match(detail, new RegExp(`<h2[^>]*>${heading}</h2>`));
   }
   assert.match(detail, /<a[^>]*href="\/projects"[^>]*aria-current="page"/);
-  assert.match(list, /data-project-filter/);
+  assert.match(list, /<fieldset[^>]*data-project-filter/);
+  assert.match(list, /<legend[^>]*>Filter projects by category<\/legend>/);
   assert.match(list, /aria-pressed="true"/);
+  assert.match(list, /TODO: Add project cover image/);
+  assert.doesNotMatch(list, /<img[^>]*src="TODO"/);
 
   const home = readFileSync(join(root, 'dist/index.html'), 'utf8');
   for (const match of home.matchAll(/href="(\/(?:projects)[^"#?]*)"/g)) {
     const target = match[1] === '/projects' ? 'dist/projects/index.html' : `dist${match[1]}/index.html`;
     assert.ok(existsSync(join(root, target)), `internal link ${match[1]} resolves`);
   }
+});
+
+test('ProjectCard renders a lazy accessible image when a verified cover is supplied', () => {
+  const card = readFileSync(join(root, 'src/components/projects/ProjectCard.astro'), 'utf8');
+  assert.match(card, /project\.data\.cover !== 'TODO'/);
+  assert.match(card, /<img[^>]*src=\{project\.data\.cover\}[^>]*alt=\{`\$\{project\.data\.title\} cover`\}[^>]*loading="lazy"/s);
+  assert.match(card, /TODO: Add project cover image/);
 });
 
 test('Phase 4 schema keeps booleans and arrays typed while accepting TODO strings only where intended', () => {

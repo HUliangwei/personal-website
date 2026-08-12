@@ -454,6 +454,17 @@ a {
   place-items: center;
 }
 
+.project-card-cover,
+.project-cover-todo {
+  width: 100%;
+  height: 9rem;
+  margin-bottom: auto;
+  border-radius: 0.65rem;
+}
+
+.project-card-cover { display: block; object-fit: cover; }
+.project-cover-todo { display: grid; border: 1px dashed var(--color-line); background: #e8f1fc; color: var(--color-accent-strong); padding: 1rem; font-size: 0.8rem; font-weight: 700; place-items: center; text-align: center; }
+
 .project-card h3,
 .capability-grid h3,
 .timeline h3 {
@@ -499,6 +510,7 @@ a {
   margin-bottom: 2rem;
   overflow-x: auto;
   padding: 0.2rem 0.2rem 0.6rem;
+  border: 0;
 }
 
 .project-filter button {
