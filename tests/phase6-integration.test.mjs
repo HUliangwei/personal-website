@@ -80,4 +80,8 @@ test('final content semantics and truthful fallbacks are present', () => {
   assert.match(robotics, /TODO: Add verified project links/);
   assert.match(home, /href="\/cv"[^>]*>CV<\/a>/);
   assert.match(home, /Email:\s*TODO/);
+
+  const projectLayout = readFileSync(join(root, 'src/layouts/ProjectLayout.astro'), 'utf8');
+  assert.match(projectLayout, /href=\{link\.url\}/);
+  assert.doesNotMatch(projectLayout, /href=\{link\.href\}/);
 });
