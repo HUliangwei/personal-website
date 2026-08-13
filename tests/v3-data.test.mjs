@@ -6,6 +6,22 @@ import { promisify } from 'node:util';
 
 const execFileAsync = promisify(execFile);
 
+const studentLabel = ['stu', 'dent'].join('');
+const identifierLabel = ['i', 'd'].join('');
+const numberLabel = ['num', 'ber'].join('');
+const chineseStudentLabel = ['学', '号'].join('');
+const privateAcademicValuePatterns = [
+  new RegExp(
+    `(?:${studentLabel}\\s*(?:${identifierLabel}|${numberLabel})|${chineseStudentLabel})\\s*(?::|：|=)\\s*[a-z0-9][a-z0-9_-]{3,}`,
+    'i',
+  ),
+  /(?:birth\s*date|出生日期)\s*(?::|：|=)\s*(?:\d{4}[-/.]\d{1,2}[-/.]\d{1,2}|\d{4}年\d{1,2}月\d{1,2}日)/i,
+];
+
+function containsPrivateAcademicValue(content) {
+  return privateAcademicValuePatterns.some((pattern) => pattern.test(content));
+}
+
 async function loadData(moduleName) {
   try {
     return await import(`../src/data/${moduleName}.ts`);
@@ -73,6 +89,46 @@ test('publishes the audited transcript grades without changing course evidence s
   }
 });
 
+test('preserves official GPA context and keeps the resume-only rank explicitly non-official', async () => {
+  const { educationByLocale } = await loadData('education');
+
+  for (const locale of ['zh', 'en']) {
+    const undergraduate = educationByLocale[locale].find(({ id }) => id === 'undergraduate');
+    const graduate = educationByLocale[locale].find(({ id }) => id === 'graduate');
+
+    assert.deepEqual(
+      {
+        value: undergraduate.gpa.value,
+        scale: undergraduate.gpa.scale,
+        source: undergraduate.gpa.source,
+      },
+      { value: '3.86', scale: '4.00', source: 'Official' },
+    );
+    assert.match(undergraduate.gpa.context, /2023-12-12/);
+    assert.match(
+      undergraduate.gpa.context,
+      locale === 'zh' ? /不应表述为最终毕业 GPA/ : /not necessarily the final graduation GPA/i,
+    );
+    assert.deepEqual(
+      {
+        value: undergraduate.rank.value,
+        state: undergraduate.rank.state,
+        source: undergraduate.rank.source,
+        official: undergraduate.rank.official,
+      },
+      { value: 4, state: 'self-reported', source: 'Verified Resume', official: false },
+    );
+    assert.match(
+      undergraduate.rank.context,
+      locale === 'zh' ? /官方成绩单未列排名/ : /official transcript does not list a rank/i,
+    );
+    assert.deepEqual(
+      { value: graduate.gpa.value, scale: graduate.gpa.scale, source: graduate.gpa.source },
+      { value: '3.55', scale: '4.30', source: 'Official' },
+    );
+  }
+});
+
 test('centralizes only the authorized contacts and user-provided personal profile facts', async () => {
   const { profileByLocale } = await loadData('profile');
 
@@ -129,7 +185,7 @@ test('keeps every transcript private behind a natural preparing state', async ()
   assert.ok(transcriptsByLocale.en.every(({ statusLabel }) => statusLabel === 'Preparing'));
 });
 
-test('does not track academic PDFs, transcript identifiers, or complete local provenance paths', async () => {
+test('does not track academic PDFs, labeled private identifiers, or complete local provenance paths', async () => {
   const publicFiles = await filesBelow(new URL('../public/', import.meta.url));
   const academicPdf = /(?:transcript|academic[-_ ]?record|成绩单).*\.pdf$/i;
   assert.deepEqual(
@@ -139,28 +195,29 @@ test('does not track academic PDFs, transcript identifiers, or complete local pr
     [],
   );
 
+  const fictionalAcademicIdentifier = [`${studentLabel} ${identifierLabel}`, 'SAMPLE-ID-DO-NOT-PUBLISH'].join(': ');
+  const fictionalBirthDate = ['Birth date', ['2099', '12', '31'].join('-')].join(': ');
+  assert.equal(containsPrivateAcademicValue(fictionalAcademicIdentifier), true);
+  assert.equal(containsPrivateAcademicValue(fictionalBirthDate), true);
+  assert.equal(
+    containsPrivateAcademicValue('Private academic labels without a value are policy descriptions, not identifier leaks.'),
+    false,
+  );
+
   const { stdout } = await execFileAsync('git', ['ls-files', '--cached', '--others', '--exclude-standard', '-z'], {
     cwd: new URL('..', import.meta.url),
     encoding: 'utf8',
   });
   const trackedFiles = stdout.split('\0').filter(Boolean);
   const textExtensions = new Set(['.astro', '.css', '.js', '.json', '.md', '.mjs', '.toml', '.ts', '.txt', '.yml', '.yaml']);
-  const privateIdentifiers = [
-    ['2020', '3020', '21136'].join(''),
-    ['SA24', '2341', '07'].join(''),
-    ['2002', '-03', '-11'].join(''),
-  ];
-  const forbidden = new RegExp(
-    String.raw`[A-Za-z]:[\\/](?:Users|Desktop)[\\/]|${privateIdentifiers.join('|')}`,
-    'i',
-  );
+  const completeLocalPath = /[A-Za-z]:[\\/](?:Users|Desktop)[\\/]/i;
   const matches = [];
 
   for (const file of trackedFiles) {
     const extension = file.slice(file.lastIndexOf('.'));
     if (!textExtensions.has(extension)) continue;
     const content = await readFile(new URL(`../${file}`, import.meta.url), 'utf8');
-    if (forbidden.test(content)) matches.push(file);
+    if (completeLocalPath.test(content) || containsPrivateAcademicValue(content)) matches.push(file);
   }
 
   assert.deepEqual(matches, []);
