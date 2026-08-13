@@ -1,15 +1,25 @@
 ---
 import CVCard from '../cv/CVCard.astro';
+import AcademicProfile from '../cv/AcademicProfile.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { cvTracksByLocale } from '../../data/cv';
 import { getDictionary } from '../../i18n/utils';
 import type { Locale } from '../../i18n/types';
 interface Props { locale: Locale; }
 const { locale } = Astro.props;
 const dictionary = getDictionary(locale); const cv = dictionary.cv;
+const tracks = cvTracksByLocale[locale];
 ---
 <BaseLayout locale={locale} title={dictionary.meta.cv.title} description={dictionary.meta.cv.description}>
   <section class="section cv-page" aria-labelledby="cv-heading"><div class="container">
     <div class="cv-intro"><p class="eyebrow">{cv.eyebrow}</p><h1 id="cv-heading">{cv.title}</h1><p>{cv.intro}</p></div>
-    <div class="cv-grid">{cv.tracks.map((track) => <CVCard {...track} labels={cv.actions} />)}</div>
+    <AcademicProfile locale={locale} />
+    <section class="cv-versions" aria-labelledby="cv-versions-heading">
+      <div class="section-heading cv-versions-heading">
+        <p class="eyebrow">{locale === 'zh' ? '简历版本' : 'CV Versions'}</p>
+        <h2 id="cv-versions-heading">{locale === 'zh' ? '面向三个技术方向' : 'Three technical tracks'}</h2>
+      </div>
+      <div class="cv-grid">{tracks.map((track) => <CVCard {...track} labels={cv.actions} />)}</div>
+    </section>
   </div></section>
 </BaseLayout>

@@ -1,0 +1,22 @@
+---
+import { academicProfileCopyByLocale } from '../../data/cv';
+import { educationByLocale } from '../../data/education';
+import type { Locale } from '../../i18n/types';
+import EducationCard from './EducationCard.astro';
+
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const copy = academicProfileCopyByLocale[locale];
+const education = educationByLocale[locale];
+---
+
+<section class="academic-profile" data-academic-profile aria-labelledby="academic-profile-heading">
+  <div class="section-heading academic-profile-heading">
+    <p class="eyebrow">{copy.eyebrow}</p>
+    <h2 id="academic-profile-heading">{copy.title}</h2>
+    <p>{copy.intro}</p>
+  </div>
+  <div class="education-grid">
+    {education.map((record) => <EducationCard education={record} copy={copy} />)}
+  </div>
+</section>

@@ -1,12 +1,13 @@
 ---
 interface Props {
+  id: string;
   title: string;
   pdf: string;
   labels: { preview: string; hidePreview: string; fallbackPrefix: string; fallbackLink: string };
 }
 
-const { title, pdf, labels } = Astro.props;
-const previewId = `pdf-preview-${title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+const { id, title, pdf, labels } = Astro.props;
+const previewId = `pdf-preview-${id}`;
 ---
 
 <div class="pdf-preview">

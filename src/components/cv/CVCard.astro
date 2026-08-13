@@ -3,6 +3,7 @@ import PDFPreview from './PDFPreview.astro';
 import type { Dictionary } from '../../i18n/types';
 
 interface Props {
+  id: string;
   title: string;
   description: string;
   pdf?: string;
@@ -10,10 +11,10 @@ interface Props {
   labels: Dictionary['cv']['actions'];
 }
 
-const { title, description, pdf, available = false, labels } = Astro.props;
+const { id, title, description, pdf, available = false, labels } = Astro.props;
 ---
 
-<article class:list={['cv-card', { 'cv-card-unavailable': !available }]}>
+<article class:list={['cv-card', { 'cv-card-unavailable': !available }]} data-cv-track={id}>
   <div class="cv-card-copy">
     <h2>{title}</h2>
     <p>{description}</p>
@@ -22,7 +23,7 @@ const { title, description, pdf, available = false, labels } = Astro.props;
   {
     available && pdf ? (
       <>
-        <PDFPreview title={title} pdf={pdf} labels={labels} />
+        <PDFPreview id={id} title={title} pdf={pdf} labels={labels} />
         <div class="cv-actions" aria-label={`${title} ${labels.groupSuffix}`}>
           <a class="button button-secondary" href={pdf} target="_blank" rel="noopener">{labels.open}</a>
           <a class="button button-primary" href={pdf} download>{labels.download}</a>
