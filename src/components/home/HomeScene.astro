@@ -1,0 +1,96 @@
+---
+import type { Dictionary } from '../../i18n/types';
+import { getVerifiedModelUrl } from '../../utils/model';
+
+interface Props {
+  content: Dictionary['home']['hero'];
+}
+
+const { content } = Astro.props;
+const [device, signal, compute, system] = content.diagramLabels;
+const modelUrl = getVerifiedModelUrl();
+---
+<div class="home-scene" data-home-scene data-model-url={modelUrl}>
+  <canvas data-home-scene-canvas aria-hidden="true" tabindex="-1"></canvas>
+  <div class="home-scene-fallback">
+    <svg viewBox="0 0 640 390" role="img" aria-labelledby="system-diagram-title system-diagram-description" xmlns="http://www.w3.org/2000/svg">
+      <title id="system-diagram-title">{content.diagramTitle}</title>
+      <desc id="system-diagram-description">{content.diagramDescription}</desc>
+      <defs>
+        <linearGradient id="signal-gradient" x1="0" x2="1">
+          <stop offset="0" stop-color="#0b63ce" stop-opacity=".35" />
+          <stop offset="1" stop-color="#0b63ce" />
+        </linearGradient>
+      </defs>
+      <path class="diagram-path" d="M126 177H194M286 177H354M446 177H514" fill="none" stroke="url(#signal-gradient)" stroke-linecap="round" stroke-width="3" />
+      <g class="diagram-node">
+        <rect x="28" y="118" width="98" height="118" rx="12" />
+        <path d="M52 152h50M52 177h50M52 202h28" />
+        <text x="77" y="281" text-anchor="middle">{device}</text>
+      </g>
+      <g class="diagram-node diagram-signal">
+        <circle cx="240" cy="177" r="46" />
+        <path d="M213 177h12l8-22 15 44 12-22h8" />
+        <text x="240" y="281" text-anchor="middle">{signal}</text>
+      </g>
+      <g class="diagram-node">
+        <rect x="354" y="123" width="92" height="108" rx="12" />
+        <rect x="375" y="144" width="50" height="66" rx="5" />
+        <path d="M367 137v-10M382 137v-10M397 137v-10M412 137v-10M427 137v-10M367 217v10M382 217v10M397 217v10M412 217v10M427 217v10M368 157h7M368 177h7M368 197h7M425 157h7M425 177h7M425 197h7" />
+        <text x="400" y="281" text-anchor="middle">{compute}</text>
+      </g>
+      <g class="diagram-node diagram-robot">
+        <path d="M538 169v-23a22 22 0 0 1 44 0v23" />
+        <rect x="526" y="169" width="68" height="51" rx="12" />
+        <circle cx="547" cy="194" r="5" />
+        <circle cx="573" cy="194" r="5" />
+        <path d="M548 210h24M560 146v-15M560 131l-8-8M560 131l8-8" />
+        <text x="560" y="281" text-anchor="middle">{system}</text>
+      </g>
+      <circle class="signal-pulse" cx="160" cy="177" r="5" />
+      <circle class="signal-pulse pulse-two" cx="320" cy="177" r="5" />
+      <circle class="signal-pulse pulse-three" cx="480" cy="177" r="5" />
+    </svg>
+  </div>
+</div>
+
+<script>
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  for (const host of document.querySelectorAll<HTMLElement>('[data-home-scene]')) {
+    if (reduceMotion.matches || !('IntersectionObserver' in window)) continue;
+
+    const canvas = host.querySelector<HTMLCanvasElement>('[data-home-scene-canvas]');
+    if (!canvas) continue;
+
+    const capabilityProbe = document.createElement('canvas');
+    const hasWebGl = capabilityProbe.getContext('webgl2') ?? capabilityProbe.getContext('webgl');
+    if (!hasWebGl) continue;
+    hasWebGl.getExtension('WEBGL_lose_context')?.loseContext();
+
+    let stopped = false;
+    let dispose: (() => void) | undefined;
+    const abortController = new AbortController();
+    const observer = new IntersectionObserver(async (entries) => {
+      if (!entries.some((entry) => entry.isIntersecting)) return;
+      observer.disconnect();
+
+      try {
+        const { initHomeScene } = await import('../../scripts/home-scene');
+        if (stopped) return;
+        dispose = await initHomeScene({ canvas, host, modelUrl: host.dataset.modelUrl, signal: abortController.signal });
+        if (stopped) dispose();
+      } catch {
+        if (!stopped) host.dataset.sceneFailed = '';
+      }
+    }, { rootMargin: '160px 0px' });
+
+    observer.observe(host);
+    window.addEventListener('pagehide', () => {
+      stopped = true;
+      observer.disconnect();
+      abortController.abort();
+      dispose?.();
+    }, { once: true });
+  }
+</script>

@@ -14,9 +14,9 @@ const dictionary = getDictionary(locale);
 ---
 <BaseLayout locale={locale} title={dictionary.meta.home.title} description={dictionary.meta.home.description}>
   <Hero content={dictionary.home.hero} locale={locale} />
-  <CurrentFocus content={dictionary.home.focus} />
-  <SelectedProjects content={dictionary.home.projects} dictionary={dictionary} locale={locale} />
-  <Capabilities content={dictionary.home.capabilities} />
-  <ShortTimeline content={dictionary.home.timeline} />
-  <ContactCTA content={dictionary.home.contact} locale={locale} />
+  <div data-scene-focus="compute"><CurrentFocus content={dictionary.home.focus} /></div>
+  <div data-scene-focus="system"><SelectedProjects content={dictionary.home.projects} dictionary={dictionary} locale={locale} /></div>
+  <div data-scene-focus="signal"><Capabilities content={dictionary.home.capabilities} /></div>
+  <div data-scene-focus="robot"><ShortTimeline content={dictionary.home.timeline} /></div>
+  <div data-scene-focus="overview"><ContactCTA content={dictionary.home.contact} locale={locale} /></div>
 </BaseLayout>
