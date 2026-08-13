@@ -25,6 +25,7 @@ export interface RankRecord {
 export interface CourseworkRecord {
   id: string;
   label: string;
+  grade: string;
   evidenceSource: 'Official';
   labelSource: 'Official Chinese' | 'Editorial Translation';
 }
@@ -48,59 +49,59 @@ export interface EducationRecord {
 
 const undergraduateCoursework = {
   zh: [
-    ['mathematical-methods-for-physics', '数学物理方法'],
-    ['computational-physics', '计算物理'],
-    ['c-programming', 'C语言程序设计'],
-    ['quantum-mechanics', '量子力学'],
-    ['calculus', '微积分（上、下）'],
-    ['linear-algebra', '线性代数B'],
-    ['electrodynamics', '电动力学'],
-    ['digital-logic-circuits', '数字逻辑电路'],
-    ['digital-logic-lab', '数字逻辑电路实验'],
-    ['probability-and-statistics', '概率论与数理统计B'],
-    ['circuit-analysis', '电路分析'],
+    ['mathematical-methods-for-physics', '数学物理方法', '96'],
+    ['computational-physics', '计算物理', '96'],
+    ['c-programming', 'C语言程序设计', '95'],
+    ['quantum-mechanics', '量子力学', '95'],
+    ['calculus', '微积分（上、下）', '94 / 84'],
+    ['linear-algebra', '线性代数B', '94'],
+    ['electrodynamics', '电动力学', '94'],
+    ['digital-logic-circuits', '数字逻辑电路', '92'],
+    ['digital-logic-lab', '数字逻辑电路实验', '91'],
+    ['probability-and-statistics', '概率论与数理统计B', '92'],
+    ['circuit-analysis', '电路分析', '90'],
   ],
   en: [
-    ['mathematical-methods-for-physics', 'Mathematical Methods for Physics'],
-    ['computational-physics', 'Computational Physics'],
-    ['c-programming', 'C Programming'],
-    ['quantum-mechanics', 'Quantum Mechanics'],
-    ['calculus', 'Calculus I and II'],
-    ['linear-algebra', 'Linear Algebra B'],
-    ['electrodynamics', 'Electrodynamics'],
-    ['digital-logic-circuits', 'Digital Logic Circuits'],
-    ['digital-logic-lab', 'Digital Logic Circuits Laboratory'],
-    ['probability-and-statistics', 'Probability and Mathematical Statistics B'],
-    ['circuit-analysis', 'Circuit Analysis'],
+    ['mathematical-methods-for-physics', 'Mathematical Methods for Physics', '96'],
+    ['computational-physics', 'Computational Physics', '96'],
+    ['c-programming', 'C Programming', '95'],
+    ['quantum-mechanics', 'Quantum Mechanics', '95'],
+    ['calculus', 'Calculus I and II', '94 / 84'],
+    ['linear-algebra', 'Linear Algebra B', '94'],
+    ['electrodynamics', 'Electrodynamics', '94'],
+    ['digital-logic-circuits', 'Digital Logic Circuits', '92'],
+    ['digital-logic-lab', 'Digital Logic Circuits Laboratory', '91'],
+    ['probability-and-statistics', 'Probability and Mathematical Statistics B', '92'],
+    ['circuit-analysis', 'Circuit Analysis', '90'],
   ],
 } as const;
 
 const graduateCoursework = {
   zh: [
-    ['programmable-logic-devices', '可编程逻辑器件原理及应用'],
-    ['physical-electronics-logic-lab', '物理电子学逻辑设计与仿真实验'],
-    ['computational-physics', '计算物理'],
-    ['digital-signal-processing-ii', '数字信号处理 II'],
-    ['semiconductor-device-physics', '半导体器件原理'],
-    ['quantum-materials-and-devices', '量子材料与器件'],
-    ['quantum-optics', '量子光学'],
+    ['programmable-logic-devices', '可编程逻辑器件原理及应用', '79'],
+    ['physical-electronics-logic-lab', '物理电子学逻辑设计与仿真实验', '95'],
+    ['computational-physics', '计算物理', '92'],
+    ['digital-signal-processing-ii', '数字信号处理 II', '83'],
+    ['semiconductor-device-physics', '半导体器件原理', '80'],
+    ['quantum-materials-and-devices', '量子材料与器件', '88'],
+    ['quantum-optics', '量子光学', '88'],
   ],
   en: [
-    ['programmable-logic-devices', 'Principles and Applications of Programmable Logic Devices'],
-    ['physical-electronics-logic-lab', 'Physical Electronics Logic Design and Simulation Laboratory'],
-    ['computational-physics', 'Computational Physics'],
-    ['digital-signal-processing-ii', 'Digital Signal Processing II'],
-    ['semiconductor-device-physics', 'Principles of Semiconductor Devices'],
-    ['quantum-materials-and-devices', 'Quantum Materials and Devices'],
-    ['quantum-optics', 'Quantum Optics'],
+    ['programmable-logic-devices', 'Principles and Applications of Programmable Logic Devices', '79'],
+    ['physical-electronics-logic-lab', 'Physical Electronics Logic Design and Simulation Laboratory', '95'],
+    ['computational-physics', 'Computational Physics', '92'],
+    ['digital-signal-processing-ii', 'Digital Signal Processing II', '83'],
+    ['semiconductor-device-physics', 'Principles of Semiconductor Devices', '80'],
+    ['quantum-materials-and-devices', 'Quantum Materials and Devices', '88'],
+    ['quantum-optics', 'Quantum Optics', '88'],
   ],
 } as const;
 
 const courses = (
-  records: ReadonlyArray<readonly [string, string]>,
+  records: ReadonlyArray<readonly [string, string, string]>,
   labelSource: CourseworkRecord['labelSource'],
 ): CourseworkRecord[] =>
-  records.map(([id, label]) => ({ id, label, evidenceSource: 'Official', labelSource }));
+  records.map(([id, label, grade]) => ({ id, label, grade, evidenceSource: 'Official', labelSource }));
 
 const rankByLocale: Record<Locale, RankRecord> = {
   zh: {

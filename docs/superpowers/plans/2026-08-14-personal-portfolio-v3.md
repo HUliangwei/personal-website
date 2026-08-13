@@ -14,7 +14,7 @@
 - Keep Chinese default routes and English `/en` routes; shared page components receive `locale` and never duplicate the UI.
 - Preserve `output: 'static'`, Worker `personal-website`, `assets.directory: './dist'`, `npm ci`, and the existing GitHub-to-Cloudflare deployment architecture.
 - Evidence priority is official transcript/material, latest directional resume, older resume, then existing website copy.
-- Public UI must contain no `TODO`, `Placeholder`, `Need verification`, `Add verified`, local provenance path, student number, birth date, transcript QR/verification data, PDK/GDS/netlist/NDA content, or reference-repository identity/assets.
+- Public UI must contain no `TODO`, `Placeholder`, `Need verification`, `Add verified`, local provenance path, private academic identifier, birth date, transcript QR/verification data, PDK/GDS/netlist/NDA content, or reference-repository identity/assets.
 - Course grades are official transcript values; English course labels remain editorial translations.
 - Raw transcripts are not copied into `public/`. Both contain QR/identity data; V3 publishes a natural `Preparing` transcript module until owner-supplied sanitized PDFs exist.
 - Contact publication is explicitly authorized only for `3036064607@qq.com` and `+86 187 9229 3249`; do not publish other private identifiers.

@@ -1,6 +1,6 @@
 # Content source ledger
 
-This tracked internal ledger records the provenance and publication status of facts used by Portfolio V2. It identifies private evidence by document class and page or section, without retaining complete local paths or filename identifiers. The source documents themselves remain outside the repository.
+This tracked internal ledger records the provenance and publication status of facts used by Portfolio V3. It identifies private evidence by document class and page or section, without retaining complete local paths or filename identifiers. The source documents themselves remain outside the repository.
 
 ## Evidence classifications
 
@@ -8,6 +8,8 @@ This tracked internal ledger records the provenance and publication status of fa
 - **Verified Resume** - an owner-authored resume statement cross-checked against the current directional resume; not an official third-party record.
 - **Verified Project** - a project artifact or note that directly supports the claim.
 - **Calculated** - a value derived from cited inputs with the method retained.
+- **User-provided** - a public personal fact supplied directly by the portfolio owner.
+- **User-authorized** - contact information whose public release was explicitly approved by the portfolio owner.
 - **TODO** - conflicting, incomplete, or unsupported evidence; publish only an explicit verification note.
 
 For coursework, `evidenceSource: Official` means the course exists on the official transcript. Label provenance is separate: Chinese labels are `Official Chinese`, while English labels are `Editorial Translation` and must not be presented as official school-issued English titles.
@@ -21,12 +23,32 @@ For coursework, `evidenceSource: Official` means the course exists on the offici
 | Undergraduate GPA | **3.86 / 4.00** | Official undergraduate transcript (private local source), pages 1 and 2 footer, printed 2023-12-12 | Official | Publish with scale and print-date context. The document predates expected graduation, so this is the official GPA at printing and is **not necessarily the final graduation GPA**. |
 | Undergraduate GPA conflict | Resume says 3.82 / 4.00; transcript says 3.86 | Resume file above, education table; official transcript pages 1-2 | Official resolves conflict | Use 3.86 / 4.00 and document why 3.82 is rejected. Do not silently merge versions. |
 | Undergraduate rank | 4 | Same owner-authored resume, education table | Verified Resume | May be shown only as self-reported/resume-sourced. The official transcript has no rank field; never label it official. |
-| Undergraduate selected courses | Mathematical Methods for Physics; Computational Physics; C Programming; Quantum Mechanics; Calculus I/II; Linear Algebra B; Electrodynamics; Digital Logic Circuits and Laboratory; Probability and Mathematical Statistics B; Circuit Analysis | Official undergraduate transcript (private local source): page 1 (all except Computational Physics and Quantum Mechanics); page 2 (Computational Physics, Quantum Mechanics) | Official | Publish only these transcript-present labels. English names are editorial translations of the official Chinese labels. No grade list is currently exposed. |
+| Undergraduate selected coursework and grades | Mathematical Methods for Physics 96; Computational Physics 96; C Programming 95; Quantum Mechanics 95; Calculus I 94 and II 84; Linear Algebra B 94; Electrodynamics 94; Digital Logic 92; Digital Logic Lab 91; Probability and Statistics B 92; Circuit Analysis 90 | Official undergraduate transcript (private source): page 1 course table (all except Computational Physics and Quantum Mechanics); page 2 course table (Computational Physics and Quantum Mechanics) | Official | Publish the audited course-grade pairs. Chinese labels follow the official record; English labels are editorial translations, not school-issued English titles. |
 | Graduate institution / program | University of Science and Technology of China, Quantum Science and Technology | Official graduate transcript (private local source), page 1 header | Official | Publish. |
 | Graduate study period | 2024.09-2027.06 expected | Current embodied-AI resume (private local source), education table | Verified Resume | Publish with “expected”. |
 | Graduate GPA | **3.55 / 4.30** | Official graduate transcript (private local source), page 1, “全部课程 GPA: 3.55” and GPA conversion table with maximum 4.3 | Official | Publish with scale. |
-| Graduate selected courses | Principles and Applications of Programmable Logic Devices; Physical Electronics Logic Design and Simulation Laboratory; Computational Physics; Digital Signal Processing II; Principles of Semiconductor Devices; Quantum Materials and Devices; Quantum Optics | Same graduate transcript, page 1 course table | Official | Publish only transcript-present courses. English names are editorial translations of the official Chinese labels. |
+| Graduate selected coursework and grades | Programmable Logic 79; Physical Electronics Logic Lab 95; Computational Physics 92; Digital Signal Processing II 83; Semiconductor Devices 80; Quantum Materials and Devices 88; Quantum Optics 88 | Official graduate transcript (private source), page 1 course table | Official | Publish the audited course-grade pairs. Chinese labels follow the official record; English labels are editorial translations, not school-issued English titles. |
 | Graduate research focus | Semiconductor single-photon detectors and readout circuits | Current embodied and IC resume Markdown files, education/profile sections | Verified Resume | Publish as owner-described research focus, not as a university-issued field. |
+
+## Public profile facts
+
+| Field | Public value | Source and location | Class | Publication decision |
+| --- | --- | --- | --- | --- |
+| Identity | 胡良玮 / Liangwei Hu | Official academic records and current owner-authored resumes, identity headers | Official | Publish localized names. Reject the misspellings 胡良伟 and 胡亮伟. |
+| School journey | 宣城市第三小学; 宣城市第十二中学; 宣城中学; 武汉大学; 中国科学技术大学 | Portfolio owner’s V3 content specification | User-provided | Publish all five schools. No dates were supplied for the first three, so none are invented. English school names are conservative editorial translations. |
+| Interests | 足球; 篮球; 羽毛球; KTV; 麻将; 游戏 | Portfolio owner’s V3 content specification | User-provided | Publish with conservative English editorial translations. |
+| Games | 骑马与砍杀; 维多利亚; 无畏契约 | Portfolio owner’s V3 content specification | User-provided | Publish as personal interests; English display names are Mount & Blade, Victoria, and VALORANT. |
+| Email | 3036064607@qq.com | Explicit V3 publication authorization from the portfolio owner | User-authorized | Publish as an email contact. |
+| Phone | +86 187 9229 3249 | Explicit V3 publication authorization from the portfolio owner | User-authorized | Publish as a telephone contact. Do not publish any other private contact or identity number. |
+
+## Transcript publication decision
+
+| Record | Private evidence reviewed | Privacy finding | V3 public state |
+| --- | --- | --- | --- |
+| Undergraduate transcript | Private official record, pages 1-2 | Contains identity and verification data, including a QR code. | `available: false`, `pdf: null`, with the natural localized state 准备中 / Preparing. The original is not copied into the repository or public assets. |
+| Graduate transcript | Private official record, page 1 | Contains identity and verification data, including a QR code and birth date. | `available: false`, `pdf: null`, with the natural localized state 准备中 / Preparing. The original is not copied into the repository or public assets. |
+
+Publication can change only after the owner supplies separately sanitized PDFs and approves them for public release. The current private originals are evidence sources, not downloadable website assets.
 
 ## Project and experience facts
 
