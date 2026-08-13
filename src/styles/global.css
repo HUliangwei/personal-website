@@ -33,6 +33,13 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+p,
+li,
+dd,
+figcaption {
+  overflow-wrap: anywhere;
+}
+
 img,
 svg,
 object {
@@ -64,6 +71,10 @@ a {
 
 .site-main {
   min-height: 60vh;
+}
+
+[id] {
+  scroll-margin-top: 6rem;
 }
 
 .skip-link {
@@ -130,6 +141,11 @@ a {
   color: var(--color-muted);
   font-size: 0.9375rem;
   font-weight: 600;
+}
+
+.button,
+.nav-toggle {
+  min-height: 2.75rem;
 }
 
 .primary-nav a {
@@ -891,7 +907,7 @@ a {
 .cv-grid { display: grid; gap: 1.5rem; }
 .cv-card { border: 1px solid var(--color-line); border-radius: 1rem; background: var(--color-surface); padding: clamp(1.25rem, 4vw, 2rem); }
 .cv-card-copy { display: flex; align-items: baseline; justify-content: space-between; gap: 1.5rem; margin-bottom: 1.5rem; }
-.cv-card h2 { margin: 0; font-size: clamp(1.5rem, 3vw, 2rem); letter-spacing: -0.035em; }
+.cv-card h3 { margin: 0; font-size: clamp(1.5rem, 3vw, 2rem); letter-spacing: -0.035em; }
 .cv-card-copy p { max-width: 34rem; margin: 0; color: var(--color-muted); }
 .pdf-preview-frame { overflow: hidden; min-height: 40rem; margin-top: 1rem; border: 1px solid var(--color-line); border-radius: 0.65rem; background: #f3f6fa; }
 .pdf-preview-frame object { display: block; width: 100%; height: 40rem; }
@@ -1020,6 +1036,14 @@ a {
   .project-card { padding: 1rem; }
 }
 
+@media (hover: none) {
+  .project-card:hover,
+  .project-card:hover .project-visual-svg,
+  .project-card:hover .project-card-cover {
+    transform: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .project-card,
   .project-card-cover,
@@ -1051,4 +1075,7 @@ a {
   .diagram-nodes rect { border-color: CanvasText; stroke: CanvasText; }
   .timeline li::before,
   .signal-pulse { background: Highlight; fill: Highlight; }
+  .site-header { border-bottom-color: CanvasText; background: Canvas; }
+  .home-scene canvas { display: none; }
+  .home-scene[data-scene-ready] .home-scene-fallback { opacity: 1; }
 }

@@ -16,7 +16,7 @@ const { id, title, description, pdf, available = false, labels } = Astro.props;
 
 <article class:list={['cv-card', { 'cv-card-unavailable': !available }]} data-cv-track={id}>
   <div class="cv-card-copy">
-    <h2>{title}</h2>
+    <h3>{title}</h3>
     <p>{description}</p>
   </div>
 

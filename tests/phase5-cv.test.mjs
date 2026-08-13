@@ -31,7 +31,7 @@ test('Phase 5 publishes accessible multi-track CV downloads without inventing a 
   assert.ok(existsSync(join(root, 'dist/cv/index.html')), 'the /cv route is generated');
   assert.match(home, /href="\/en\/cv"/);
   for (const track of ['Integrated Circuits', 'Embodied AI', 'Quantum Computing']) {
-    assert.match(cv, new RegExp(`<h2[^>]*>${track}</h2>`));
+    assert.match(cv, new RegExp(`<h3[^>]*>${track}</h3>`));
   }
   for (const filename of ['liangwei-hu-ic-design.pdf', 'liangwei-hu-embodied-ai.pdf']) {
     assert.match(cv, new RegExp(`href="/cv/${filename}"`));
