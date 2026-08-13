@@ -60,6 +60,10 @@ export function initAboutJourney(root: HTMLElement, { signal }: JourneyOptions =
     signal?.removeEventListener('abort', dispose);
     root.removeAttribute('data-journey-enhanced');
     root.style.removeProperty('--journey-progress');
+    stages.forEach((stage) => {
+      stage.removeAttribute('data-active');
+      stage.removeAttribute('aria-current');
+    });
   };
 
   signal?.addEventListener('abort', dispose, { once: true });

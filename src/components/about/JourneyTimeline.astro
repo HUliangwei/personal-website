@@ -47,27 +47,37 @@ const stages = journeyByLocale[locale];
 </section>
 
 <script>
+  import { createJourneyMotionController } from '../../scripts/journey-motion';
+
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-  const desktopJourney = window.matchMedia('(min-width: 44.0625rem)');
+  const desktopJourney = window.matchMedia('(min-width: 48.001rem)');
   const roots = document.querySelectorAll<HTMLElement>('[data-about-journey]');
+  let controllers: Array<{ dispose(): void }> = [];
 
-  for (const root of roots) {
-    const abortController = new AbortController();
-    let stopped = false;
-    let dispose = () => {};
-    const stop = () => {
-      if (stopped) return;
-      stopped = true;
-      abortController.abort();
-      dispose();
-      window.removeEventListener('pagehide', stop);
-    };
+  const mount = () => {
+    if (controllers.length) return;
+    controllers = Array.from(roots, (root) => createJourneyMotionController({
+      desktop: desktopJourney,
+      reduced: reduceMotion,
+      initialize: async () => {
+        const abortController = new AbortController();
+        const { initAboutJourney } = await import('../../scripts/about-journey');
+        const disposeJourney = initAboutJourney(root, { signal: abortController.signal });
+        return () => {
+          abortController.abort();
+          disposeJourney();
+        };
+      },
+    }));
+  };
 
-    window.addEventListener('pagehide', stop, { once: true });
-    if (!reduceMotion.matches && desktopJourney.matches) {
-      const { initAboutJourney } = await import('../../scripts/about-journey');
-      dispose = initAboutJourney(root, { signal: abortController.signal });
-      if (stopped) dispose();
-    }
-  }
+  const teardown = () => {
+    controllers.forEach((controller) => controller.dispose());
+    controllers = [];
+  };
+  const handlePageShow = (event: PageTransitionEvent) => { if (event.persisted) mount(); };
+
+  mount();
+  window.addEventListener('pagehide', teardown);
+  window.addEventListener('pageshow', handlePageShow);
 </script>

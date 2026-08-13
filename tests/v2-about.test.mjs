@@ -3,7 +3,7 @@ import { execFileSync } from 'node:child_process';
 import { readFileSync, readdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import test from 'node:test';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const dist = join(root, 'dist');
@@ -36,6 +36,8 @@ test('About renders an evidence-bounded bilingual technical journey in chronolog
   assert.match(en, /<h1[^>]*>[^<]*technical (?:path|journey)/i);
   assert.match(zh, /<h2[^>]*>我的技术旅程<\/h2>/);
   assert.match(en, /<h2[^>]*>My technical journey<\/h2>/i);
+  assert.match(zh, /data-stage-id="physics-foundation"[\s\S]{0,1200}(?:量子基础|量子力学)/);
+  assert.match(en, /data-stage-id="physics-foundation"[\s\S]{0,1200}(?:quantum foundation|Quantum Mechanics)/i);
 
   const expected = [
     ['2020.09 - 2024.06', 'Sep 2020 - Jun 2024', '物理与硬件基础', 'Physics &amp; hardware foundations'],
@@ -78,8 +80,13 @@ test('About keeps a complete semantic ordered journey without JavaScript', () =>
     assert.match(html, /<ol[^>]*class="[^"]*journey-timeline/);
     assert.equal((html.match(/<li[^>]*data-journey-stage/g) ?? []).length, 6);
     assert.equal((html.match(/<article[^>]*class="[^"]*journey-stage-card/g) ?? []).length, 6);
-    assert.match(html, /<svg[^>]*class="[^"]*journey-stage-visual/);
-    assert.match(html, /aria-label="[^"]*(?:概念|conceptual)[^"]*"/i);
+    const visuals = Array.from(html.matchAll(/<svg[^>]*class="[^"]*journey-stage-visual[^"]*"[^>]*>[\s\S]*?<\/svg>/g), ([visual]) => visual);
+    assert.equal(visuals.length, 6);
+    for (const visual of visuals) {
+      assert.match(visual, /aria-labelledby="([^"]+) ([^"]+)"/);
+      assert.match(visual, /<title id="[^"]+">[^<]*(?:概念|conceptual)[^<]*<\/title>/i);
+      assert.match(visual, /<desc id="[^"]+">[^<]+<\/desc>/);
+    }
     assert.match(html, /data-journey-progress/);
     assert.match(html, /data-journey-status/);
   }
@@ -99,7 +106,7 @@ test('About motion is progressive, reduced-motion safe, and lifecycle-clean', ()
 
   assert.match(component, /await import\(['"]\.\.\/\.\.\/scripts\/about-journey['"]\)/);
   assert.match(component, /matchMedia\(['"]\(prefers-reduced-motion:\s*reduce\)['"]\)/);
-  assert.match(component, /matchMedia\(['"]\(min-width:\s*44\.0625rem\)['"]\)/);
+  assert.match(component, /matchMedia\(['"]\(min-width:\s*48\.001rem\)['"]\)/);
   assert.match(component, /new AbortController\(\)/);
   assert.match(component, /abortController\.abort\(\)/);
   assert.match(controller, /IntersectionObserver/);
@@ -117,5 +124,111 @@ test('About motion is progressive, reduced-motion safe, and lifecycle-clean', ()
   assert.match(page('/en/about'), new RegExp(aboutAsset.split('/').at(-1).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
   for (const route of ['/', '/projects', '/cv', '/en', '/en/projects', '/en/cv']) {
     assert.doesNotMatch(page(route), new RegExp(aboutAsset.split('/').at(-1).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  }
+});
+
+test('journey motion controller follows desktop and reduced-motion changes without duplicate instances', async () => {
+  const { createJourneyMotionController } = await import(`${pathToFileURL(join(root, 'src/scripts/journey-motion.ts')).href}?test=${Date.now()}`);
+
+  class FakeMediaQuery {
+    matches;
+    listeners = new Set();
+    constructor(matches) { this.matches = matches; }
+    addEventListener(type, listener) { if (type === 'change') this.listeners.add(listener); }
+    removeEventListener(type, listener) { if (type === 'change') this.listeners.delete(listener); }
+    set(matches) {
+      this.matches = matches;
+      for (const listener of this.listeners) listener({ matches });
+    }
+  }
+
+  const desktop = new FakeMediaQuery(false);
+  const reduced = new FakeMediaQuery(false);
+  let initialized = 0;
+  let disposed = 0;
+  const controller = createJourneyMotionController({
+    desktop,
+    reduced,
+    initialize: async () => {
+      initialized += 1;
+      let stopped = false;
+      return () => { if (!stopped) { stopped = true; disposed += 1; } };
+    },
+  });
+  const settle = async () => { await Promise.resolve(); await Promise.resolve(); };
+
+  await settle();
+  assert.deepEqual([initialized, disposed], [0, 0]);
+  desktop.set(true);
+  await settle();
+  assert.deepEqual([initialized, disposed], [1, 0]);
+  desktop.set(true);
+  await settle();
+  assert.deepEqual([initialized, disposed], [1, 0], 'an unchanged allowed state does not duplicate initialization');
+  reduced.set(true);
+  await settle();
+  assert.deepEqual([initialized, disposed], [1, 1]);
+  reduced.set(false);
+  await settle();
+  assert.deepEqual([initialized, disposed], [2, 1]);
+  desktop.set(false);
+  await settle();
+  assert.deepEqual([initialized, disposed], [2, 2]);
+  controller.dispose();
+  assert.equal(desktop.listeners.size, 0);
+  assert.equal(reduced.listeners.size, 0);
+});
+
+test('journey disposer removes active semantics and visual progress from every stage', async () => {
+  const originalWindow = globalThis.window;
+  const originalObserver = globalThis.IntersectionObserver;
+  const originalRaf = globalThis.requestAnimationFrame;
+  const originalCancel = globalThis.cancelAnimationFrame;
+
+  const makeElement = () => ({
+    attributes: new Map(),
+    toggleAttribute(name, force) { if (force) this.attributes.set(name, ''); else this.attributes.delete(name); },
+    setAttribute(name, value) { this.attributes.set(name, value); },
+    removeAttribute(name) { this.attributes.delete(name); },
+    hasAttribute(name) { return this.attributes.has(name); },
+    getBoundingClientRect() { return { top: 100 }; },
+  });
+  const stages = Array.from({ length: 6 }, makeElement);
+  const status = { textContent: '' };
+  const styles = new Map();
+  const rootElement = {
+    attributes: new Map(),
+    style: {
+      setProperty(name, value) { styles.set(name, value); },
+      removeProperty(name) { styles.delete(name); },
+    },
+    querySelectorAll() { return stages; },
+    querySelector(selector) { return selector === '[data-journey-status]' ? status : {}; },
+    setAttribute(name, value) { this.attributes.set(name, value); },
+    removeAttribute(name) { this.attributes.delete(name); },
+    getBoundingClientRect() { return { top: -120, height: 1200 }; },
+  };
+
+  globalThis.window = { innerHeight: 800, addEventListener() {}, removeEventListener() {} };
+  globalThis.IntersectionObserver = class { observe() {} disconnect() {} };
+  globalThis.requestAnimationFrame = () => 1;
+  globalThis.cancelAnimationFrame = () => {};
+  try {
+    const { initAboutJourney } = await import(`${pathToFileURL(join(root, 'src/scripts/about-journey.ts')).href}?test=${Date.now()}`);
+    const dispose = initAboutJourney(rootElement);
+    assert.equal(stages[0].hasAttribute('data-active'), true);
+    assert.equal(stages[0].attributes.get('aria-current'), 'step');
+    assert.equal(styles.has('--journey-progress'), true);
+    dispose();
+    for (const stage of stages) {
+      assert.equal(stage.hasAttribute('data-active'), false);
+      assert.equal(stage.hasAttribute('aria-current'), false);
+    }
+    assert.equal(styles.has('--journey-progress'), false);
+  } finally {
+    globalThis.window = originalWindow;
+    globalThis.IntersectionObserver = originalObserver;
+    globalThis.requestAnimationFrame = originalRaf;
+    globalThis.cancelAnimationFrame = originalCancel;
   }
 });
