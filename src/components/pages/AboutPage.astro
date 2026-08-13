@@ -1,16 +1,19 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import JourneyTimeline from '../about/JourneyTimeline.astro';
+import { educationByLocale } from '../../data/education';
 import { getDictionary } from '../../i18n/utils';
 import type { Locale } from '../../i18n/types';
 interface Props { locale: Locale; }
 const { locale } = Astro.props;
 const d = getDictionary(locale); const a = d.about;
+const education = educationByLocale[locale];
 ---
 <BaseLayout locale={locale} title={d.meta.about.title} description={d.meta.about.description}>
   <section class="about-hero section" aria-labelledby="about-title"><div class="container about-hero-grid"><div><p class="eyebrow">{a.hero.eyebrow}</p><h1 id="about-title">{a.hero.title}</h1><p class="about-hero-summary">{a.hero.summary}</p></div><div class="about-hero-visual" role="img" aria-label={a.hero.visualLabel}>{a.hero.visualSteps.map((step, i) => <>{i > 0 && <i aria-hidden="true"></i>}<span>{step}</span></>)}</div></div></section>
   <section class="section about-statement"><div class="container about-narrow"><p class="eyebrow">{a.statement.eyebrow}</p><h2>{a.statement.title}</h2><p>{a.statement.body}</p></div></section>
-  <section class="section journey-section section-surface"><div class="container journey-layout"><div class="journey-sticky"><p class="eyebrow">{a.journey.eyebrow}</p><h2>{a.journey.title}</h2><p>{a.journey.intro}</p></div><ol class="journey-timeline">{a.journey.stages.map(([title, body], i) => <li class="journey-stage"><span class="journey-index">0{i+1}</span><div><h3>{title}</h3><p>{body}</p></div></li>)}<li class="journey-stage journey-stage-todo"><span class="journey-index">?</span><div><h3>{a.journey.pendingTitle}</h3><p>{a.journey.pendingBody}</p></div></li></ol></div></section>
-  <section class="section"><div class="container about-split"><div class="section-heading"><p class="eyebrow">{a.education.eyebrow}</p><h2>{a.education.title}</h2></div><div class="about-detail-card"><p>{a.education.body}</p><p class="todo-note">{a.education.pending}</p></div></div></section>
+  <JourneyTimeline locale={locale} content={a.journey} />
+  <section class="section"><div class="container about-split"><div class="section-heading"><p class="eyebrow">{a.education.eyebrow}</p><h2>{a.education.title}</h2><p>{a.education.body}</p></div><div class="about-education-list">{education.map((item) => <article class="about-detail-card"><p class="journey-date">{item.period}</p><h3>{item.institution}</h3><p>{item.program}</p>{item.researchFocus && <p class="about-education-focus">{a.education.focusLabel}: {item.researchFocus.label}</p>}</article>)}</div></div></section>
   <section class="section section-bordered"><div class="container"><div class="section-heading"><p class="eyebrow">{a.interests.eyebrow}</p><h2>{a.interests.title}</h2></div><div class="about-interest-grid">{a.interests.items.map(([title, body], i) => <article><span>0{i+1}</span><h3>{title}</h3><p>{body}</p></article>)}</div></div></section>
   <section class="section"><div class="container about-connection"><div class="section-heading"><p class="eyebrow">{a.connection.eyebrow}</p><h2>{a.connection.title}</h2></div><div class="connection-flow" role="img" aria-label={a.connection.visualLabel}>{a.connection.steps.map((step, i) => <>{i > 0 && <b aria-hidden="true">→</b>}<span>{step}</span></>)}</div><p class="about-connection-copy">{a.connection.body}</p></div></section>
   <section class="section section-surface"><div class="container about-split"><div class="section-heading"><p class="eyebrow">{a.profile.eyebrow}</p><h2>{a.profile.title}</h2></div><div class="technical-profile-list">{a.profile.items.map(([title, body]) => <article><h3>{title}</h3><p>{body}</p></article>)}</div></div></section>

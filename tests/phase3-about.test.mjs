@@ -21,8 +21,8 @@ test('Phase 3 about renders a readable technical journey without invented biogra
   const about = readFileSync(join(projectRoot, 'dist', 'en', 'about', 'index.html'), 'utf8');
 
   for (const heading of [
-    'A personal technical direction, still in progress.',
-    'My journey',
+    'A technical path from physical signals to intelligent action.',
+    'My technical journey',
     'Education',
     'Research interests',
     'How the interests connect',
@@ -35,13 +35,14 @@ test('Phase 3 about renders a readable technical journey without invented biogra
 
   assert.match(about, /<p class="eyebrow">About<\/p>/);
 
-  for (const stage of ['Electronics / Hardware', 'SPAD / IC', 'Robotics', 'Embodied AI']) {
+  for (const stage of ['Physics &amp; hardware foundations', 'SPAD and integrated circuits', 'LeRobot and embodied learning']) {
     assert.match(about, new RegExp(`<h3[^>]*>${stage}</h3>`));
   }
 
-  assert.match(about, /TODO: Add verified dates, institutions, and programme details before publishing\./);
-  assert.match(about, /TODO: Place quantum work here only after its real learning or project context is confirmed\./);
+  assert.match(about, /University of Science and Technology of China/);
+  assert.match(about, /Wuhan University/);
+  assert.match(about, /TODO verification:/);
   assert.match(about, /class="journey-sticky"/);
   assert.match(about, /class="journey-stage"/);
-  assert.doesNotMatch(about, /Welcome to my personal website\.|Graduate Student|University/);
+  assert.doesNotMatch(about, /Welcome to my personal website\.|Graduate Student/);
 });

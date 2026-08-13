@@ -1,36 +1,73 @@
 ---
-const stages = [
-  ['Electronics / Hardware', 'A foundation for thinking about physical constraints, signals, and the building blocks of technical systems.'],
-  ['SPAD / IC', 'An interest in sensing and integrated-circuit questions: where a physical event becomes a usable signal.'],
-  ['Robotics', 'A shift toward systems that combine sensing, computation, and interaction with an environment.'],
-  ['Embodied AI', 'A continuing interest in learning and control when intelligence has to meet the constraints of a robot.'],
-];
+import { journeyByLocale } from '../../data/journey';
+import type { Locale } from '../../i18n/types';
+import JourneyStageVisual from './JourneyStageVisual.astro';
+
+interface Props {
+  locale: Locale;
+  content: {
+    eyebrow: string;
+    title: string;
+    intro: string;
+    statusLabel: string;
+  };
+}
+
+const { locale, content } = Astro.props;
+const stages = journeyByLocale[locale];
 ---
 
-<section class="section journey-section section-surface" aria-labelledby="journey-title">
+<section class="section journey-section section-surface" aria-labelledby="journey-title" data-about-journey>
   <div class="container journey-layout">
     <div class="journey-sticky">
-      <p class="eyebrow">A developing path</p>
-      <h2 id="journey-title">My journey</h2>
-      <p>Not a list of roles—just the questions that have gradually led from one layer of technology to another.</p>
+      <p class="eyebrow">{content.eyebrow}</p>
+      <h2 id="journey-title">{content.title}</h2>
+      <p>{content.intro}</p>
+      <div class="journey-progress" aria-hidden="true"><i data-journey-progress></i></div>
+      <p class="journey-status" data-journey-status>{content.statusLabel}</p>
     </div>
     <ol class="journey-timeline">
-      {stages.map(([title, detail], index) => (
-        <li class="journey-stage">
-          <span class="journey-index">0{index + 1}</span>
-          <div>
-            <h3>{title}</h3>
-            <p>{detail}</p>
-          </div>
+      {stages.map((stage, index) => (
+        <li class:list={['journey-stage', { 'journey-stage-todo': stage.evidence === 'TODO' }]} data-journey-stage data-stage-id={stage.id}>
+          <span class="journey-index" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+          <article class="journey-stage-card">
+            <div class="journey-stage-copy">
+              <p class="journey-date">{stage.date}</p>
+              <h3>{stage.title}</h3>
+              {stage.state && <p class="journey-state">{stage.state}</p>}
+              <p class="journey-summary">{stage.summary}</p>
+              <p>{stage.detail}</p>
+            </div>
+            <JourneyStageVisual id={stage.id} locale={locale} motif={stage.motif} title={stage.title} />
+          </article>
         </li>
       ))}
-      <li class="journey-stage journey-stage-todo">
-        <span class="journey-index">?</span>
-        <div>
-          <h3>Quantum / emerging computing</h3>
-          <p>TODO: Place quantum work here only after its real learning or project context is confirmed.</p>
-        </div>
-      </li>
     </ol>
   </div>
 </section>
+
+<script>
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const desktopJourney = window.matchMedia('(min-width: 44.0625rem)');
+  const roots = document.querySelectorAll<HTMLElement>('[data-about-journey]');
+
+  for (const root of roots) {
+    const abortController = new AbortController();
+    let stopped = false;
+    let dispose = () => {};
+    const stop = () => {
+      if (stopped) return;
+      stopped = true;
+      abortController.abort();
+      dispose();
+      window.removeEventListener('pagehide', stop);
+    };
+
+    window.addEventListener('pagehide', stop, { once: true });
+    if (!reduceMotion.matches && desktopJourney.matches) {
+      const { initAboutJourney } = await import('../../scripts/about-journey');
+      dispose = initAboutJourney(root, { signal: abortController.signal });
+      if (stopped) dispose();
+    }
+  }
+</script>
