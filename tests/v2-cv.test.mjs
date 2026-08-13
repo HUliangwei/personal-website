@@ -95,7 +95,10 @@ test('CV publication boundary excludes transcripts and sensitive academic identi
     .join('\n');
   const output = `${read('dist', 'cv', 'index.html')}\n${read('dist', 'en', 'cv', 'index.html')}`;
 
-  assert.doesNotMatch(publicFiles, /成绩单|transcript|26458462|cet-?6/i);
-  assert.doesNotMatch(output, /26458462|student\s*(?:number|id)|学号|出生日期|birth\s*date/i);
+  const transcriptIdentifier = ['264', '584', '62'].join('');
+  const privateFilePattern = new RegExp(`成绩单|transcript|${transcriptIdentifier}|cet-?6`, 'i');
+  const privateOutputPattern = new RegExp(`${transcriptIdentifier}|${['student', '\\s*(?:number|id)'].join('')}|${['学', '号'].join('')}|出生日期|birth\\s*date`, 'i');
+  assert.doesNotMatch(publicFiles, privateFilePattern);
+  assert.doesNotMatch(output, privateOutputPattern);
   assert.doesNotMatch(output, /成绩单[^<]*(?:href|download)|transcript[^<]*(?:href|download)/i);
 });

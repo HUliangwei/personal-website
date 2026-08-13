@@ -74,7 +74,7 @@ Do not add a fifth placeholder project or infer tools, metrics, awards, fabricat
 
 Publication-safe academic facts live in `src/data/education.ts`; page templates must not hard-code GPA, rank, course, or source semantics. `docs/CONTENT_SOURCES.md` records the private source hierarchy and known conflicts without publishing transcript files.
 
-Only the selected school/program labels, periods, qualified official GPA values, evidence-labelled rank state, selected coursework, and verified focus may render. Do not publish transcripts, per-course grade tables, student numbers, QR/verification codes, birth data, or calculated GPA presented as official. English course labels are editorial translations unless an official English source exists.
+Only the selected school/program labels, periods, qualified official GPA values, evidence-labelled rank state, selected coursework, and verified focus may render. Do not publish transcripts, per-course grade tables, private academic identifiers, QR/verification codes, birth data, or calculated GPA presented as official. English course labels are editorial translations unless an official English source exists.
 
 ## CV documents
 

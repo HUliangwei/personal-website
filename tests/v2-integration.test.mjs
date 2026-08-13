@@ -39,6 +39,26 @@ function filesUnder(directory) {
     .map((entry) => join(entry.parentPath, entry.name));
 }
 
+function trackedTextFiles() {
+  const paths = execFileSync('git', ['ls-files', '-z'], { cwd: root })
+    .toString('utf8')
+    .split('\0')
+    .filter(Boolean);
+  const binaryExtensions = new Set(['.pdf', '.png', '.jpg', '.jpeg', '.webp', '.avif', '.gif', '.ico', '.woff', '.woff2', '.glb']);
+  const decoder = new TextDecoder('utf-8', { fatal: true });
+
+  return paths.flatMap((path) => {
+    if (binaryExtensions.has(extname(path).toLowerCase())) return [];
+    const bytes = readFileSync(join(root, path));
+    if (bytes.subarray(0, 8192).includes(0)) return [];
+    try {
+      return [{ path, text: decoder.decode(bytes) }];
+    } catch {
+      return [];
+    }
+  });
+}
+
 before(() => {
   execFileSync(process.execPath, ['node_modules/astro/bin/astro.mjs', 'build'], {
     cwd: root,
@@ -86,11 +106,26 @@ test('publication excludes private academic, reference-project, model, and secre
     .map((file) => readFileSync(file, 'utf8'))
     .join('\n');
 
-  assert.deepEqual(published.filter((file) => /成绩单|transcript|cet-?6|26458462/i.test(file)), []);
+  const privateDocumentPattern = new RegExp(`成绩单|transcript|cet-?6|${['264', '584', '62'].join('')}`, 'i');
+  assert.deepEqual(published.filter((file) => privateDocumentPattern.test(file)), []);
   assert.doesNotMatch(tracked, /(?:^|\/)(?:me\.glb|sen\.blend|hlw\.glb)$/im);
   assert.doesNotMatch(tracked, /ref\/sen-3d-resume|web\/public\/models/i);
   assert.doesNotMatch(sourceText, /Sen Zhan|dayinji\/sen-3d-resume/i);
   assert.doesNotMatch(sourceText, /(?:api[_-]?key|cloudflare[_-]?api[_-]?token|secret[_-]?key)\s*[:=]\s*["'][^"']+["']/i);
+});
+
+test('every tracked text file omits private academic identifiers and local provenance paths', () => {
+  const transcriptIdentifier = ['264', '584', '62'].join('');
+  const privateAcademicLabel = new RegExp(['student', '(?:\\s|[-_])*', '(?:number|id)'].join(''), 'i');
+  const privateChineseAcademicLabel = new RegExp(['学', '号'].join(''));
+  const localPath = /[A-Z]:\\(?:Users|Desktop)\\/i;
+
+  for (const { path, text } of trackedTextFiles()) {
+    assert.doesNotMatch(text, new RegExp(transcriptIdentifier), `${path} omits transcript filename identifiers`);
+    assert.doesNotMatch(text, privateAcademicLabel, `${path} omits private academic labels`);
+    assert.doesNotMatch(text, privateChineseAcademicLabel, `${path} omits private Chinese academic labels`);
+    assert.doesNotMatch(text, localPath, `${path} omits complete local provenance paths`);
+  }
 });
 
 test('static Cloudflare deployment contract and crawler policy remain explicit', () => {

@@ -55,10 +55,13 @@ const modelUrl = getVerifiedModelUrl();
 </div>
 
 <script>
+  import { createHomeSceneMotionController, type HomeSceneMotionController } from '../../scripts/home-scene-motion';
+
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const activeControllers = new WeakMap<HTMLElement, HomeSceneMotionController>();
 
   for (const host of document.querySelectorAll<HTMLElement>('[data-home-scene]')) {
-    if (reduceMotion.matches || !('IntersectionObserver' in window)) continue;
+    if (activeControllers.has(host) || !('IntersectionObserver' in window)) continue;
 
     const canvas = host.querySelector<HTMLCanvasElement>('[data-home-scene-canvas]');
     if (!canvas) continue;
@@ -68,29 +71,57 @@ const modelUrl = getVerifiedModelUrl();
     if (!hasWebGl) continue;
     hasWebGl.getExtension('WEBGL_lose_context')?.loseContext();
 
-    let stopped = false;
-    let dispose: (() => void) | undefined;
-    const abortController = new AbortController();
-    const observer = new IntersectionObserver(async (entries) => {
-      if (!entries.some((entry) => entry.isIntersecting)) return;
-      observer.disconnect();
+    const controller = createHomeSceneMotionController({
+      reduced: reduceMotion,
+      initialize: (signal) => new Promise((resolve) => {
+        delete host.dataset.sceneFailed;
+        let settled = false;
+        const finish = (dispose: () => void) => {
+          if (settled) return;
+          settled = true;
+          signal.removeEventListener('abort', handleAbort);
+          resolve(dispose);
+        };
+        const handleAbort = () => {
+          observer.disconnect();
+          finish(() => {});
+        };
+        const observer = new IntersectionObserver(async (entries) => {
+          if (!entries.some((entry) => entry.isIntersecting)) return;
+          observer.disconnect();
 
-      try {
-        const { initHomeScene } = await import('../../scripts/home-scene');
-        if (stopped) return;
-        dispose = await initHomeScene({ canvas, host, modelUrl: host.dataset.modelUrl, signal: abortController.signal });
-        if (stopped) dispose();
-      } catch {
-        if (!stopped) host.dataset.sceneFailed = '';
-      }
-    }, { rootMargin: '160px 0px' });
+          try {
+            const { initHomeScene } = await import('../../scripts/home-scene');
+            if (signal.aborted) return finish(() => {});
+            const dispose = await initHomeScene({ canvas, host, modelUrl: host.dataset.modelUrl, signal });
+            finish(dispose);
+          } catch {
+            if (!signal.aborted) host.dataset.sceneFailed = '';
+            finish(() => {});
+          }
+        }, { rootMargin: '160px 0px' });
 
-    observer.observe(host);
-    window.addEventListener('pagehide', () => {
-      stopped = true;
-      observer.disconnect();
-      abortController.abort();
-      dispose?.();
-    }, { once: true });
+        signal.addEventListener('abort', handleAbort, { once: true });
+        if (signal.aborted) handleAbort();
+        else observer.observe(host);
+      }),
+    });
+    activeControllers.set(host, controller);
+
+    const cleanup = () => {
+      window.removeEventListener('pagehide', handlePageHide);
+      window.removeEventListener('pageshow', handlePageShow);
+      controller.dispose();
+      activeControllers.delete(host);
+    };
+    const handlePageHide = (event: PageTransitionEvent) => {
+      if (event.persisted) controller.suspend();
+      else cleanup();
+    };
+    const handlePageShow = (event: PageTransitionEvent) => {
+      if (event.persisted) controller.resume();
+    };
+    window.addEventListener('pagehide', handlePageHide);
+    window.addEventListener('pageshow', handlePageShow);
   }
 </script>

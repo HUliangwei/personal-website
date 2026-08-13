@@ -82,15 +82,18 @@ test('Three.js is isolated to a dynamically imported Home scene bundle', () => {
 test('scene bootstrap and controller enforce capability, motion, performance, and cleanup boundaries', () => {
   const component = readFileSync(join(root, 'src/components/home/HomeScene.astro'), 'utf8');
   const controller = readFileSync(join(root, 'src/scripts/home-scene.ts'), 'utf8');
+  const motionController = readFileSync(join(root, 'src/scripts/home-scene-motion.ts'), 'utf8');
 
   assert.match(component, /matchMedia\(['"]\(prefers-reduced-motion:\s*reduce\)['"]\)/);
   assert.match(component, /IntersectionObserver/);
   assert.match(component, /getContext\(['"]webgl2?['"]/);
   assert.match(component, /WEBGL_lose_context/);
-  assert.match(component, /new AbortController\(\)/);
-  assert.match(component, /abortController\.abort\(\)/);
+  assert.match(component, /createHomeSceneMotionController/);
+  assert.match(motionController, /new AbortController\(\)/);
+  assert.match(motionController, /activeAbort\?\.abort\(\)/);
   assert.match(component, /await import\(['"]\.\.\/\.\.\/scripts\/home-scene['"]\)/);
-  assert.match(component, /dispose\s*=\s*await initHomeScene[\s\S]*?if\s*\(stopped\)\s*dispose\(\)/);
+  assert.match(component, /pagehide/);
+  assert.match(component, /pageshow/);
   assert.match(controller, /signal\?:\s*AbortSignal/);
   assert.match(controller, /fetch\([^;]+signal/);
   assert.match(controller, /signal\?\.addEventListener\(['"]abort['"],\s*dispose/);
@@ -107,4 +110,73 @@ test('scene bootstrap and controller enforce capability, motion, performance, an
   assert.match(controller, /\.dispose\(\)/);
   assert.match(controller, /forceContextLoss/);
   assert.doesNotMatch(controller, /EffectComposer|postprocessing|\.hdr|three\/examples\/jsm\/postprocessing/i);
+});
+
+test('Home scene motion controller disposes immediately when reduced motion changes and safely restarts once', async () => {
+  const { createHomeSceneMotionController } = await import(`${pathToFileURL(join(root, 'src/scripts/home-scene-motion.ts')).href}?test=${Date.now()}`);
+
+  class FakeMediaQuery {
+    matches;
+    listeners = new Set();
+    constructor(matches) { this.matches = matches; }
+    addEventListener(type, listener) { if (type === 'change') this.listeners.add(listener); }
+    removeEventListener(type, listener) { if (type === 'change') this.listeners.delete(listener); }
+    set(matches) {
+      this.matches = matches;
+      for (const listener of this.listeners) listener({ matches });
+    }
+  }
+
+  const reduced = new FakeMediaQuery(false);
+  const starts = [];
+  const disposals = [];
+  const controller = createHomeSceneMotionController({
+    reduced,
+    initialize: async (signal) => {
+      const index = starts.length;
+      starts.push(signal);
+      return () => disposals.push(index);
+    },
+  });
+  const settle = async () => { await Promise.resolve(); await Promise.resolve(); };
+
+  await settle();
+  assert.equal(starts.length, 1);
+  reduced.set(true);
+  await settle();
+  assert.equal(starts[0].aborted, true, 'the active scene generation is aborted immediately');
+  assert.deepEqual(disposals, [0], 'the active scene is disposed so the SVG fallback is complete');
+  reduced.set(false);
+  await settle();
+  assert.equal(starts.length, 2, 'returning to standard motion safely initializes one fresh scene');
+  reduced.set(false);
+  await settle();
+  assert.equal(starts.length, 2, 'an unchanged state never creates a duplicate scene');
+  controller.dispose();
+  assert.equal(starts[1].aborted, true);
+  assert.deepEqual(disposals, [0, 1]);
+  assert.equal(reduced.listeners.size, 0, 'the media-query listener is removed');
+  reduced.set(false);
+  await settle();
+  assert.equal(starts.length, 2, 'a disposed controller cannot restart');
+
+  const deferredReduced = new FakeMediaQuery(false);
+  const deferredStarts = [];
+  const deferredDisposals = [];
+  let resolveInitialization;
+  const deferredController = createHomeSceneMotionController({
+    reduced: deferredReduced,
+    initialize: (signal) => {
+      deferredStarts.push(signal);
+      return new Promise((resolve) => { resolveInitialization = resolve; });
+    },
+  });
+  assert.equal(deferredStarts.length, 1);
+  deferredReduced.set(true);
+  deferredReduced.set(false);
+  resolveInitialization(() => deferredDisposals.push('stale'));
+  await settle();
+  assert.deepEqual(deferredDisposals, ['stale'], 'a scene resolving after an abort is disposed rather than installed');
+  assert.equal(deferredStarts.length, 2, 'the allowed state resumes with one new initialization after the stale generation settles');
+  deferredController.dispose();
 });

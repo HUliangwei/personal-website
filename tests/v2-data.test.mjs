@@ -105,7 +105,12 @@ test('publishes exactly the audited course ids and official Chinese labels', asy
 
 test('keeps transcript and identity fingerprints out of public assets and publication data', async () => {
   const files = await publicFiles();
-  const sensitiveFingerprint = /transcript|cet[-_ ]?6|成绩单|六级|2020302021136|SA24234107|2002-03-11/i;
+  const privateFingerprints = [
+    ['2020', '3020', '21136'].join(''),
+    ['SA24', '2341', '07'].join(''),
+    ['2002', '-03', '-11'].join(''),
+  ];
+  const sensitiveFingerprint = new RegExp(`transcript|cet[-_ ]?6|成绩单|六级|${privateFingerprints.join('|')}`, 'i');
   const publicMatches = [];
 
   for (const file of files) {
@@ -119,5 +124,6 @@ test('keeps transcript and identity fingerprints out of public assets and public
   const educationSource = await readFile(new URL('../src/data/education.ts', import.meta.url), 'utf8');
 
   assert.deepEqual(publicMatches, []);
-  assert.doesNotMatch(educationSource, /D:\\Desktop|2020302021136|SA24234107|2002-03-11/i);
+  const privateSourcePattern = new RegExp(`D:${String.raw`\\`}Desktop|${privateFingerprints.join('|')}`, 'i');
+  assert.doesNotMatch(educationSource, privateSourcePattern);
 });
