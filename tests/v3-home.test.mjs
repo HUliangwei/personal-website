@@ -140,6 +140,7 @@ test('Technical Toolkit publishes only evidence-backed completed tools and an ho
     assert.match(toolkit, /Ansys HFSS/);
     assert.match(toolkit, /Learning map|学习路线/);
     assert.doesNotMatch(toolkit, /<li>(?:ROS2|Gazebo|MuJoCo|LeRobot|ACT)<\/li>/);
+    assert.doesNotMatch(toolkit, /<li>(?:Astro|TypeScript)<\/li>/, 'site implementation tools are not personal toolkit claims');
   }
 });
 

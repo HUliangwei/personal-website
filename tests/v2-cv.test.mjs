@@ -53,7 +53,7 @@ test('Academic CV renders the verified bilingual education record with qualified
   assert.match(en, /Circuit Analysis/);
 });
 
-test('Academic CV keeps exactly two verified PDFs and a non-link Quantum placeholder', () => {
+test('Academic CV keeps exactly two owner-authorized PDF snapshots and a non-link Quantum placeholder', () => {
   const zh = read('dist', 'cv', 'index.html');
   const en = read('dist', 'en', 'cv', 'index.html');
   const expected = [

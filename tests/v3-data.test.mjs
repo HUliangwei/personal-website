@@ -138,10 +138,17 @@ test('centralizes only the authorized contacts and user-provided personal profil
   );
   assert.doesNotMatch(JSON.stringify(profileByLocale), /胡良伟|胡亮伟/);
   assert.deepEqual(
-    profileByLocale.en.contacts.map(({ id, value, href }) => [id, value, href]),
+    profileByLocale.en.contacts.map(({ id, label, value, href }) => [id, label, value, href]),
     [
-      ['email', '3036064607@qq.com', 'mailto:3036064607@qq.com'],
-      ['phone', '+86 187 9229 3249', 'tel:+8618792293249'],
+      ['email', 'Email / QQ', '3036064607@qq.com', 'mailto:3036064607@qq.com'],
+      ['phone', 'Phone / WeChat', '+86 187 9229 3249', 'tel:+8618792293249'],
+    ],
+  );
+  assert.deepEqual(
+    profileByLocale.zh.contacts.map(({ id, label }) => [id, label]),
+    [
+      ['email', 'Email / QQ'],
+      ['phone', 'Phone / WeChat'],
     ],
   );
   assert.deepEqual(

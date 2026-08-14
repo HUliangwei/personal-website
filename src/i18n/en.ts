@@ -50,7 +50,7 @@ const en = {
         { title: 'Digital / HDL', items: ['FPGA', 'Digital Logic', 'Digital Control'], learning: false, note: '' },
         { title: 'Robotics & Embedded', items: ['Python', 'YOLO', 'ROS', 'MCU', 'Motor Control', 'Hardware Communication'], learning: false, note: '' },
         { title: 'Quantum / Simulation', items: ['Ansys HFSS', '3D Electromagnetic Simulation', 'Parameter Sweep', 'Field Analysis'], learning: false, note: '' },
-        { title: 'Development Tools', items: ['Git', 'GitHub', 'Astro', 'TypeScript'], learning: false, note: '' },
+        { title: 'Development Tools', items: ['Git', 'GitHub'], learning: false, note: '' },
         { title: 'Robot Learning (Learning)', items: [], learning: true, note: 'Learning map — named tools and milestones are added only when supported by project artifacts.' },
       ],
     },

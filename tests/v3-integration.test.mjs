@@ -317,6 +317,13 @@ test('V3 CSS exposes static prerequisites for Task 7 browser viewport QA', () =>
   assert.match(css, /@media \(forced-colors:\s*active\)/);
 });
 
+test('V3 CSS defines every custom property it consumes', () => {
+  const css = readFileSync(join(root, 'src', 'styles', 'global.css'), 'utf8');
+  const used = new Set([...css.matchAll(/var\((--[a-z0-9-]+)/gi)].map((match) => match[1]));
+  const defined = new Set([...css.matchAll(/(--[a-z0-9-]+)\s*:/gi)].map((match) => match[1]));
+  assert.deepEqual([...used].filter((property) => !defined.has(property)).sort(), []);
+});
+
 test('V3 keeps the static Cloudflare deployment contract and documents the release architecture', () => {
   const astro = readFileSync(join(root, 'astro.config.mjs'), 'utf8');
   const wrangler = readFileSync(join(root, 'wrangler.jsonc'), 'utf8');

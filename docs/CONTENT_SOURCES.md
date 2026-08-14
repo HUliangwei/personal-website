@@ -21,7 +21,7 @@ For coursework, `evidenceSource: Official` means the course exists on the offici
 | Undergraduate institution / program | Wuhan University, Physics | Official undergraduate transcript (private local source), pages 1-2 header | Official | Publish. |
 | Undergraduate study period | 2020.09-2024.06 | Current embodied-AI resume (private local source), education table; official undergraduate transcript pages 1-2 independently show 2020 cohort and expected graduation in Jun 2024 | Verified Resume | Publish as a period, without converting the expected date into an official graduation assertion. |
 | Undergraduate GPA | **3.86 / 4.00** | Official undergraduate transcript (private local source), pages 1 and 2 footer, printed 2023-12-12 | Official | Publish with scale and print-date context. The document predates expected graduation, so this is the official GPA at printing and is **not necessarily the final graduation GPA**. |
-| Undergraduate GPA conflict | Resume says 3.82 / 4.00; transcript says 3.86 | Resume file above, education table; official transcript pages 1-2 | Official resolves conflict | Use 3.86 / 4.00 and document why 3.82 is rejected. Do not silently merge versions. |
+| Undergraduate GPA snapshots | Resume says 3.82 / 4.00; the official transcript printed 2023-12-12 says 3.86 / 4.00 | Resume file above, education table; official transcript pages 1-2 | Official + Verified Resume comparison | Publish 3.86 / 4.00 only with its 2023-12-12 print-date context because it is the official snapshot available to this audit. The evidence does not establish that the resume's 3.82 is wrong; it may describe a different time point. Neither value is treated as a confirmed final graduation GPA. |
 | Undergraduate rank | 4 | Same owner-authored resume, education table | Verified Resume | May be shown only as self-reported/resume-sourced. The official transcript has no rank field; never label it official. |
 | Undergraduate selected coursework and grades | Mathematical Methods for Physics 96; Computational Physics 96; C Programming 95; Quantum Mechanics 95; Calculus I 94 and II 84; Linear Algebra B 94; Electrodynamics 94; Digital Logic 92; Digital Logic Lab 91; Probability and Statistics B 92; Circuit Analysis 90 | Official undergraduate transcript (private source): page 1 course table (all except Computational Physics and Quantum Mechanics); page 2 course table (Computational Physics and Quantum Mechanics) | Official | Publish the audited course-grade pairs. Chinese labels follow the official record; English labels are editorial translations, not school-issued English titles. |
 | Graduate institution / program | University of Science and Technology of China, Quantum Science and Technology | Official graduate transcript (private local source), page 1 header | Official | Publish. |
@@ -50,6 +50,13 @@ For coursework, `evidenceSource: Official` means the course exists on the offici
 
 Publication can change only after the owner supplies separately sanitized PDFs and approves them for public release. The current private originals are evidence sources, not downloadable website assets.
 
+## Public CV document authorization
+
+| Document | Provenance and authorization | Publication boundary |
+| --- | --- | --- |
+| Integrated Circuits directional CV | Owner-authored and owner-authorized public CV snapshot | Publish at the stable path `public/cv/liangwei-hu-ic-design.pdf`. Authorization to publish the snapshot is not a claim-by-claim website audit certification. |
+| Embodied AI directional CV | Owner-authored and owner-authorized public CV snapshot | Publish at the stable path `public/cv/liangwei-hu-embodied-ai.pdf`. Authorization to publish the snapshot is not a claim-by-claim website audit certification. The website's Mobile Robot copy follows the newer audited directional-resume evidence and therefore keeps the more conservative ROS / Python / YOLO / MCU boundary. |
+
 ## Project and experience facts
 
 | Claim | Source and location | Class / measurement type | Publication decision |
@@ -67,7 +74,7 @@ Publication can change only after the owner supplies separately sanitized PDFs a
 - Never copy either original transcript, CET6 records, academic record identifiers, birth date, QR codes, identity numbers, home address, verification codes, or unnecessary personal identifiers into `public/`, generated site data, screenshots, or commits.
 - Never publish PDK/process rules, GDS, full netlists, confidential experiment data, NDA material, tokens, API keys, secrets, private phone numbers, or unreviewed contact data.
 - SPAD public figures should be conceptual or deliberately redacted. Do not expose foundry-confidential screenshots, proprietary dimensions, process data, or unreleased layouts.
-- CV PDFs may enter `public/cv/` only after owner confirmation and privacy review. A transcript or certificate is not a CV and remains private.
+- CV PDFs may enter `public/cv/` only as owner-authored or owner-approved public snapshots after privacy review. Publication authorization does not certify every embedded claim for reuse as audited website copy. A transcript or certificate is not a CV and remains private.
 - Complete local provenance paths and identifying source filenames do not belong in tracked files. `src/data/education.ts` contains publication-safe values and classifications only.
 
 ## Cloudflare Linux lockfile evidence

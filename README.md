@@ -31,7 +31,7 @@ Home renders `Current Focus`, `Selected Projects`, `Technical Toolkit`, `Life & 
 
 ```text
 public/
-  cv/                         Verified public CV PDFs only
+  cv/                         Owner-authorized public CV snapshots only
   models/hlw.glb              Optional verified personal model (not yet present)
   favicon.*
   robots.txt
@@ -98,14 +98,16 @@ Only the verified school/program labels, periods, official GPA values, evidence-
 
 ## CV documents
 
-Track definitions live in `src/data/cv.ts`; verified PDFs live in `public/cv/`. The current public documents are:
+Track definitions live in `src/data/cv.ts`; owner-authorized public CV snapshots live in `public/cv/`. The current public documents are:
 
 - `liangwei-hu-ic-design.pdf`
 - `liangwei-hu-embodied-ai.pdf`
 
-Quantum Computing remains a non-link `Preparing` state until a verified PDF exists. Never generate a substitute PDF or use a transcript in its place.
+Quantum Computing remains a non-link `Preparing` state until an owner-authorized public CV snapshot exists. Never generate a substitute PDF or use a transcript in its place.
 
-To replace a CV, verify the document and public metadata, retain the stable filename, update the expected byte length and SHA-256 digest in `tests/phase5-cv.test.mjs`, and test Preview, Open, Download, and mobile fallback behavior. PDF embedding remains user-triggered so page load does not fetch documents automatically.
+The two published PDFs are owner-authored directional CV snapshots approved for public access. That authorization does not mean every statement inside the documents has been independently certified for reuse as website copy. The website keeps its own evidence ledger and uses the more conservative, newer audited boundary for the Mobile Robot project.
+
+To replace a CV, confirm owner authorization, privacy, and public metadata; retain the stable filename; update the expected byte length and SHA-256 digest in `tests/phase5-cv.test.mjs`; and test Preview, Open, Download, and mobile fallback behavior. PDF embedding remains user-triggered so page load does not fetch documents automatically.
 
 ## Transcript privacy workflow
 

@@ -78,7 +78,7 @@ const zh = {
         { title: '数字与硬件描述', items: ['FPGA', 'Digital Logic', 'Digital Control'], learning: false, note: '' },
         { title: '机器人与嵌入式', items: ['Python', 'YOLO', 'ROS', 'MCU', 'Motor Control', 'Hardware Communication'], learning: false, note: '' },
         { title: '量子与仿真', items: ['Ansys HFSS', '3D Electromagnetic Simulation', 'Parameter Sweep', 'Field Analysis'], learning: false, note: '' },
-        { title: '开发工具', items: ['Git', 'GitHub', 'Astro', 'TypeScript'], learning: false, note: '' },
+        { title: '开发工具', items: ['Git', 'GitHub'], learning: false, note: '' },
         { title: '机器人学习（学习中）', items: [], learning: true, note: '学习路线——只有得到项目产物支撑后，具体工具和里程碑才会列入技术栈。' },
       ],
     },

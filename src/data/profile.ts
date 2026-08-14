@@ -44,8 +44,8 @@ export const profileByLocale: Record<Locale, PublicProfile> = {
       graduate: '中国科学技术大学量子科学与技术硕士研究生',
     },
     contacts: [
-      { id: 'email', label: '邮箱', ...contactValues.email, source: 'User-authorized' },
-      { id: 'phone', label: '电话', ...contactValues.phone, source: 'User-authorized' },
+      { id: 'email', label: 'Email / QQ', ...contactValues.email, source: 'User-authorized' },
+      { id: 'phone', label: 'Phone / WeChat', ...contactValues.phone, source: 'User-authorized' },
     ],
     interests: ['足球', '篮球', '羽毛球', 'KTV', '麻将', '游戏'],
     games: ['骑马与砍杀', '维多利亚', '无畏契约'],
@@ -65,8 +65,8 @@ export const profileByLocale: Record<Locale, PublicProfile> = {
       graduate: "Master's student in Quantum Science and Technology at the University of Science and Technology of China",
     },
     contacts: [
-      { id: 'email', label: 'Email', ...contactValues.email, source: 'User-authorized' },
-      { id: 'phone', label: 'Phone', ...contactValues.phone, source: 'User-authorized' },
+      { id: 'email', label: 'Email / QQ', ...contactValues.email, source: 'User-authorized' },
+      { id: 'phone', label: 'Phone / WeChat', ...contactValues.phone, source: 'User-authorized' },
     ],
     interests: ['Football', 'Basketball', 'Badminton', 'Karaoke', 'Mahjong', 'Gaming'],
     games: ['Mount & Blade', 'Victoria', 'VALORANT'],
