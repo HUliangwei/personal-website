@@ -39,7 +39,7 @@ const zh = {
     },
     cv: {
       title: '简历 | 胡良玮',
-      description: '集成电路与具身智能方向的可预览简历，以及内容尚待核实的量子计算方向。',
+      description: '集成电路与具身智能方向的可预览简历、官方课程成绩，以及准备中的量子计算方向简历。',
     },
   },
   home: {
@@ -177,7 +177,7 @@ const zh = {
       },
       {
         title: '量子计算',
-        description: '量子计算方向简历将在内容得到核实后发布。',
+        description: '量子计算方向简历正在准备，目前不提供 PDF。',
         pdf: '',
         available: false,
       },
@@ -190,7 +190,7 @@ const zh = {
       download: '下载 PDF',
       fallbackPrefix: '浏览器无法内嵌显示此 PDF。请改为',
       fallbackLink: '打开 PDF',
-      comingSoon: '准备中——内容核实完成后即将提供量子计算简历。',
+      comingSoon: '准备中——量子计算方向简历即将提供，目前尚未发布。',
     },
   },
 } as const;

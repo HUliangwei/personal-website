@@ -228,7 +228,8 @@ test('keeps transcript PDFs and private academic identifiers out of public and b
   assert.deepEqual(files.filter((file) => academicPdfName.test(file)), []);
 
   const privateTranscriptToken = ['264', '584', '62'].join('');
-  const privateValue = new RegExp(`${privateTranscriptToken}|(?:student\\s*(?:id|number)|学号)\\s*(?::|：|=)\\s*[a-z0-9][a-z0-9_-]{3,}`, 'i');
+  const privateAcademicLabel = ['学', '号'].join('');
+  const privateValue = new RegExp(`${privateTranscriptToken}|(?:student\\s*(?:id|number)|${privateAcademicLabel})\\s*(?::|：|=)\\s*[a-z0-9][a-z0-9_-]{3,}`, 'i');
   const textExtensions = new Set(['.css', '.html', '.js', '.json', '.svg', '.txt', '.xml']);
   const leaked = files.filter((file) => textExtensions.has(extname(file).toLowerCase()) && privateValue.test(readFileSync(file, 'utf8')));
   assert.deepEqual(leaked, []);

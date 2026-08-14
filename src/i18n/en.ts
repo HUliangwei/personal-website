@@ -13,7 +13,7 @@ const en = {
     home: { title: 'Liangwei Hu | Personal Technical Portfolio', description: 'Meet Liangwei Hu, a USTC graduate student working on SPAD readout IC design and exploring embodied AI, quantum computing, and embedded systems.' },
     about: { title: 'About | Liangwei Hu', description: "Liangwei Hu's education journey from Xuancheng to Wuhan University and USTC, plus the engineering and physics / quantum tracks behind his current work." },
     projects: { title: 'Projects | Liangwei Hu', description: 'Four evidence-bounded projects: SPAD IC Design, Mobile Robot, Superconducting Quantum Computing, and Embodied AI Learning.' },
-    cv: { title: 'CV | Liangwei Hu', description: 'CVs for integrated circuits and embodied AI, with a Quantum Computing track pending verification.' },
+    cv: { title: 'CV | Liangwei Hu', description: 'Published CVs for integrated circuits and embodied AI, official course grades, and a Quantum Computing CV in preparation.' },
   },
   home: {
     hero: {
@@ -88,9 +88,9 @@ const en = {
     tracks: [
       { title: 'Integrated Circuits', description: 'A CV tailored to integrated-circuit design and related engineering work.', pdf: '/cv/liangwei-hu-ic-design.pdf', available: true },
       { title: 'Embodied AI', description: 'A CV tailored to robotics, embodied intelligence, and AI systems work.', pdf: '/cv/liangwei-hu-embodied-ai.pdf', available: true },
-      { title: 'Quantum Computing', description: 'A dedicated Quantum Computing CV will be published after its contents are verified.', pdf: '', available: false },
+      { title: 'Quantum Computing', description: 'The Quantum Computing CV is being prepared; no PDF is available yet.', pdf: '', available: false },
     ],
-    actions: { groupSuffix: 'PDF actions', preview: 'Preview PDF', hidePreview: 'Hide preview', open: 'Open PDF', download: 'Download PDF', fallbackPrefix: 'Your browser cannot display this PDF inline.', fallbackLink: 'Open PDF', comingSoon: 'Preparing — Coming soon after the Quantum Computing CV contents are verified.' },
+    actions: { groupSuffix: 'PDF actions', preview: 'Preview PDF', hidePreview: 'Hide preview', open: 'Open PDF', download: 'Download PDF', fallbackPrefix: 'Your browser cannot display this PDF inline.', fallbackLink: 'Open PDF', comingSoon: 'Preparing — Coming soon; the Quantum Computing CV is not published yet.' },
   },
 } as const satisfies Dictionary;
 

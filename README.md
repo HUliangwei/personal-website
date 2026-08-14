@@ -1,6 +1,6 @@
-# Liangwei Hu Portfolio
+# Liangwei Hu Portfolio V3
 
-A bilingual, static research-engineering portfolio for technical journeys, evidence-qualified project case studies, academic context, and track-specific CVs. Unknown or unverified claims remain visibly marked `TODO`; the site never fills gaps with invented experience or results.
+A bilingual, static personal technical portfolio for Liangwei Hu. V3 presents his current SPAD IC work, education and dual-track technical journey, four evidence-bounded projects, verified coursework grades, interests, and authorized contact channels. Missing or unverified material is omitted or shown as a natural state such as `Preparing`; the site never invents experience or results.
 
 ## Stack
 
@@ -13,6 +13,19 @@ A bilingual, static research-engineering portfolio for technical journeys, evide
 - Cloudflare Workers Static Assets through the existing Wrangler configuration
 
 There is no SPA framework, SSR adapter, database, analytics SDK, or required client-side model.
+
+## V3 information architecture
+
+The four top-level pages have distinct roles and share one implementation per locale:
+
+```text
+Home      Introduces Liangwei Hu, current focus, projects, toolkit, interests, and contact
+About     Explains the five-school education journey and the engineering / physics-quantum tracks
+Projects  Presents four concrete bodies of work with explicit evidence and completion boundaries
+CV        Presents the academic profile, official grades, three CV directions, and transcript states
+```
+
+Home renders `Current Focus`, `Selected Projects`, `Technical Toolkit`, `Life & Interests`, and `Contact`. About renders `Education Journey`, two independent technical tracks, `How I Work`, `Now`, and `Side Quests`. Projects and CV keep their specialized interactions progressively enhanced so their core content remains usable without JavaScript.
 
 ## Architecture
 
@@ -28,11 +41,11 @@ src/
     cv/                       Academic profile, CV cards, opt-in PDF preview
     home/                     Hero, lazy 3D scene, and Home sections
     layout/                   Navigation and footer
-    pages/                    Shared locale-aware page compositions
+    pages/                    Shared locale-aware page components
     projects/                 Cards, filters, figures, and concept diagrams
   config/                     Stable site and project taxonomy configuration
   content/projects/           Four Chinese and four English MDX case studies
-  data/                       Typed education, CV, and journey data
+  data/                       Typed profile, education, grades, transcripts, CV, and journey data
   i18n/                       Dictionaries, locale types, and route helpers
   layouts/                    Base metadata shell and project detail layout
   pages/                      Chinese routes plus mirrored `/en` routes
@@ -42,7 +55,7 @@ src/
 docs/
   CONTENT_SOURCES.md          Non-public provenance and evidence ledger
   HLW_MODEL_GUIDE.md          Safe `/models/hlw.glb` replacement contract
-tests/                        Phase and V2 integration contracts
+tests/                        Phase, V2 regression, and V3 integration contracts
 astro.config.mjs             Static Astro and MDX configuration
 wrangler.jsonc               Existing Cloudflare static-assets contract
 ```
@@ -51,30 +64,37 @@ Generated `dist/` and installed `node_modules/` are not source files and must no
 
 ## Internationalization
 
-Chinese is the default locale: `/`, `/about`, `/projects`, `/projects/<slug>`, and `/cv`. English mirrors each route under `/en`. Shared page components receive a locale, while `src/i18n/zh.ts` and `src/i18n/en.ts` own interface copy. `src/i18n/utils.ts` maps paths and preserves the current route when switching language.
+Chinese is the default locale: `/`, `/about`, `/projects`, `/projects/<slug>`, and `/cv`. English mirrors each route under `/en`. Shared locale-aware page components receive a locale, while `src/i18n/zh.ts` and `src/i18n/en.ts` own interface copy. `src/i18n/utils.ts` maps paths and preserves the current route—including project slugs—when switching language.
 
 Every locale page emits its own title, description, canonical URL, `zh-CN`/`en`/`x-default` alternates, HTML language, and Open Graph locale. When adding a route or project, add both locale versions and extend integration tests so the switch cannot fall back to a language home page.
 
 ## Projects
 
-The public collection contains exactly four evidence-audited topics in both languages: SPAD readout IC, LeRobot/ACT learning practice, a vision-guided mobile robot, and superconducting-circuit HFSS simulation.
+The public collection contains exactly four evidence-audited identities in both languages:
+
+- **SPAD IC Design** — a 1×16-channel mixed-signal readout IC at post-layout simulation and pre-tapeout stage.
+- **Mobile Robot** — an undergraduate system connecting Python / YOLO vision, ROS task logic, MCU control, and motor actuation.
+- **Superconducting Quantum Computing** — HFSS 3D electromagnetic simulation used as a method for studying related microwave structures; no fabricated or measured quantum result is claimed.
+- **Embodied AI Learning** — a status-based learning map. Planned tools are not presented as completed experience.
 
 To update one:
 
 1. Edit the matching `slug.mdx` and `slug.en.mdx` entries in `src/content/projects/`.
 2. Keep the `slug`, `locale`, category, status, date, role, technologies, featured flag, and links compatible with `src/content.config.ts`.
 3. Record factual provenance or conflicts in `docs/CONTENT_SOURCES.md` before publishing claims.
-4. Keep unknown results and links as `TODO`; distinguish measured, simulated, pre-layout, and post-layout evidence.
+4. Omit unsupported results or use a natural state; distinguish measured, simulated, pre-layout, and post-layout evidence.
 5. Use `ProjectFigure.astro` and a correct figure type (`real`, `conceptual`, `simulation`, or `measured`). Concept diagrams must remain explicitly labelled and must not imitate experimental evidence.
 6. Run `npm test` and `npm run build`.
 
-Do not add a fifth placeholder project or infer tools, metrics, awards, fabrication, or measurements from adjacent material.
+Do not add a fifth speculative project or infer tools, metrics, awards, fabrication, or measurements from adjacent material.
 
 ## Academic data
 
-Publication-safe academic facts live in `src/data/education.ts`; page templates must not hard-code GPA, rank, course, or source semantics. `docs/CONTENT_SOURCES.md` records the private source hierarchy and known conflicts without publishing transcript files.
+Publication-safe academic facts live in `src/data/education.ts`; page templates must not hard-code GPA, rank, course, grade, or source semantics. `docs/CONTENT_SOURCES.md` records the private source hierarchy and known conflicts without publishing transcript files.
 
-Only the selected school/program labels, periods, qualified official GPA values, evidence-labelled rank state, selected coursework, and verified focus may render. Do not publish transcripts, per-course grade tables, private academic identifiers, QR/verification codes, birth data, or calculated GPA presented as official. English course labels are editorial translations unless an official English source exists.
+The CV page publishes selected official transcript grades for eleven undergraduate course records (including separate Calculus I and II values) and seven graduate course records. Fine-pointer desktop users reveal grades on hover or keyboard focus; coarse-pointer and mobile layouts show grades without depending on hover. English course labels are editorial translations, while grade values retain official transcript semantics.
+
+Only the verified school/program labels, periods, official GPA values, evidence-labelled rank state, selected coursework, grades, and focus may render. Private academic identifiers, QR/verification data, birth data, and calculated GPA presented as official remain excluded.
 
 ## CV documents
 
@@ -83,15 +103,21 @@ Track definitions live in `src/data/cv.ts`; verified PDFs live in `public/cv/`. 
 - `liangwei-hu-ic-design.pdf`
 - `liangwei-hu-embodied-ai.pdf`
 
-Quantum Computing remains a non-link “Coming soon” state until a verified PDF exists. Never generate a placeholder PDF or substitute a transcript.
+Quantum Computing remains a non-link `Preparing` state until a verified PDF exists. Never generate a substitute PDF or use a transcript in its place.
 
 To replace a CV, verify the document and public metadata, retain the stable filename, update the expected byte length and SHA-256 digest in `tests/phase5-cv.test.mjs`, and test Preview, Open, Download, and mobile fallback behavior. PDF embedding remains user-triggered so page load does not fetch documents automatically.
+
+## Transcript privacy workflow
+
+The original undergraduate and graduate transcripts contain identity and verification material and are never copied into `public/`. V3 publishes verified course facts through the typed academic data model while both transcript cards remain non-link `Preparing` states.
+
+A transcript PDF may be published only when the owner supplies or approves a sanitized public copy and a manual review confirms that academic identifiers, QR codes, verification data, and unrelated personal information are absent. An approved file would use a stable path under `public/academic/` and be clearly labelled as a public redacted copy. Until then, the UI emits no transcript URL, preview object, Open action, or Download action.
 
 ## 3D model
 
 The Home hero lazy-loads Three.js only after the scene approaches the viewport and WebGL is available. Until a verified model is supplied, a copyright-safe procedural scene is used; reduced-motion and unsupported clients receive the complete SVG fallback.
 
-The only supported personal-model interface is `public/models/hlw.glb`, served as `/models/hlw.glb`. Read `docs/HLW_MODEL_GUIDE.md` before adding it. The model is optional progressive enhancement: copy, navigation, CTAs, and project content cannot depend on it.
+The only supported personal-model interface is `public/models/hlw.glb`, served as `/models/hlw.glb`. Read `docs/HLW_MODEL_GUIDE.md` before adding it. The file is currently optional and absent; when absent, no model URL is emitted. The model is progressive enhancement: copy, navigation, calls to action, and project content cannot depend on it.
 
 ## Reference policy
 
@@ -135,7 +161,7 @@ Pushing `main` triggers the existing GitHub-to-Cloudflare integration. A success
 ## Truthfulness and security
 
 - Publish only evidence-supported education, work, project, award, result, link, and identity claims.
-- Keep `TODO` where evidence is missing.
+- Omit evidence gaps from public pages or use natural states such as `Preparing`, `Not yet verified`, or `尚未核实`.
 - Treat everything under `public/` as internet-public and review documents for metadata and personal identifiers.
 - Never publish transcripts, CET6 records, PDK/foundry material, GDS, complete netlists, NDA data, internal measurements, `.env` files, tokens, or API keys.
 - Use safe new-tab relationships and preserve keyboard, reduced-motion, forced-colors, zoom, and no-JavaScript fallbacks.
