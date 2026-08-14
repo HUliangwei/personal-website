@@ -39,7 +39,7 @@ test('Home introduces Liangwei Hu through the exact shared V3 information archit
       route: '/',
       headings: ['胡良玮', '当前方向', '核心项目', '技术栈', '兴趣与生活', '联系方式'],
       eyebrows: ['01 / 当前方向', '02 / 核心项目', '03 / 技术栈', '04 / 兴趣与生活', '05 / 联系'],
-      identity: ['中国科学技术大学', '量子科学与技术专业研究生', 'SPAD 单光子探测芯片设计', '喜欢学习、折腾技术，也愿意尝试新事物'],
+      identity: ['中国科学技术大学量子科学与技术硕士研究生', 'SPAD 单光子探测芯片设计', '喜欢学习、折腾技术，也愿意尝试新事物'],
     },
     {
       route: '/en',
@@ -99,6 +99,23 @@ test('Selected Projects renders the four concrete V3 identities from the collect
     assert.equal((projectGrid.match(/data-project-card/g) ?? []).length, 4, `${route} has four selected projects`);
     for (const title of titles) assert.match(projectGrid, new RegExp(`<h3>${title}</h3>`));
   }
+});
+
+test('Home project selection rejects future featured entries outside the four-item collection', async () => {
+  const { selectHomeProjects } = await import('../src/utils/home-projects.ts');
+  const candidates = [
+    { id: 'extra', data: { slug: 'future-featured', featured: true } },
+    { id: 'mobile', data: { slug: 'mobile-robot', featured: true } },
+    { id: 'hidden-spad', data: { slug: 'spad', featured: false } },
+    { id: 'embodied', data: { slug: 'lerobot', featured: true } },
+    { id: 'spad', data: { slug: 'spad', featured: true } },
+    { id: 'quantum', data: { slug: 'quantum-hfss', featured: true } },
+  ];
+
+  assert.deepEqual(
+    selectHomeProjects(candidates).map(({ id }) => id),
+    ['spad', 'mobile', 'quantum', 'embodied'],
+  );
 });
 
 test('Technical Toolkit publishes only evidence-backed completed tools and an honest learning state', () => {

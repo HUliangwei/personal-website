@@ -3,12 +3,10 @@ import { getCollection } from 'astro:content';
 import ProjectCard from '../projects/ProjectCard.astro';
 import type { Dictionary, Locale } from '../../i18n/types';
 import { localizedPath } from '../../i18n/utils';
+import { selectHomeProjects } from '../../utils/home-projects';
 interface Props { content: Dictionary['home']['projects']; dictionary: Dictionary; locale: Locale; }
 const { content, dictionary, locale } = Astro.props;
-const order = ['spad', 'mobile-robot', 'quantum-hfss', 'lerobot'];
-const projects = (await getCollection('projects', ({ data }) => data.locale === locale))
-  .filter((project) => project.data.featured)
-  .sort((a, b) => order.indexOf(a.data.slug) - order.indexOf(b.data.slug));
+const projects = selectHomeProjects(await getCollection('projects', ({ data }) => data.locale === locale));
 ---
 <section class="section" aria-labelledby="projects-title"><div class="container">
   <div class="section-heading section-heading-row"><div>

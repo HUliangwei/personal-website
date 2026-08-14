@@ -17,7 +17,7 @@ const en = {
   },
   home: {
     hero: {
-      eyebrow: 'Hello — I am', title: 'Liangwei Hu', education: "Master's student in Quantum Science and Technology at the University of Science and Technology of China",
+      eyebrow: 'Hello — I am',
       summary: 'My main graduate work is SPAD single-photon detector readout IC design. I also keep exploring embodied AI, quantum computing, and embedded systems beyond that research track.',
       curiosity: 'I enjoy learning, tinkering with technology, and trying unfamiliar things—while making time for sport, music, games, and friends.',
       projectsAction: 'Explore projects', cvAction: 'View CV',
