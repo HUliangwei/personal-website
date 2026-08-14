@@ -133,6 +133,23 @@ function singleProjectCtas(value) {
   return value.match(/(?:查看项目|View project)/gi) ?? [];
 }
 
+function frontmatter(locale, slug) {
+  const suffix = locale.prefix ? '.en' : '';
+  const source = readFileSync(join(root, 'src', 'content', 'projects', `${slug}${suffix}.mdx`), 'utf8');
+  return source.match(/^---\r?\n([\s\S]*?)\r?\n---/m)?.[1] ?? '';
+}
+
+function frontmatterList(source, key) {
+  if (new RegExp(`^${key}: \[\]$`, 'm').test(source)) return [];
+  const block = source.match(new RegExp(`^${key}:\r?\n((?:  - .*(?:\r?\n|$))+)`, 'm'))?.[1] ?? '';
+  return [...block.matchAll(/^  - (.*)$/gm)].map((match) => match[1]);
+}
+
+function listItems(card, className) {
+  const list = card.match(new RegExp(`<ul class="${className}"[^>]*>([\\s\\S]*?)<\\/ul>`))?.[1] ?? '';
+  return [...list.matchAll(/<li>([^<]+)<\/li>/g)].map((match) => match[1]);
+}
+
 before(() => {
   execFileSync(process.execPath, ['node_modules/astro/bin/astro.mjs', 'build'], {
     cwd: root,
@@ -186,6 +203,76 @@ test('V4 cards keep mobile, quantum, SPAD, and embodied-AI evidence boundaries v
     const embodied = cardFor(route, 'lerobot');
     assert.match(embodied, new RegExp(locale.learningLabel));
     assert.doesNotMatch(embodied, new RegExp(locale.completedLabel));
+  }
+});
+
+test('V4 source frontmatter and generated cards retain exact completed-tool and learning-topic boundaries', () => {
+  const completedTools = {
+    spad: ['Cadence Virtuoso', 'Spectre', 'Calibre', 'FPGA'],
+    'mobile-robot': ['Python', 'YOLO', 'ROS', 'MCU', 'Motor Control'],
+    'quantum-hfss': ['Ansys HFSS', '3D Electromagnetic Simulation', 'Parameter Sweep'],
+    lerobot: [],
+  };
+  const learningTopics = {
+    spad: [],
+    'mobile-robot': [],
+    'quantum-hfss': [],
+    lerobot: ['Linux', 'ROS2', 'Gazebo', 'MuJoCo', 'LeRobot', 'ACT'],
+  };
+
+  for (const locale of locales) {
+    for (const slug of Object.keys(completedTools)) {
+      const source = frontmatter(locale, slug);
+      const card = cardFor(`${locale.prefix}/projects`, slug);
+      assert.deepEqual(frontmatterList(source, 'technologies'), completedTools[slug], `${locale.prefix || '/'} ${slug} source completed tools are exact`);
+      assert.deepEqual(frontmatterList(source, 'learningTopics'), learningTopics[slug], `${locale.prefix || '/'} ${slug} source learning topics are exact`);
+      assert.deepEqual(listItems(card, 'technology-list'), completedTools[slug], `${locale.prefix || '/'} ${slug} card completed tools are exact`);
+      assert.deepEqual(listItems(card, 'learning-topic-list'), learningTopics[slug], `${locale.prefix || '/'} ${slug} card learning topics are exact`);
+    }
+  }
+});
+
+test('V4 source frontmatter and generated cards reject unsupported completed or fabricated project claims', () => {
+  for (const locale of locales) {
+    const route = `${locale.prefix}/projects`;
+    const mobileSource = frontmatter(locale, 'mobile-robot');
+    const mobile = cardFor(route, 'mobile-robot');
+    assert.doesNotMatch(mobileSource, /ROS2|Raspberry Pi|LiDAR|depth camera|UAV|树莓派|激光雷达|深度相机|无人机/i);
+    assert.doesNotMatch(mobile, /ROS2|Raspberry Pi|LiDAR|depth camera|UAV|树莓派|激光雷达|深度相机|无人机/i);
+
+    const quantumSource = frontmatter(locale, 'quantum-hfss');
+    const quantum = cardFor(route, 'quantum-hfss');
+    assert.match(quantumSource, /仅限仿真|Simulation Only/i);
+    assert.match(quantum, /仅限仿真|Simulation Only/i);
+    assert.doesNotMatch(quantumSource, /fabricat(?:e|ed|ion)|manufactur(?:e|ed|ing)|measur(?:e|ed|ement)|coherence|\bT1\b|\bT2\b|制备|制造|实测|相干/i);
+    assert.doesNotMatch(quantum, /fabricat(?:e|ed|ion)|manufactur(?:e|ed|ing)|measur(?:e|ed|ement)|coherence|\bT1\b|\bT2\b|制备|制造|实测|相干/i);
+
+    const spadSource = frontmatter(locale, 'spad');
+    const spad = cardFor(route, 'spad');
+    assert.match(spadSource, /流片前|Pre-tapeout/i);
+    assert.match(spad, /流片前|Pre-tapeout/i);
+    assert.doesNotMatch(spadSource, /silicon|silicon measurement|taped out|fabricated result|硅后|硅片实测|已经流片|流片完成/i);
+    assert.doesNotMatch(spad, /silicon|silicon measurement|taped out|fabricated result|硅后|硅片实测|已经流片|流片完成/i);
+
+    const embodiedSource = frontmatter(locale, 'lerobot');
+    const embodied = cardFor(route, 'lerobot');
+    assert.match(embodiedSource, /学习项目|Learning Project/i);
+    assert.match(embodied, /学习主题|Learning Topics/i);
+    assert.doesNotMatch(embodied, /Completed Tools|已完成工具/);
+    assert.doesNotMatch(embodiedSource, /training succeeded|successful inference|completed pipeline|训练成功|推理成功|端到端完成/i);
+    assert.doesNotMatch(embodied, /training succeeded|successful inference|completed pipeline|训练成功|推理成功|端到端完成/i);
+  }
+});
+
+test('all project SVG components keep a labeled image contract with meaningful localized text', () => {
+  for (const name of ['SpadDiagram', 'MobileRobotDiagram', 'QuantumHfssDiagram', 'LeRobotDiagram']) {
+    const source = readFileSync(join(root, 'src', 'components', 'projects', 'figures', `${name}.astro`), 'utf8');
+    assert.match(source, /const titleId = `[^`]+-title-\$\{locale\}`;/, `${name} creates a locale-specific title id`);
+    assert.match(source, /const descId = `[^`]+-desc-\$\{locale\}`;/, `${name} creates a locale-specific description id`);
+    assert.match(source, /const title = locale === 'zh' \? '[^']+' : '[^']+';/, `${name} has meaningful localized title text`);
+    assert.match(source, /const description = [\s\S]*locale === 'zh'[\s\S]*\? '[^']+'[\s\S]*: '[^']+';/, `${name} has meaningful localized description text`);
+    assert.match(source, /<svg[^>]*role="img"[^>]*aria-labelledby=\{`\$\{titleId\} \$\{descId\}`\}/, `${name} exposes role and linked labels`);
+    assert.match(source, /<title id=\{titleId\}>\{title\}<\/title><desc id=\{descId\}>\{description\}<\/desc>/, `${name} renders both linked title and description`);
   }
 });
 
