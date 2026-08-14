@@ -12,7 +12,10 @@ const { content } = Astro.props;
       <p>{content.description}</p>
     </div>
     <ol class="focus-list">
-      {content.areas.map((area, index) => <li><span>{String(index + 1).padStart(2, '0')}</span>{area}</li>)}
+      {content.areas.map((area, index) => <li class="focus-item">
+        <span class="focus-number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+        <div><h3>{area.title}</h3><p class="focus-state">{area.state}</p><p>{area.description}</p></div>
+      </li>)}
     </ol>
   </div>
 </section>

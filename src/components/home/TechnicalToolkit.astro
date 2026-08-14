@@ -1,0 +1,24 @@
+---
+import type { Dictionary } from '../../i18n/types';
+interface Props { content: Dictionary['home']['toolkit']; }
+const { content } = Astro.props;
+---
+
+<section class="section section-surface" aria-labelledby="toolkit-title">
+  <div class="container">
+    <div class="section-heading">
+      <p class="eyebrow">{content.eyebrow}</p>
+      <h2 id="toolkit-title">{content.title}</h2>
+      <p>{content.description}</p>
+    </div>
+    <div class="toolkit-grid">
+      {content.groups.map((group) => (
+        <article class:list={{ 'toolkit-learning': group.learning }}>
+          <h3>{group.title}</h3>
+          <ul>{group.items.map((item) => <li>{item}</li>)}</ul>
+          {group.note && <p>{group.note}</p>}
+        </article>
+      ))}
+    </div>
+  </div>
+</section>

@@ -1,0 +1,20 @@
+---
+import type { PublicProfile } from '../../data/profile';
+import type { Dictionary } from '../../i18n/types';
+interface Props { content: Dictionary['home']['interests']; profile: PublicProfile; }
+const { content, profile } = Astro.props;
+---
+
+<section class="section interests-section" aria-labelledby="interests-title">
+  <div class="container interests-layout">
+    <div class="section-heading">
+      <p class="eyebrow">{content.eyebrow}</p>
+      <h2 id="interests-title">{content.title}</h2>
+      <p>{content.description}</p>
+    </div>
+    <div class="interest-groups">
+      <div><h3>{content.activitiesLabel}</h3><ul>{profile.interests.map((interest) => <li>{interest}</li>)}</ul></div>
+      <div><h3>{content.gamesLabel}</h3><ul>{profile.games.map((game) => <li>{game}</li>)}</ul></div>
+    </div>
+  </div>
+</section>

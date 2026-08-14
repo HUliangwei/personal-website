@@ -3,13 +3,14 @@ import type { CollectionEntry } from 'astro:content';
 import type { Dictionary, Locale } from '../../i18n/types';
 import { localizedPath } from '../../i18n/utils';
 import ProjectVisual from './ProjectVisual.astro';
-interface Props { project: CollectionEntry<'projects'>; dictionary: Dictionary; locale: Locale; headingLevel?: 2 | 3; }
-const { project, dictionary, locale, headingLevel = 3 } = Astro.props;
+interface CardDisplay { title: string; summary: string; date: string; status: string; technologies: readonly string[]; }
+interface Props { project: CollectionEntry<'projects'>; dictionary: Dictionary; locale: Locale; headingLevel?: 2 | 3; display?: CardDisplay; }
+const { project, dictionary, locale, headingLevel = 3, display } = Astro.props;
 const Heading = `h${headingLevel}` as const;
 const content = dictionary.projects;
 const entry = content.entries[project.data.slug as keyof typeof content.entries];
-const title = entry?.title ?? project.data.title;
-const summary = entry?.summary ?? project.data.summary;
+const title = display?.title ?? entry?.title ?? project.data.title;
+const summary = display?.summary ?? entry?.summary ?? project.data.summary;
 const category = content.categories[project.data.category];
 const projectHref = localizedPath(`/projects/${project.data.slug}`, locale);
 ---
@@ -23,13 +24,13 @@ const projectHref = localizedPath(`/projects/${project.data.slug}`, locale);
   }
   <div class="project-card-meta-line">
     <p class="project-category">{category}</p>
-    <p class="project-date"><span class="sr-only">{content.detail.date}: </span>{project.data.date}</p>
+    <p class="project-date"><span class="sr-only">{content.detail.date}: </span>{display?.date ?? project.data.date}</p>
   </div>
   <Heading>{title}</Heading>
-  <p class="project-status"><span class="sr-only">{content.detail.status}: </span>{project.data.status}</p>
+  <p class="project-status"><span class="sr-only">{content.detail.status}: </span>{display?.status ?? project.data.status}</p>
   <p class="project-summary">{summary}</p>
   <ul class="technology-list" aria-label={content.technologies}>
-    {project.data.technologies.map((technology) => <li>{technology}</li>)}
+    {(display?.technologies ?? project.data.technologies).map((technology) => <li>{technology}</li>)}
   </ul>
   <a class="project-card-link" href={projectHref}>{content.viewProject} <span aria-hidden="true">→</span></a>
 </article>

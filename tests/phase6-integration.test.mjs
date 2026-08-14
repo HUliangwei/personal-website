@@ -75,12 +75,12 @@ test('final content semantics and truthful fallbacks are present', () => {
   const robotics = readFileSync(join(root, 'dist', 'en', 'projects', 'mobile-robot', 'index.html'), 'utf8');
 
   assert.match(projects, /<h2>ROS-Based Mobile Robot<\/h2>/);
-  assert.match(home, /<h3>ROS-Based Mobile Robot<\/h3>/);
+  assert.match(home, /<h3>Mobile Robot<\/h3>/);
   assert.doesNotMatch(projects, />[^<]*ROS2[^<]*</);
   assert.doesNotMatch(robotics, /an Robotics project/i);
   assert.match(robotics, /TODO: Add verified project links/);
   assert.match(home, /href="\/en\/cv"[^>]*>CV<\/a>/);
-  assert.match(home, /Email:\s*TODO/);
+  assert.match(home, /href="mailto:3036064607@qq\.com"/);
 
   const projectLayout = readFileSync(join(root, 'src/layouts/ProjectLayout.astro'), 'utf8');
   assert.match(projectLayout, /href=\{link\.url\}/);

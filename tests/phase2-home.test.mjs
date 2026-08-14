@@ -15,18 +15,18 @@ function buildSite() {
   });
 }
 
-test('Phase 2 home renders a research portfolio overview without scaffold copy', () => {
+test('Home renders the personal V3 overview without scaffold copy', () => {
   buildSite();
 
   const home = readFileSync(join(projectRoot, 'dist', 'en', 'index.html'), 'utf8');
 
   for (const heading of [
-    'Research &amp; Engineering',
-    'Current focus',
-    'Selected projects',
-    'Capabilities',
-    'Technical trajectory',
-    'Continue the conversation',
+    'Liangwei Hu',
+    'Current Focus',
+    'Selected Projects',
+    'Technical Toolkit',
+    'Life &amp; Interests',
+    'Let&#39;s Connect',
   ]) {
     assert.match(home, new RegExp(`<h[1-2][^>]*>${heading}</h[1-2]>`));
   }
@@ -40,5 +40,5 @@ test('Phase 2 home renders a research portfolio overview without scaffold copy',
   assert.match(home, /<desc id="system-diagram-description">A conceptual flow from device and sensor inputs through signal and integrated circuit compute stages to an intelligent system or robot.<\/desc>/);
   assert.match(home, /<text[^>]*>Device \/ Sensor<\/text>/);
   assert.match(home, /<text[^>]*>Intelligent System \/ Robot<\/text>/);
-  assert.doesNotMatch(home, /Hello, I(?:'|&#x27;)m|Graduate Student|Cloudflare deployment test/);
+  assert.doesNotMatch(home, /Cloudflare deployment test|Research &amp; Engineering|Technical trajectory/);
 });

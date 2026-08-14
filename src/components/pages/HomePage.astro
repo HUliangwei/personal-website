@@ -1,22 +1,24 @@
 ---
-import Capabilities from '../home/Capabilities.astro';
-import ContactCTA from '../home/ContactCTA.astro';
+import Contact from '../home/Contact.astro';
 import CurrentFocus from '../home/CurrentFocus.astro';
 import Hero from '../home/Hero.astro';
+import LifeInterests from '../home/LifeInterests.astro';
 import SelectedProjects from '../home/SelectedProjects.astro';
-import ShortTimeline from '../home/ShortTimeline.astro';
+import TechnicalToolkit from '../home/TechnicalToolkit.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { profileByLocale } from '../../data/profile';
 import { getDictionary } from '../../i18n/utils';
 import type { Locale } from '../../i18n/types';
 interface Props { locale: Locale; }
 const { locale } = Astro.props;
 const dictionary = getDictionary(locale);
+const profile = profileByLocale[locale];
 ---
 <BaseLayout locale={locale} title={dictionary.meta.home.title} description={dictionary.meta.home.description}>
-  <Hero content={dictionary.home.hero} locale={locale} />
+  <Hero content={dictionary.home.hero} locale={locale} profile={profile} />
   <div data-scene-focus="compute"><CurrentFocus content={dictionary.home.focus} /></div>
   <div data-scene-focus="system"><SelectedProjects content={dictionary.home.projects} dictionary={dictionary} locale={locale} /></div>
-  <div data-scene-focus="signal"><Capabilities content={dictionary.home.capabilities} /></div>
-  <div data-scene-focus="robot"><ShortTimeline content={dictionary.home.timeline} /></div>
-  <div data-scene-focus="overview"><ContactCTA content={dictionary.home.contact} locale={locale} /></div>
+  <div data-scene-focus="signal"><TechnicalToolkit content={dictionary.home.toolkit} /></div>
+  <div data-scene-focus="robot"><LifeInterests content={dictionary.home.interests} profile={profile} /></div>
+  <div data-scene-focus="overview"><Contact content={dictionary.home.contact} profile={profile} locale={locale} /></div>
 </BaseLayout>

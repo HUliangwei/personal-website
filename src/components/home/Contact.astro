@@ -1,0 +1,22 @@
+---
+import type { PublicProfile } from '../../data/profile';
+import type { Dictionary, Locale } from '../../i18n/types';
+import { localizedPath } from '../../i18n/utils';
+interface Props { content: Dictionary['home']['contact']; profile: PublicProfile; locale: Locale; }
+const { content, profile, locale } = Astro.props;
+---
+
+<section class="section contact-section" aria-labelledby="contact-title">
+  <div class="container contact-shell">
+    <div class="contact-heading">
+      <p class="eyebrow">{content.eyebrow}</p>
+      <h2 id="contact-title">{content.title}</h2>
+      <p>{content.description}</p>
+    </div>
+    <dl class="contact-list">
+      {profile.contacts.map((contact) => <div><dt>{contact.label}</dt><dd><a href={contact.href}>{contact.value}</a></dd></div>)}
+      <div><dt>GitHub</dt><dd><a href="https://github.com/HUliangwei/personal-website">HUliangwei ↗</a></dd></div>
+      <div><dt>CV</dt><dd><a href={localizedPath('/cv', locale)}>{content.cvAction} →</a></dd></div>
+    </dl>
+  </div>
+</section>

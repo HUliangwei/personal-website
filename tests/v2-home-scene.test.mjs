@@ -30,8 +30,8 @@ test('Home keeps complete bilingual semantic content beside a non-interactive 3D
   build();
 
   for (const [route, title, primaryAction] of [
-    ['/', '研究与工程', '浏览项目'],
-    ['/en', 'Research &amp; Engineering', 'Explore projects'],
+    ['/', '胡良玮', '浏览项目'],
+    ['/en', 'Liangwei Hu', 'Explore projects'],
   ]) {
     const html = page(route);
     assert.match(html, new RegExp(`<section[^>]*class="[^"]*hero[^"]*"[^>]*aria-labelledby="hero-title"`));

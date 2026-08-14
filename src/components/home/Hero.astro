@@ -1,17 +1,19 @@
 ---
 import type { Dictionary, Locale } from '../../i18n/types';
+import type { PublicProfile } from '../../data/profile';
 import { localizedPath } from '../../i18n/utils';
 import HomeScene from './HomeScene.astro';
-interface Props { content: Dictionary['home']['hero']; locale: Locale; }
-const { content, locale } = Astro.props;
+interface Props { content: Dictionary['home']['hero']; locale: Locale; profile: PublicProfile; }
+const { content, locale, profile } = Astro.props;
 ---
 <section class="section hero" aria-labelledby="hero-title" data-scene-focus="device">
   <div class="container hero-grid">
     <div class="hero-copy">
       <p class="eyebrow">{content.eyebrow}</p>
-      <h1 id="hero-title">{content.title}</h1>
+      <h1 id="hero-title">{profile.name}</h1>
+      <p class="hero-education">{content.education}</p>
       <p class="hero-summary">{content.summary}</p>
-      <p class="hero-disciplines">{content.disciplines.map((item, index) => <>{index > 0 && <span aria-hidden="true"> · </span>}{item}</>)}</p>
+      <p class="hero-curiosity">{content.curiosity}</p>
       <div class="hero-actions">
         <a class="button button-primary" href={localizedPath('/projects', locale)}>{content.projectsAction} <span aria-hidden="true">→</span></a>
         <a class="button button-secondary" href={localizedPath('/cv', locale)}>{content.cvAction}</a>
