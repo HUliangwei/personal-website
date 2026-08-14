@@ -216,6 +216,20 @@ test('V3 project pages use natural public states instead of development placehol
   assert.doesNotMatch(publicText, /TODO|Placeholder|Need verification|Add verified/i);
 });
 
+for (const [label, route, confidentialityBoundary] of [
+  ['Chinese', '/projects/spad', /不公开任何受代工与设计保密约束的制品/],
+  ['English', '/en/projects/spad', /No foundry-confidential design artifacts[^.]*are published/i],
+]) {
+  test(`${label} SPAD public body describes the confidentiality boundary without fabrication-file jargon`, () => {
+    const html = page(route);
+    const projectBody = html.match(/<div class="project-prose">([\s\S]*?)<\/div>/)?.[1] ?? '';
+    const publicBody = textContent(projectBody);
+
+    assert.doesNotMatch(publicBody, /\b(?:PDK|GDS|netlist)\b/i);
+    assert.match(publicBody, confidentialityBoundary);
+  });
+}
+
 test('Embodied AI cards and metadata expose a state message instead of an empty or completed technology list', () => {
   for (const [listRoute, detailRoute, stateMessage] of [
     ['/projects', '/projects/lerobot', '规划主题尚未核实，不列为已完成技术。'],

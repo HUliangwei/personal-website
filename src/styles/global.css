@@ -655,6 +655,7 @@ a {
 .projects-intro { max-width: 48rem; margin-bottom: 2rem; }
 .projects-intro h1,
 .project-header h1 { margin: 0; font-size: clamp(2.75rem, 7vw, 5.75rem); letter-spacing: -0.055em; line-height: 1; }
+.project-header h1 { overflow-wrap: anywhere; }
 .projects-intro > p:last-child,
 .project-summary { color: var(--color-muted); font-size: 1.15rem; }
 
