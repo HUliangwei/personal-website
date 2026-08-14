@@ -1,0 +1,93 @@
+---
+import type { AboutContent } from '../../data/about';
+import type { Locale } from '../../i18n/types';
+import JourneyStageVisual from './JourneyStageVisual.astro';
+
+interface Props {
+  content: AboutContent;
+  locale: Locale;
+  eyebrow: string;
+  title: string;
+  intro: string;
+}
+
+const { content, locale, eyebrow, title, intro } = Astro.props;
+const tracks = [content.engineeringTrack, content.physicsQuantumTrack];
+let stageOffset = 0;
+---
+
+<section class="section journey-section section-surface" data-about-section="technical-journey" data-about-journey aria-labelledby="technical-journey-title">
+  <div class="container journey-layout">
+    <div class="journey-sticky">
+      <p class="eyebrow">{eyebrow}</p>
+      <h2 id="technical-journey-title">{title}</h2>
+      <p>{intro}</p>
+      <div class="journey-progress" aria-hidden="true"><i data-journey-progress></i></div>
+      <p class="journey-status" data-journey-status>01 / 10</p>
+    </div>
+    <div class="dual-track-journey">
+      {tracks.map((track) => {
+        const offset = stageOffset;
+        stageOffset += track.stages.length;
+        return (
+          <article class="journey-track" data-track-id={track.id}>
+            <header class="journey-track-heading">
+              <p class="eyebrow">{track.label}</p>
+              <h3>{track.route}</h3>
+              <p>{track.summary}</p>
+            </header>
+            <ol class="journey-timeline" data-journey-track={track.id}>
+              {track.stages.map((stage, index) => (
+                <li class="journey-stage" data-journey-stage data-stage-id={stage.id}>
+                  <span class="journey-index" aria-hidden="true">{String(offset + index + 1).padStart(2, '0')}</span>
+                  <article class="journey-stage-card">
+                    <h3>{stage.title}</h3>
+                    {stage.state && <p class="journey-state">{stage.state}</p>}
+                    <p>{stage.detail}</p>
+                    <JourneyStageVisual id={stage.id} locale={locale} motif={stage.motif} title={stage.title} />
+                  </article>
+                </li>
+              ))}
+            </ol>
+          </article>
+        );
+      })}
+    </div>
+  </div>
+</section>
+
+<script>
+  import { createJourneyMotionController } from '../../scripts/journey-motion';
+
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const desktopJourney = window.matchMedia('(min-width: 48.001rem)');
+  const roots = document.querySelectorAll<HTMLElement>('[data-about-journey]');
+  let controllers: Array<{ dispose(): void }> = [];
+
+  const mount = () => {
+    if (controllers.length) return;
+    controllers = Array.from(roots, (root) => createJourneyMotionController({
+      desktop: desktopJourney,
+      reduced: reduceMotion,
+      initialize: async () => {
+        const abortController = new AbortController();
+        const { initAboutJourney } = await import('../../scripts/about-journey');
+        const disposeJourney = initAboutJourney(root, { signal: abortController.signal });
+        return () => {
+          abortController.abort();
+          disposeJourney();
+        };
+      },
+    }));
+  };
+
+  const teardown = () => {
+    controllers.forEach((controller) => controller.dispose());
+    controllers = [];
+  };
+  const handlePageShow = (event: PageTransitionEvent) => { if (event.persisted) mount(); };
+
+  mount();
+  window.addEventListener('pagehide', teardown);
+  window.addEventListener('pageshow', handlePageShow);
+</script>

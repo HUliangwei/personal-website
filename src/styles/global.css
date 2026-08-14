@@ -860,6 +860,65 @@ a {
 .about-focus > p:not(.eyebrow) { max-width: 48rem; margin: 1.25rem 0 0; }
 .outside-research { padding-bottom: clamp(5rem, 10vw, 8rem); }
 
+.education-journey {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.education-journey li {
+  display: grid;
+  grid-template-columns: 3.5rem minmax(0, 1fr);
+  gap: 1rem;
+  border-top: 1px solid var(--color-line);
+  padding: 1.4rem 0;
+}
+
+.education-journey li:last-child { border-bottom: 1px solid var(--color-line); }
+.education-journey article { min-width: 0; }
+.education-journey h3 { margin: 0; font-size: 1.25rem; letter-spacing: -0.025em; }
+.education-journey p { margin: 0.55rem 0 0; color: var(--color-muted); }
+.education-journey time { display: block; }
+
+.dual-track-journey { display: grid; gap: clamp(4rem, 8vw, 7rem); }
+.journey-track-heading { max-width: 40rem; margin-bottom: 1.5rem; }
+.journey-track-heading h3 { margin: 0; font-size: clamp(1.65rem, 3vw, 2.4rem); letter-spacing: -0.04em; }
+.journey-track-heading > p:last-child { color: var(--color-muted); }
+.dual-track-journey .journey-stage { min-height: min(58vh, 32rem); }
+.dual-track-journey .journey-stage-card { align-content: center; }
+.dual-track-journey .journey-state { width: fit-content; }
+
+.about-work-heading,
+.side-quests-heading { max-width: 52rem; margin-bottom: 2rem; }
+.about-work-heading > p:last-child,
+.side-quests-heading > p:last-child { max-width: 44rem; color: var(--color-muted); }
+.workflow-grid,
+.side-quest-grid { display: grid; gap: 1rem; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.workflow-card,
+.side-quest-grid article { min-width: 0; border: 1px solid var(--color-line); border-radius: 1rem; background: var(--color-surface); padding: clamp(1.2rem, 3vw, 1.8rem); }
+.workflow-card h3,
+.side-quest-grid h3 { margin: 0; font-size: 1.25rem; }
+.workflow-card > p,
+.side-quest-grid article > p:last-child { color: var(--color-muted); }
+.workflow-steps { display: grid; gap: 0.65rem; margin: 1.2rem 0 0; padding: 0; list-style: none; counter-reset: workflow; }
+.workflow-steps li { display: grid; grid-template-columns: 1.65rem minmax(0, 1fr); gap: 0.55rem; align-items: baseline; border-top: 1px solid var(--color-line); padding-top: 0.65rem; }
+.workflow-steps li::before { color: var(--color-accent-strong); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.72rem; font-weight: 800; content: counter(workflow, decimal-leading-zero); counter-increment: workflow; }
+
+.about-now { max-width: 58rem; }
+.about-now h2 { margin: 0; font-size: clamp(2.25rem, 5vw, 4rem); letter-spacing: -0.05em; line-height: 1.04; }
+.about-now h3 { max-width: 24ch; margin: 1.5rem 0 0; font-size: clamp(1.5rem, 3vw, 2.3rem); }
+.about-now > p:not(.eyebrow) { max-width: 48rem; color: var(--color-muted); font-size: 1.1rem; }
+.now-stages,
+.interest-chips { display: flex; flex-wrap: wrap; gap: 0.55rem; margin: 1.5rem 0 0; padding: 0; list-style: none; }
+.now-stages li,
+.interest-chips li { border: 1px solid var(--color-line); border-radius: 999px; background: var(--color-surface); padding: 0.45rem 0.75rem; font-size: 0.85rem; font-weight: 650; }
+.side-quest-grid .journey-state { margin: 0 0 0.8rem !important; }
+.side-quest-life { display: grid; gap: 2rem; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 2.5rem; border-top: 1px solid var(--color-line); padding-top: 2rem; }
+.side-quest-life h3 { margin: 0; font-size: 1rem; }
+.side-quest-life .interest-chips { margin-top: 0.8rem; }
+
 .cv-page { padding-top: clamp(4rem, 10vw, 8rem); padding-bottom: clamp(5rem, 10vw, 8rem); }
 .cv-intro { max-width: 48rem; margin-bottom: 3rem; }
 .cv-intro h1 { margin: 0; font-size: clamp(2.75rem, 7vw, 5.75rem); letter-spacing: -0.055em; line-height: 1; }
@@ -919,6 +978,10 @@ a {
   .about-interest-grid article,
   .about-interest-grid article + article { min-height: auto; border-left: 0; padding: 1.25rem 0; }
   .about-interest-grid span { margin-bottom: 1rem; }
+  .workflow-grid,
+  .side-quest-grid,
+  .side-quest-life { grid-template-columns: 1fr; }
+  .education-journey li { grid-template-columns: 2.5rem minmax(0, 1fr); }
   .connection-flow { align-items: flex-start; flex-direction: column; }
   .connection-flow b { transform: rotate(90deg); }
   .project-meta { grid-template-columns: 1fr; }

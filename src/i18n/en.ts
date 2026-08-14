@@ -11,7 +11,7 @@ const en = {
   footer: { label: 'Footer navigation', cv: 'CV', emailPending: '3036064607@qq.com' },
   meta: {
     home: { title: 'Liangwei Hu | Personal Technical Portfolio', description: 'Meet Liangwei Hu, a USTC graduate student working on SPAD readout IC design and exploring embodied AI, quantum computing, and embedded systems.' },
-    about: { title: 'About | Liangwei Hu', description: 'A technical path from physical systems and intelligent hardware toward robotics and embodied AI.' },
+    about: { title: 'About | Liangwei Hu', description: "Liangwei Hu's education journey from Xuancheng to Wuhan University and USTC, plus the engineering and physics / quantum tracks behind his current work." },
     projects: { title: 'Projects | Liangwei Hu', description: 'Research and engineering case studies across integrated circuits, robotics, and embodied AI.' },
     cv: { title: 'CV | Liangwei Hu', description: 'CVs for integrated circuits and embodied AI, with a Quantum Computing track pending verification.' },
   },
@@ -58,17 +58,11 @@ const en = {
     contact: { eyebrow: '05 / Contact', title: "Let's Connect", description: 'For a project conversation, research exchange, or a simple hello, these are the best ways to reach me.', cvAction: 'View CV' },
   },
   about: {
-    hero: { eyebrow: 'About', title: 'A technical path from physical signals to intelligent action.', summary: 'I began with physics and hardware, then followed signals through circuits and systems toward robotics and embodied learning—keeping the chronology and evidence boundary of each stage visible.', visualLabel: 'A conceptual path from hardware to embodied systems', visualSteps: ['Hardware', 'Signal', 'System', 'Action'] },
-    statement: { eyebrow: 'A way of working', title: 'I like following a question across its layers.', body: 'That can mean starting with an electronic or sensing problem, then asking how its signals are processed, how a system makes use of them, and what changes when the system must operate in the physical world. This is a direction rather than a finished biography: the details belong to future, verified project writing.' },
-    journey: {
-      eyebrow: 'A developing path', title: 'My technical journey', intro: 'This is not a second CV. It is a chronology of questions: understanding physical constraints, making signals usable, and then building systems that can perceive, decide, and act.', statusLabel: '01 / 06',
-    },
-    education: { eyebrow: 'Context', title: 'Education', body: 'This is a concise map of the educational context behind the journey. GPA, coursework, and source classifications belong to the CV page.', focusLabel: 'Research focus' },
-    interests: { eyebrow: 'Questions worth returning to', title: 'Research interests', items: [['Intelligent hardware', 'The relationship between sensing, signals, circuits, and computation.'], ['Robotics', 'Systems that make perception and action work together in a physical setting.'], ['Embodied AI', 'Learning and control that must account for a robot, its environment, and feedback.']] },
-    connection: { eyebrow: 'One connected view', title: 'How the interests connect', visualLabel: 'Physical systems lead to sensing and signals, which lead to computation, which lead to embodied action.', steps: ['Physical systems', 'Sensing & signals', 'Computation', 'Embodied action'], body: 'The areas are distinct, but they meet at the same practical question: how can a technical system perceive, decide, and act with care for the constraints underneath it?' },
-    profile: { eyebrow: 'Working across layers', title: 'Technical profile', items: [['Hardware & signals', 'Thinking from device and signal behaviour toward an implementable system.'], ['System building', 'Connecting components across interfaces instead of treating them as isolated tools.'], ['Research practice', 'Using experiments, iteration, and clear documentation to make questions testable.']] },
-    focus: { eyebrow: 'Now', title: 'Current focus', body: 'I am continuing to connect work across integrated circuits, robotics, and embodied AI—while keeping the next concrete questions open until they can be described with evidence.', pending: 'TODO: Replace with a verified description of current research priorities.' },
-    outside: { eyebrow: 'Perspective', title: 'Outside research', body: 'Good engineering benefits from curiosity beyond any one tool or discipline. This space is intentionally small until personal interests can be expressed in the author’s own, verified words.', pending: 'TODO: Add a personal note if and when it feels useful.' },
+    education: { eyebrow: '01 / Education', title: 'Education Journey', intro: 'From primary, middle, and high school in Xuancheng to Wuhan University and USTC. No dates are published for the first three schools because none were provided.' },
+    technicalJourney: { eyebrow: '02 / Technical Journey', title: 'Two technical tracks', intro: 'Engineering work and physics / quantum study influence each other without being forced into one timeline. Every stage stays within the evidence available from coursework, resumes, or project materials.' },
+    howIWork: { eyebrow: '03 / How I Work', title: 'Run the full path, then go deeper' },
+    now: { eyebrow: '04 / Now', title: 'Now' },
+    sideQuests: { eyebrow: '05 / Side Quests', title: 'Side Quests', interestsLabel: 'Life & Interests', gamesLabel: 'Games I Play' },
   },
   projects: {
     intro: { eyebrow: 'Engineering & Research', title: 'Projects', description: 'Project details remain explicitly marked TODO until verified.' },

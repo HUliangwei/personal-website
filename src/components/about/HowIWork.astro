@@ -1,0 +1,32 @@
+---
+import type { AboutContent } from '../../data/about';
+
+interface Props {
+  content: AboutContent;
+  eyebrow: string;
+  title: string;
+}
+
+const { content, eyebrow, title } = Astro.props;
+---
+
+<section class="section" data-about-section="how-i-work" aria-labelledby="how-i-work-title">
+  <div class="container">
+    <div class="section-heading about-work-heading">
+      <p class="eyebrow">{eyebrow}</p>
+      <h2 id="how-i-work-title">{title}</h2>
+      <p>{content.workflowIntro}</p>
+    </div>
+    <div class="workflow-grid">
+      {content.workflows.map((workflow) => (
+        <article class="workflow-card">
+          <h3>{workflow.title}</h3>
+          <p>{workflow.context}</p>
+          <ol class="workflow-steps" aria-label={workflow.context}>
+            {workflow.steps.map((step) => <li>{step}</li>)}
+          </ol>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>

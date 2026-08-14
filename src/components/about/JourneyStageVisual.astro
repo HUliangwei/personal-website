@@ -1,11 +1,12 @@
 ---
 import type { JourneyMotif } from '../../data/journey';
+import type { AboutJourneyMotif } from '../../data/about';
 import type { Locale } from '../../i18n/types';
 
 interface Props {
   id: string;
   locale: Locale;
-  motif: JourneyMotif;
+  motif: JourneyMotif | AboutJourneyMotif;
   title: string;
 }
 
@@ -24,7 +25,8 @@ const description = locale === 'zh'
   <path class="journey-visual-grid" d="M20 42H340M20 90H340M20 138H340M68 20V160M132 20V160M196 20V160M260 20V160M324 20V160" />
   {motif === 'physics' && <g class="journey-visual-signal"><path d="M30 110C60 110 64 48 96 48s38 82 70 82 39-52 71-52 36 28 83 28"/><circle cx="96" cy="48" r="7"/><circle cx="237" cy="78" r="7"/></g>}
   {motif === 'robot' && <g class="journey-visual-blocks"><rect x="34" y="58" width="66" height="54" rx="9"/><path d="M100 85h44m42 0h40m42 0h42"/><rect x="144" y="58" width="42" height="54" rx="9"/><rect x="226" y="58" width="42" height="54" rx="9"/><circle cx="316" cy="85" r="24"/><path d="M304 116v18m24-18v18"/></g>}
-  {motif === 'hfss' && <g class="journey-visual-field"><path d="M48 124V58l78-24 78 24v66l-78 24z"/><path d="M126 34v66m-78-42 78 42 78-42M48 124l78-24 78 24"/><path d="M228 52c28 8 54 7 84-4M222 78c34 10 64 9 102-5M220 105c31 9 60 8 94-4"/></g>}
+  {(motif === 'electronics' || motif === 'hardware') && <g class="journey-visual-blocks"><rect x="34" y="58" width="66" height="54" rx="9"/><path d="M100 85h44m42 0h40m42 0h42"/><rect x="144" y="58" width="42" height="54" rx="9"/><rect x="226" y="58" width="42" height="54" rx="9"/><rect x="268" y="58" width="58" height="54" rx="9"/></g>}
+  {(motif === 'hfss' || motif === 'quantum') && <g class="journey-visual-field"><path d="M48 124V58l78-24 78 24v66l-78 24z"/><path d="M126 34v66m-78-42 78 42 78-42M48 124l78-24 78 24"/><path d="M228 52c28 8 54 7 84-4M222 78c34 10 64 9 102-5M220 105c31 9 60 8 94-4"/></g>}
   {motif === 'spad' && <g class="journey-visual-blocks"><circle cx="45" cy="90" r="18"/><path d="M63 90h29m52 0h28m52 0h28"/><rect x="92" y="60" width="52" height="60" rx="8"/><rect x="172" y="60" width="52" height="60" rx="8"/><rect x="252" y="60" width="68" height="60" rx="8"/><path d="M105 49V33m13 16V25m13 24V37"/></g>}
   {motif === 'learning' && <g class="journey-visual-learning"><path d="M35 128C78 41 118 151 164 67s84 66 160-22"/><circle cx="35" cy="128" r="7"/><circle cx="164" cy="67" r="7"/><circle cx="324" cy="45" r="7"/><rect x="122" y="31" width="84" height="30" rx="15"/><path d="M145 40v12m19-12v12m19-12v12"/></g>}
   {motif === 'focus' && <g class="journey-visual-focus"><circle cx="180" cy="90" r="26"/><circle cx="180" cy="90" r="61"/><path d="M180 20v44m0 52v44M110 90h44m52 0h44"/><circle cx="180" cy="20" r="6"/><circle cx="250" cy="90" r="6"/><circle cx="180" cy="160" r="6"/><circle cx="110" cy="90" r="6"/></g>}

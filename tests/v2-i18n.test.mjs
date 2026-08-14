@@ -69,8 +69,8 @@ test('V2 publishes localized routes, route-preserving navigation, and complete l
   assert.match(zhHome, /胡良玮/);
   assert.doesNotMatch(zhHome, /胡亮伟/);
 
-  assert.match(page('/about'), /<h1[^>]*>[^<]*技术/);
-  assert.match(page('/en/about'), /<h1[^>]*>[^<]*technical/i);
+  assert.match(page('/about'), /<h1[^>]*>关于我<\/h1>/);
+  assert.match(page('/en/about'), /<h1[^>]*>About Me<\/h1>/);
   assert.match(page('/projects'), /<h1[^>]*>[^<]*项目/);
   assert.match(page('/en/projects'), /<h1[^>]*>[^<]*Projects/i);
   assert.match(page('/cv'), /<h1[^>]*>[^<]*简历/);

@@ -1,0 +1,23 @@
+---
+import type { AboutContent } from '../../data/about';
+
+interface Props {
+  content: AboutContent;
+  eyebrow: string;
+  title: string;
+}
+
+const { content, eyebrow, title } = Astro.props;
+---
+
+<section class="section section-bordered" data-about-section="now" aria-labelledby="about-now-title">
+  <div class="container about-now">
+    <p class="eyebrow">{eyebrow}</p>
+    <h2 id="about-now-title">{title}</h2>
+    <h3>{content.now.title}</h3>
+    <p>{content.now.summary}</p>
+    <ul class="now-stages" aria-label={content.now.title}>
+      {content.now.stages.map((stage) => <li>{stage}</li>)}
+    </ul>
+  </div>
+</section>
