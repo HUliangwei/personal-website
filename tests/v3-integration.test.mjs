@@ -13,10 +13,6 @@ const routePairs = [
   ['/about', '/en/about'],
   ['/projects', '/en/projects'],
   ['/cv', '/en/cv'],
-  ['/projects/spad', '/en/projects/spad'],
-  ['/projects/mobile-robot', '/en/projects/mobile-robot'],
-  ['/projects/quantum-hfss', '/en/projects/quantum-hfss'],
-  ['/projects/lerobot', '/en/projects/lerobot'],
 ];
 const routes = routePairs.flat();
 const maximumPublicationBytes = 10 * 1024 * 1024;
@@ -140,7 +136,7 @@ before(() => {
   });
 });
 
-test('V3 publishes exactly the sixteen bilingual routes with valid links and page landmarks', () => {
+test('V4 publishes exactly eight bilingual routes with valid links and page landmarks', () => {
   const generatedRoutes = filesUnder(dist)
     .filter((file) => file.endsWith(`${sep}index.html`) || file === join(dist, 'index.html'))
     .map(routeForIndex)
@@ -162,7 +158,7 @@ test('V3 publishes exactly the sixteen bilingual routes with valid links and pag
   }
 });
 
-test('V3 locale pairs preserve routes and emit complete localized SEO metadata', () => {
+test('V4 locale pairs preserve routes and emit complete localized SEO metadata', () => {
   for (const [zhRoute, enRoute] of routePairs) {
     for (const [route, language, ogLocale] of [
       [zhRoute, 'zh-CN', 'zh_CN'],
@@ -186,7 +182,7 @@ test('V3 locale pairs preserve routes and emit complete localized SEO metadata',
   }
 });
 
-test('V3 generated copy has no development markers or generic portfolio template phrases', () => {
+test('V4 generated copy has no development markers or generic portfolio template phrases', () => {
   const publicText = routes.map((route) => publicCopy(page(route))).join('\n');
   const forbidden = [
     /TODO/i,
@@ -207,11 +203,11 @@ test('V3 generated copy has no development markers or generic portfolio template
 
   assert.match(visibleText(page('/cv')), /准备中/);
   assert.match(visibleText(page('/en/cv')), /Preparing/);
-  assert.match(visibleText(page('/projects/lerobot')), /尚未核实/);
-  assert.match(visibleText(page('/en/projects/lerobot')), /not yet verified/i);
+  assert.match(visibleText(page('/projects')), /学习主题/);
+  assert.match(visibleText(page('/en/projects')), /Learning Topics/);
 });
 
-test('V3 publishes only the two authorized contact channels', () => {
+test('V4 publishes only the two authorized contact channels', () => {
   const allHtml = routes.map(page).join('\n');
   const contactLinks = new Set([...allHtml.matchAll(/href="((?:mailto|tel):[^"]+)"/g)].map((match) => match[1]));
   assert.deepEqual([...contactLinks].sort(), ['mailto:3036064607@qq.com', 'tel:+8618792293249']);
@@ -269,7 +265,7 @@ test('publication security classification catches quoted and unquoted runtime se
   assert.deepEqual(publicationSecurityViolations({ path: 'public/cv/liangwei-hu-embodied-ai.pdf', size: 264803, text: undefined }), []);
 });
 
-test('V3 publication excludes transcript identifiers, local paths, reference assets, and secrets', () => {
+test('V4 publication excludes transcript identifiers, local paths, reference assets, and secrets', () => {
   const publicFiles = filesUnder(join(root, 'public'));
   const distFiles = filesUnder(dist);
   const publicPdfs = publicFiles
@@ -303,19 +299,14 @@ test('V3 publication excludes transcript identifiers, local paths, reference ass
   assert.equal(homeHtml.includes('/models/hlw.glb'), modelExists, 'the optional model URL is emitted only when the verified file exists');
 });
 
-test('V3 CSS exposes static prerequisites for Task 7 browser viewport QA', () => {
+test('V4 CSS exposes static prerequisites for browser viewport QA', () => {
   const css = readFileSync(join(root, 'src', 'styles', 'global.css'), 'utf8');
   assert.match(css, /body\s*{[^}]*min-width:\s*min\(20rem,\s*100%\);[^}]*overflow-x:\s*hidden;/s);
   assert.match(css, /\.cv-intro h1\s*{[^}]*text-wrap:\s*balance;/s);
-  assert.match(
-    css,
-    /\.project-header h1\s*{[^}]*overflow-wrap:\s*anywhere;/s,
-    'project detail headings wrap long English words instead of overflowing at 320 CSS pixels',
-  );
   assert.match(css, /@media \(max-width:\s*25rem\)/, 'compact query ends at 400 CSS pixels');
   assert.match(css, /@media \(max-width:\s*44rem\)/, 'mobile query ends at 704 CSS pixels');
   assert.match(css, /@media \(max-width:\s*63\.9375rem\)/, 'intermediate query ends below 1024 CSS pixels');
-  assert.match(css, /\.primary-nav a,\s*\.nav-toggle,\s*\.button,\s*\.coursework-item,\s*\.project-filter button\s*{[^}]*min-height:\s*2\.75rem;/s);
+  assert.match(css, /\.primary-nav a,\s*\.nav-toggle,\s*\.button,\s*\.coursework-item\s*{[^}]*min-height:\s*2\.75rem;/s);
   assert.match(css, /:focus-visible\s*{[^}]*outline:\s*3px solid/s);
   assert.match(css, /@media \(hover:\s*none\),\s*\(pointer:\s*coarse\)/);
   assert.match(css, /@media \(prefers-reduced-motion:\s*reduce\)/);

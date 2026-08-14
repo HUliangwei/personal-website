@@ -151,8 +151,7 @@ a {
 .primary-nav a,
 .nav-toggle,
 .button,
-.coursework-item,
-.project-filter button {
+.coursework-item {
   min-height: 2.75rem;
 }
 
@@ -488,15 +487,13 @@ a {
   gap: 1rem;
 }
 
-.text-link,
-.project-card > a {
+.text-link {
   color: var(--color-accent-strong);
   font-weight: 700;
   text-decoration: none;
 }
 
-.text-link:hover,
-.project-card > a:hover {
+.text-link:hover {
   text-decoration: underline;
   text-underline-offset: 0.2em;
 }
@@ -536,27 +533,11 @@ a {
 .project-card {
   display: flex;
   min-width: 0;
-  min-height: 32rem;
   flex-direction: column;
   border: 1px solid var(--color-line);
   border-radius: 0.8rem;
   background: var(--color-surface);
   padding: 1.25rem;
-  transition: border-color 180ms ease-out, box-shadow 180ms ease-out, transform 180ms ease-out;
-}
-
-.project-card:hover {
-  border-color: rgb(11 99 206 / 0.45);
-  box-shadow: var(--shadow-soft);
-  transform: translateY(-3px);
-}
-
-.project-card:hover .project-card-cover,
-.project-card:hover .project-visual-svg { transform: scale(1.018); }
-
-.project-card:focus-within {
-  border-color: rgb(11 99 206 / 0.65);
-  box-shadow: var(--shadow-soft);
 }
 
 .project-mark {
@@ -581,7 +562,7 @@ a {
 }
 
 .project-card-media { overflow: hidden; aspect-ratio: 8 / 3; background: #e8f1fc; }
-.project-card-cover { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform 180ms ease-out; }
+.project-card-cover { display: block; width: 100%; height: 100%; object-fit: cover; }
 
 .project-figure {
   overflow: hidden;
@@ -597,7 +578,7 @@ a {
 .project-visual-flow { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.35rem; min-height: 7.5rem; margin: 0; padding: 1rem; list-style: none; background: linear-gradient(145deg, #eef5fd, #fff 68%); }
 .project-visual-flow li { display: grid; position: relative; min-width: 0; border: 1px solid var(--color-line); border-radius: 0.55rem; background: var(--color-surface); color: var(--color-ink); padding: 0.55rem 0.3rem; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: clamp(0.68rem, 2.8vw, 0.8rem); font-weight: 700; line-height: 1.25; overflow-wrap: anywhere; place-items: center; text-align: center; }
 .project-visual-flow li:not(:last-child)::after { position: absolute; z-index: 1; right: -0.45rem; color: var(--color-accent); content: '→'; }
-.project-visual-svg { display: block; width: 100%; max-width: 100%; height: auto; color: var(--color-accent-strong); transition: transform 180ms ease-out; }
+.project-visual-svg { display: block; width: 100%; max-width: 100%; height: auto; color: var(--color-accent-strong); }
 .project-figure figcaption { display: flex; align-items: center; gap: 0.55rem; border-top: 1px solid var(--color-line); padding: 0.7rem 0.85rem; color: var(--color-muted); font-size: 0.78rem; }
 .project-figure-badge { flex: none; border: 1px solid currentColor; border-radius: 999px; color: var(--color-accent-strong); padding: 0.12rem 0.42rem; font-size: 0.68rem; font-weight: 750; letter-spacing: 0.06em; text-transform: uppercase; }
 .project-figure-badge-simulation { color: #6750a4; }
@@ -632,10 +613,29 @@ a {
   color: var(--color-muted);
 }
 
-.project-card > a { margin-top: 0.75rem; }
-.project-card-link { align-self: flex-start; }
+.project-highlights {
+  display: grid;
+  gap: 0.4rem;
+  margin: 1rem 0 0;
+  padding-left: 1.15rem;
+  color: var(--color-ink);
+  font-size: 0.9rem;
+}
 
-.technology-list {
+.project-highlights li::marker { color: var(--color-accent-strong); }
+
+.project-topic-group { margin-top: 1rem; }
+.project-topic-label {
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 0.72rem;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.technology-list,
+.learning-topic-list {
   display: flex;
   flex-wrap: wrap;
   gap: 0.4rem;
@@ -644,7 +644,8 @@ a {
   list-style: none;
 }
 
-.technology-list li {
+.technology-list li,
+.learning-topic-list li {
   border: 1px solid var(--color-line);
   border-radius: 999px;
   color: var(--color-muted);
@@ -653,69 +654,11 @@ a {
 }
 
 .projects-intro { max-width: 48rem; margin-bottom: 2rem; }
-.projects-intro h1,
-.project-header h1 { margin: 0; font-size: clamp(2.75rem, 7vw, 5.75rem); letter-spacing: -0.055em; line-height: 1; }
-.project-header h1 { overflow-wrap: anywhere; }
+.projects-intro h1 { margin: 0; font-size: clamp(2.75rem, 7vw, 5.75rem); letter-spacing: -0.055em; line-height: 1; }
 .projects-intro > p:last-child,
 .project-summary { color: var(--color-muted); font-size: 1.15rem; }
 
-.project-filter {
-  min-width: 0;
-  width: 100%;
-  max-width: 100%;
-  margin-bottom: 2rem;
-  padding: 0;
-  border: 0;
-}
-
-.project-filter-controls {
-  display: flex;
-  gap: 0.5rem;
-  overflow-x: auto;
-  padding: 0.2rem 0.2rem 0.6rem;
-  scrollbar-width: thin;
-}
-.project-filter-empty { margin: 0.5rem 0 0; color: var(--color-muted); }
-
-.project-filter button {
-  flex: none;
-  border: 1px solid var(--color-line);
-  border-radius: 999px;
-  background: var(--color-surface);
-  color: var(--color-muted);
-  padding: 0.55rem 0.85rem;
-  font: inherit;
-  font-size: 0.875rem;
-  font-weight: 650;
-  cursor: pointer;
-}
-
-.project-filter button:hover,
-.project-filter button[aria-pressed="true"] { border-color: var(--color-accent); background: rgb(11 99 206 / 0.08); color: var(--color-accent-strong); }
-.project-filter button:active { background: rgb(11 99 206 / 0.14); }
-[data-project-card][hidden] { display: none; }
-
-.project-detail-container { max-width: 56rem; }
-.project-back { display: inline-block; margin-bottom: 3rem; }
 .project-summary { max-width: 40rem; }
-.project-meta { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin: 2rem 0; }
-.project-meta div { border-top: 1px solid var(--color-line); padding-top: 0.75rem; }
-.project-meta dt { color: var(--color-muted); font-size: 0.75rem; font-weight: 750; letter-spacing: 0.08em; text-transform: uppercase; }
-.project-meta dd { margin: 0.25rem 0 0; font-weight: 650; }
-.project-cover-placeholder { display: grid; min-height: 16rem; margin: 3rem 0; border: 1px dashed var(--color-line); border-radius: 1rem; background: linear-gradient(145deg, #edf5ff, #fff); color: var(--color-muted); place-content: center; text-align: center; }
-.project-detail-cover { display: block; width: 100%; max-height: 34rem; margin: 3rem 0; border-radius: 1rem; object-fit: cover; }
-.project-cover-placeholder span { font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; }
-.project-cover-placeholder strong { color: var(--color-ink); font-size: 1.1rem; }
-.project-prose { max-width: 46rem; }
-.project-prose h2 { margin: 4rem 0 1rem; font-size: clamp(1.75rem, 4vw, 2.5rem); letter-spacing: -0.04em; }
-.project-prose p,
-.project-prose li { color: var(--color-muted); font-size: 1.05rem; }
-.project-prose p,
-.project-prose li,
-.project-meta dd { overflow-wrap: anywhere; }
-.project-prose a { color: var(--color-accent-strong); font-weight: 650; text-underline-offset: 0.2em; }
-.project-prose code { border-radius: 0.25rem; background: #edf2f8; padding: 0.1em 0.35em; overflow-wrap: anywhere; }
-.project-links { margin-top: 3rem; border-top: 1px solid var(--color-line); padding-top: 2rem; }
 
 .toolkit-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .toolkit-grid article { border-top: 2px solid var(--color-ink); padding-top: 1rem; }
@@ -1013,9 +956,6 @@ a {
   .education-journey li { grid-template-columns: 2.5rem minmax(0, 1fr); }
   .connection-flow { align-items: flex-start; flex-direction: column; }
   .connection-flow b { transform: rotate(90deg); }
-  .project-meta { grid-template-columns: 1fr; }
-  .project-detail .project-figure-canvas { overflow-x: auto; }
-  .project-detail .project-visual-svg { width: 48rem; max-width: none; }
   .education-grid { grid-template-columns: 1fr; }
   .transcript-grid { grid-template-columns: 1fr; }
   .coursework-grade { max-width: none; opacity: 1; transform: none; }
@@ -1043,7 +983,6 @@ a {
 
   .about-hero h1,
   .projects-intro h1,
-  .project-header h1,
   .cv-intro h1 { font-size: clamp(2.5rem, 12vw, 4rem); }
 
   .focus-list,
@@ -1113,19 +1052,8 @@ a {
   .project-card { padding: 1rem; }
 }
 
-@media (hover: none) {
-  .project-card:hover,
-  .project-card:hover .project-visual-svg,
-  .project-card:hover .project-card-cover {
-    transform: none;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .coursework-grade { transition-duration: 0.01ms !important; }
-  .project-card,
-  .project-card-cover,
-  .project-visual-svg,
   .journey-stage-card,
   .journey-progress i {
     opacity: 1 !important;

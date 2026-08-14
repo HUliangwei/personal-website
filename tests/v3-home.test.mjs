@@ -31,7 +31,7 @@ function visibleText(html) {
     .trim();
 }
 
-test('Home introduces Liangwei Hu through the exact shared V3 information architecture', () => {
+test('Home introduces Liangwei Hu through the shared V4 information architecture', () => {
   build();
 
   const contracts = [
@@ -56,7 +56,7 @@ test('Home introduces Liangwei Hu through the exact shared V3 information archit
     for (const heading of headings) assert.match(text, new RegExp(heading.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
     for (const eyebrow of eyebrows) assert.match(text, new RegExp(eyebrow.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
     for (const fact of identity) assert.match(text, new RegExp(fact.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
-    assert.equal((html.match(/<section\b/g) ?? []).length, 6, `${route} renders Hero plus five Home sections`);
+    assert.equal((html.match(/<section\b/g) ?? []).length, 10, `${route} renders six page sections plus four card topic groups`);
     assert.equal((html.match(/data-scene-focus=/g) ?? []).length, 6, `${route} exposes one scene anchor per Home section`);
   }
 });
@@ -87,10 +87,10 @@ test('Current Focus qualifies four interests without presenting all of them as g
   }
 });
 
-test('Selected Projects renders the four concrete V3 identities from the collection', () => {
+test('Selected Projects renders the four concrete V4 identities from the collection', () => {
   const projects = [
-    ['/', ['SPAD 芯片设计', '智能小车', '超导量子计算', '具身智能学习']],
-    ['/en', ['SPAD IC Design', 'Mobile Robot', 'Superconducting Quantum Computing', 'Embodied AI Learning']],
+    ['/', ['SPAD 芯片设计', '视觉引导智能小车', '超导量子计算', '具身智能学习']],
+    ['/en', ['SPAD IC Design', 'Vision-Guided Mobile Robot', 'Superconducting Quantum Computing', 'Embodied AI Learning']],
   ];
 
   for (const [route, titles] of projects) {

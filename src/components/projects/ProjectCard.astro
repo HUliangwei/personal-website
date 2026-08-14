@@ -1,42 +1,41 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import type { Dictionary, Locale } from '../../i18n/types';
-import { localizedPath } from '../../i18n/utils';
 import ProjectVisual from './ProjectVisual.astro';
-interface CardDisplay { title: string; summary: string; date: string; status: string; technologies: readonly string[]; }
-interface Props { project: CollectionEntry<'projects'>; dictionary: Dictionary; locale: Locale; headingLevel?: 2 | 3; display?: CardDisplay; }
-const { project, dictionary, locale, headingLevel = 3, display } = Astro.props;
+interface Props { project: CollectionEntry<'projects'>; dictionary: Dictionary; locale: Locale; headingLevel?: 2 | 3; }
+const { project, dictionary, locale, headingLevel = 3 } = Astro.props;
 const Heading = `h${headingLevel}` as const;
 const content = dictionary.projects;
-const entry = content.entries[project.data.slug as keyof typeof content.entries];
-const title = display?.title ?? entry?.title ?? project.data.title;
-const summary = display?.summary ?? entry?.summary ?? project.data.summary;
 const category = content.categories[project.data.category];
-const status = display?.status ?? project.data.status;
-const technologies = display?.technologies ?? project.data.technologies;
-const projectHref = localizedPath(`/projects/${project.data.slug}`, locale);
 ---
-<article class="project-card" data-project-card data-category={project.data.category} data-project-state={status}>
+<article class="project-card" data-project-card data-project-slug={project.data.slug} data-category={project.data.category} data-project-state={project.data.status}>
   {
     project.data.cover ? (
-      <div class="project-card-media"><img class="project-card-cover" src={project.data.cover} alt={`${title} ${content.coverAltSuffix}`} loading="lazy" /></div>
+      <div class="project-card-media"><img class="project-card-cover" src={project.data.cover} alt={`${project.data.title} ${content.coverAltSuffix}`} loading="lazy" /></div>
     ) : (
       <ProjectVisual slug={project.data.slug} locale={locale} compact />
     )
   }
   <div class="project-card-meta-line">
     <p class="project-category" data-project-field="category">{category}</p>
-    <p class="project-date"><span class="sr-only">{content.detail.date}: </span>{display?.date ?? project.data.date}</p>
+    <p class="project-date"><span class="sr-only">{content.date}: </span><span data-project-field="date">{project.data.date}</span></p>
   </div>
-  <Heading data-project-field="title">{title}</Heading>
-  <p class="project-status"><span class="project-status-label">{content.detail.status}: </span><span data-project-field="status">{status}</span></p>
-  <p class="project-summary">{summary}</p>
-  {technologies.length ? (
-    <ul class="technology-list" aria-label={content.technologies}>
-      {technologies.map((technology) => <li>{technology}</li>)}
-    </ul>
-  ) : (
-    <p class="project-technology-state">{content.detail.technologyState}</p>
-  )}
-  <a class="project-card-link" href={projectHref}>{content.viewProject} <span aria-hidden="true">→</span></a>
+  <Heading data-project-field="title">{project.data.title}</Heading>
+  <p class="project-status"><span class="project-status-label">{content.status}: </span><span data-project-field="status">{project.data.status}</span></p>
+  <p class="project-summary">{project.data.summary}</p>
+  <ul class="project-highlights" aria-label={content.highlights}>
+    {project.data.highlights.map((highlight) => <li>{highlight}</li>)}
+  </ul>
+  {project.data.technologies.length ? (
+    <section class="project-topic-group" aria-label={content.completedTools}>
+      <p class="project-topic-label">{content.completedTools}</p>
+      <ul class="technology-list">{project.data.technologies.map((technology) => <li>{technology}</li>)}</ul>
+    </section>
+  ) : null}
+  {project.data.learningTopics.length ? (
+    <section class="project-topic-group" aria-label={content.learningTopics}>
+      <p class="project-topic-label">{content.learningTopics}</p>
+      <ul class="learning-topic-list">{project.data.learningTopics.map((topic) => <li>{topic}</li>)}</ul>
+    </section>
+  ) : null}
 </article>

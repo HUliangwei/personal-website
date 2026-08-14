@@ -25,7 +25,7 @@ function buildSite() {
 test('Phase 6 production output is complete, portable, and internally connected', () => {
   buildSite();
 
-  const routes = ['/', '/about', '/projects', '/projects/spad', '/projects/lerobot', '/projects/mobile-robot', '/projects/quantum-hfss', '/cv'];
+  const routes = ['/', '/about', '/projects', '/cv', '/en', '/en/about', '/en/projects', '/en/cv'];
   const htmlPages = routes.map((route) => [route, readFileSync(outputFor(route), 'utf8')]);
 
   assert.ok(existsSync(join(dist, 'robots.txt')), 'robots.txt is published');
@@ -42,7 +42,7 @@ test('Phase 6 production output is complete, portable, and internally connected'
   }
 
   const allHtml = htmlPages.map(([, html]) => html).join('\n');
-  for (const legacy of ['Welcome to my personal website.', 'Graduate Student', 'Cloudflare deployment test']) {
+  for (const legacy of ['Welcome to my personal website.', 'Cloudflare deployment test']) {
     assert.doesNotMatch(allHtml, new RegExp(legacy, 'i'), `legacy copy is absent: ${legacy}`);
   }
   assert.match(htmlPages.find(([route]) => route === '/about')[1], /class="about-hero-visual" role="img" aria-label=/);
@@ -58,13 +58,14 @@ test('Phase 6 production output is complete, portable, and internally connected'
   assert.doesNotMatch(wrangler, /main|compatibility_flags/);
 });
 
-test('project filters contain their scroll row within the mobile viewport', () => {
-  const component = readFileSync(join(root, 'src/components/projects/ProjectFilter.astro'), 'utf8');
+test('project cards remain non-interactive overview articles', () => {
+  const component = readFileSync(join(root, 'src/components/projects/ProjectCard.astro'), 'utf8');
   const styles = readFileSync(join(root, 'src/styles/global.css'), 'utf8');
 
-  assert.match(component, /<fieldset[^>]*class="project-filter"[^>]*>[^]*<div class="project-filter-controls"[^>]*>/);
-  assert.match(styles, /\.project-filter\s*{[^}]*min-width:\s*0;[^}]*width:\s*100%;[^}]*max-width:\s*100%;/s);
-  assert.match(styles, /\.project-filter-controls\s*{[^}]*display:\s*flex;[^}]*overflow-x:\s*auto;/s);
+  assert.match(component, /<article class="project-card"/);
+  assert.match(component, /<ul class="project-highlights"/);
+  assert.doesNotMatch(component, /localizedPath|projectHref|project-card-link|<a /);
+  assert.doesNotMatch(styles, /\.project-filter|\.project-card:hover/);
 });
 
 test('final content semantics and truthful fallbacks are present', () => {
@@ -72,17 +73,13 @@ test('final content semantics and truthful fallbacks are present', () => {
 
   const home = readFileSync(join(root, 'dist', 'en', 'index.html'), 'utf8');
   const projects = readFileSync(join(root, 'dist', 'en', 'projects', 'index.html'), 'utf8');
-  const robotics = readFileSync(join(root, 'dist', 'en', 'projects', 'mobile-robot', 'index.html'), 'utf8');
 
-  assert.match(projects, /<h2[^>]*>Mobile Robot<\/h2>/);
-  assert.match(home, /<h3[^>]*>Mobile Robot<\/h3>/);
-  assert.doesNotMatch(projects, />[^<]*ROS2[^<]*</);
-  assert.doesNotMatch(robotics, /an Robotics project/i);
-  assert.match(robotics, /No public project link is available at present/);
+  assert.match(projects, /<h2[^>]*>Vision-Guided Mobile Robot<\/h2>/);
+  assert.match(home, /<h3[^>]*>Vision-Guided Mobile Robot<\/h3>/);
+  assert.match(projects, /Learning Topics[\s\S]*?<li>ROS2<\/li>/);
+  assert.doesNotMatch(projects, /href="\/en\/projects\//);
   assert.match(home, /href="\/en\/cv"[^>]*>CV<\/a>/);
   assert.match(home, /href="mailto:3036064607@qq\.com"/);
 
-  const projectLayout = readFileSync(join(root, 'src/layouts/ProjectLayout.astro'), 'utf8');
-  assert.match(projectLayout, /href=\{link\.url\}/);
-  assert.doesNotMatch(projectLayout, /href=\{link\.href\}/);
+  assert.equal(existsSync(join(root, 'src/layouts/ProjectLayout.astro')), false);
 });

@@ -15,6 +15,8 @@ const projects = defineCollection({
     locale: z.enum(['zh', 'en']),
     category: z.enum(PROJECT_CATEGORIES),
     summary: z.string(),
+    highlights: z.array(z.string()).min(2).max(3),
+    learningTopics: z.array(z.string()).max(6),
     date: z.string(),
     status: z.string(),
     role: z.string(),

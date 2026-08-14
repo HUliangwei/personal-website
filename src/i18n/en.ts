@@ -36,12 +36,6 @@ const en = {
     },
     projects: {
       eyebrow: '02 / Selected Projects', title: 'Selected Projects', all: 'All projects',
-      entries: {
-        spad: { title: 'SPAD IC Design', summary: 'A 1×16-channel mixed-signal SPAD readout IC at post-layout simulation and pre-tapeout stage.', date: '2024.09–Present', status: 'Graduate Research / In Progress', technologies: ['Cadence Virtuoso', 'Spectre', 'Calibre', 'FPGA'] },
-        'mobile-robot': { title: 'Mobile Robot', summary: 'An undergraduate system connecting Python / YOLO vision, ROS task logic, MCU control, and motor actuation.', date: 'Undergraduate project', status: 'Completed', technologies: ['Python', 'YOLO', 'ROS', 'MCU'] },
-        'quantum-hfss': { title: 'Superconducting Quantum Computing', summary: 'HFSS 3D electromagnetic simulation and geometry analysis of microwave structures related to superconducting quantum chips.', date: '2023.09–2023.12', status: 'Completed / Simulation Only', technologies: ['Ansys HFSS', '3D EM Simulation', 'Parameter Sweep'] },
-        lerobot: { title: 'Embodied AI Learning', summary: 'An in-progress learning map for robot learning; it does not claim an unsupported end-to-end implementation.', date: 'Ongoing learning', status: 'Learning Project · In Progress', technologies: [] },
-      },
     },
     toolkit: {
       eyebrow: '03 / Technical Toolkit', title: 'Technical Toolkit', description: 'Tools and methods drawn from the work shown here; learning directions remain visibly separate from completed experience.',
@@ -66,15 +60,8 @@ const en = {
   },
   projects: {
     intro: { eyebrow: 'Projects', title: 'Four Core Projects', description: 'Four bodies of work at different stages: IC design, mobile robotics, electromagnetic simulation, and embodied AI learning. Completed, in-progress, and planned work stay visibly distinct.' },
-    filterLabel: 'Filter projects by category', emptyState: 'No projects in this category yet.', allCategory: 'All', viewProject: 'View project', technologies: 'Technologies', coverPending: 'Conceptual diagram used', coverAltSuffix: 'cover',
+    date: 'Date', status: 'Status', highlights: 'Highlights', completedTools: 'Completed Tools', learningTopics: 'Learning Topics', coverPending: 'Conceptual diagram used', coverAltSuffix: 'cover',
     categories: { 'Integrated Circuits': 'IC Design', Robotics: 'Robotics / Embedded', 'Embodied AI': 'Embodied AI', Quantum: 'Quantum Computing', Software: 'Software' },
-    entries: {
-      spad: { title: 'SPAD IC Design', summary: 'A 1×16-channel mixed-signal readout IC for SPAD single-photon detection, now at post-layout simulation and pre-tapeout stage.' },
-      lerobot: { title: 'Embodied AI Learning', summary: 'A status-based learning map whose planned tools and directions are not presented as completed technical experience.' },
-      'mobile-robot': { title: 'Mobile Robot', summary: 'An undergraduate mobile-robot project connecting Python / YOLO vision, ROS, upper/lower-controller communication, MCU, and motor control.' },
-      'quantum-hfss': { title: 'Superconducting Quantum Computing', summary: 'HFSS 3D electromagnetic simulation and geometry analysis of microwave structures related to superconducting quantum chips during a Baidu internship.' },
-    },
-    detail: { back: 'All projects', date: 'Date', status: 'Status', role: 'Role', technologies: 'Technologies', links: 'Links', linksPending: 'No public project link is available at present.', coverPending: 'Conceptual diagram used', descriptionPending: 'The case study reflects the current public evidence.', descriptionSuffix: 'Planned topics remain separate from completed work.', technologyState: 'Planned topics are not yet verified and are not listed as completed technologies.' },
   },
   cv: {
     eyebrow: 'CV', title: 'CVs for different technical directions.', intro: 'Review my academic background, course grades, and three technical tracks; published CVs can be previewed, opened, or downloaded on demand.',

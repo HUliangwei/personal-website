@@ -31,7 +31,7 @@ test('Home renders the personal V3 overview without scaffold copy', () => {
     assert.match(home, new RegExp(`<h[1-2][^>]*>${heading}</h[1-2]>`));
   }
 
-  for (const href of ['/en/projects', '/en/cv', '/en/projects/spad', '/en/projects/lerobot', '/en/projects/mobile-robot', '/en/projects/quantum-hfss']) {
+  for (const href of ['/en/projects', '/en/cv']) {
     assert.match(home, new RegExp(`<a[^>]*href="${href}"`));
   }
 

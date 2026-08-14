@@ -19,7 +19,7 @@ function page(route) {
   return readFileSync(outputFor(route), 'utf8');
 }
 
-test('V2 publishes localized routes, route-preserving navigation, and complete locale SEO', () => {
+test('V4 publishes localized routes, route-preserving navigation, and complete locale SEO', () => {
   execFileSync(process.execPath, ['node_modules/astro/bin/astro.mjs', 'build'], {
     cwd: root,
     encoding: 'utf8',
@@ -31,10 +31,6 @@ test('V2 publishes localized routes, route-preserving navigation, and complete l
     ['/about', '/en/about'],
     ['/projects', '/en/projects'],
     ['/cv', '/en/cv'],
-    ['/projects/spad', '/en/projects/spad'],
-    ['/projects/lerobot', '/en/projects/lerobot'],
-    ['/projects/mobile-robot', '/en/projects/mobile-robot'],
-    ['/projects/quantum-hfss', '/en/projects/quantum-hfss'],
   ];
 
   for (const [zhRoute, enRoute] of routePairs) {
@@ -75,13 +71,7 @@ test('V2 publishes localized routes, route-preserving navigation, and complete l
   assert.match(page('/en/projects'), /<h1[^>]*>[^<]*Projects/i);
   assert.match(page('/cv'), /<h1[^>]*>[^<]*简历/);
   assert.match(page('/en/cv'), /<h1[^>]*>[^<]*CV/i);
-  assert.doesNotMatch(page('/en/projects'), />[^<]*ROS2[^<]*</);
-
-  for (const route of ['/en/projects/spad']) {
-    const detail = page(route);
-    assert.match(detail, /<div class="project-prose"><h2[^>]*>Overview<\/h2>/, `${route} renders the collection MDX body`);
-    assert.match(detail, /<h2[^>]*>What I Learned<\/h2>/, `${route} preserves the full MDX case-study structure`);
-  }
+  assert.match(page('/en/projects'), /Learning Topics[\s\S]*?<li>ROS2<\/li>/);
 
   for (const route of routePairs.flat()) {
     const html = page(route);

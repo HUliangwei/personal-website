@@ -11,18 +11,10 @@ const routes = [
   '/',
   '/about',
   '/projects',
-  '/projects/spad',
-  '/projects/lerobot',
-  '/projects/mobile-robot',
-  '/projects/quantum-hfss',
   '/cv',
   '/en',
   '/en/about',
   '/en/projects',
-  '/en/projects/spad',
-  '/en/projects/lerobot',
-  '/en/projects/mobile-robot',
-  '/en/projects/quantum-hfss',
   '/en/cv',
 ];
 
@@ -80,8 +72,8 @@ test('V2 publishes every bilingual route with landmarks, one primary heading, an
   }
 });
 
-test('language switches preserve the page and project slug in both directions', () => {
-  const pairs = routes.slice(0, 8).map((zh) => [zh, zh === '/' ? '/en' : `/en${zh}`]);
+test('language switches preserve the page in both directions', () => {
+  const pairs = ['/', '/about', '/projects', '/cv'].map((zh) => [zh, zh === '/' ? '/en' : `/en${zh}`]);
   for (const [zh, en] of pairs) {
     assert.match(readFileSync(outputFor(zh), 'utf8'), new RegExp(`href="${en}"[^>]*data-language-switch`));
     assert.match(readFileSync(outputFor(en), 'utf8'), new RegExp(`href="${zh}"[^>]*data-language-switch`));
