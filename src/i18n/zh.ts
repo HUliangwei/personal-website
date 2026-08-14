@@ -154,7 +154,14 @@ const zh = {
   cv: {
     eyebrow: '简历',
     title: '面向不同技术方向的简历。',
-    intro: '选择一个方向，可预览、打开或下载对应 PDF。',
+    intro: '查看学业背景、课程成绩与三个技术方向；已发布的简历可按需预览、打开或下载。',
+    sections: {
+      versionsEyebrow: '简历版本',
+      versionsTitle: '面向三个技术方向',
+      transcriptsEyebrow: '公开成绩单',
+      transcriptsTitle: '学业成绩单',
+      transcriptsIntro: '原始成绩单包含身份与验证信息，不会直接发布；当前两份公开脱敏版均在准备中。',
+    },
     tracks: [
       {
         title: '集成电路',
@@ -183,7 +190,7 @@ const zh = {
       download: '下载 PDF',
       fallbackPrefix: '浏览器无法内嵌显示此 PDF。请改为',
       fallbackLink: '打开 PDF',
-      comingSoon: '即将提供——待核实的量子计算简历 PDF 发布后会在此补充。',
+      comingSoon: '准备中——内容核实完成后即将提供量子计算简历。',
     },
   },
 } as const;

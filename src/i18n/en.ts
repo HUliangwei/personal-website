@@ -77,13 +77,20 @@ const en = {
     detail: { back: 'All projects', date: 'Date', status: 'Status', role: 'Role', technologies: 'Technologies', links: 'Links', linksPending: 'No public project link is available at present.', coverPending: 'Conceptual diagram used', descriptionPending: 'The case study reflects the current public evidence.', descriptionSuffix: 'Planned topics remain separate from completed work.', technologyState: 'Planned topics are not yet verified and are not listed as completed technologies.' },
   },
   cv: {
-    eyebrow: 'CV', title: 'CVs for different technical directions.', intro: 'Select a track to preview, open, or download its PDF.',
+    eyebrow: 'CV', title: 'CVs for different technical directions.', intro: 'Review my academic background, course grades, and three technical tracks; published CVs can be previewed, opened, or downloaded on demand.',
+    sections: {
+      versionsEyebrow: 'CV Versions',
+      versionsTitle: 'Three technical tracks',
+      transcriptsEyebrow: 'Public transcripts',
+      transcriptsTitle: 'Academic transcripts',
+      transcriptsIntro: 'The originals contain identity and verification details, so they are never published directly; both public redacted copies are currently being prepared.',
+    },
     tracks: [
       { title: 'Integrated Circuits', description: 'A CV tailored to integrated-circuit design and related engineering work.', pdf: '/cv/liangwei-hu-ic-design.pdf', available: true },
       { title: 'Embodied AI', description: 'A CV tailored to robotics, embodied intelligence, and AI systems work.', pdf: '/cv/liangwei-hu-embodied-ai.pdf', available: true },
       { title: 'Quantum Computing', description: 'A dedicated Quantum Computing CV will be published after its contents are verified.', pdf: '', available: false },
     ],
-    actions: { groupSuffix: 'PDF actions', preview: 'Preview PDF', hidePreview: 'Hide preview', open: 'Open PDF', download: 'Download PDF', fallbackPrefix: 'Your browser cannot display this PDF inline.', fallbackLink: 'Open PDF', comingSoon: 'Coming soon — TODO: add the verified Quantum Computing CV PDF when it is available.' },
+    actions: { groupSuffix: 'PDF actions', preview: 'Preview PDF', hidePreview: 'Hide preview', open: 'Open PDF', download: 'Download PDF', fallbackPrefix: 'Your browser cannot display this PDF inline.', fallbackLink: 'Open PDF', comingSoon: 'Preparing — Coming soon after the Quantum Computing CV contents are verified.' },
   },
 } as const satisfies Dictionary;
 

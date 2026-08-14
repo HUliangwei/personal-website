@@ -942,8 +942,10 @@ a {
 .education-coursework { margin-top: 1.5rem; border-top: 1px solid var(--color-line); padding-top: 1rem; }
 .education-coursework h4 { margin: 0; font-size: 0.85rem; letter-spacing: 0.04em; }
 .education-translation-note { margin: 0.5rem 0 0; color: var(--color-muted); font-size: 0.78rem; }
-.education-coursework ul { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.8rem 0 0; padding: 0; list-style: none; }
-.education-coursework li { border: 1px solid var(--color-line); border-radius: 999px; color: var(--color-muted); padding: 0.25rem 0.6rem; font-size: 0.78rem; }
+.coursework-list { display: flex; flex-wrap: wrap; gap: 0.45rem; margin: 0.8rem 0 0; padding: 0; list-style: none; }
+.coursework-item { display: inline-flex; max-width: 100%; min-width: 0; align-items: baseline; border: 1px solid var(--color-line); border-radius: 999px; color: var(--color-muted); padding: 0.3rem 0.65rem; font-size: 0.78rem; }
+.coursework-label { min-width: 0; overflow-wrap: anywhere; }
+.coursework-grade { flex: 0 0 auto; margin-inline-start: 0.4rem; color: var(--color-accent-strong); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-weight: 800; opacity: 1; transition: max-width 180ms ease, margin 180ms ease, opacity 150ms ease, transform 180ms ease; }
 .cv-versions { margin-top: clamp(4rem, 8vw, 7rem); }
 .cv-grid { display: grid; gap: 1.5rem; }
 .cv-card { border: 1px solid var(--color-line); border-radius: 1rem; background: var(--color-surface); padding: clamp(1.25rem, 4vw, 2rem); }
@@ -956,6 +958,23 @@ a {
 .cv-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1rem; }
 .cv-card-unavailable { border-style: dashed; background: linear-gradient(145deg, #edf5ff, #fff); }
 .cv-coming-soon { margin: 0; color: var(--color-accent-strong); font-weight: 650; }
+.transcripts { margin-top: clamp(4rem, 8vw, 7rem); }
+.transcripts-heading { margin-bottom: 2rem; }
+.transcripts-heading > p:last-child { max-width: 48rem; }
+.transcript-grid { display: grid; gap: 1.5rem; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.transcript-card { display: flex; min-width: 0; align-items: baseline; justify-content: space-between; gap: 1rem; border: 1px dashed var(--color-line); border-radius: 1rem; background: var(--color-surface); padding: clamp(1.25rem, 3vw, 2rem); }
+.transcript-card h3 { margin: 0; font-size: clamp(1.25rem, 2.5vw, 1.7rem); }
+.transcript-card p { margin: 0; color: var(--color-accent-strong); font-weight: 750; }
+
+@media (hover: hover) and (pointer: fine) {
+  .coursework-grade { overflow: hidden; max-width: 0; margin-inline-start: 0; opacity: 0; transform: translateX(-0.25rem); white-space: nowrap; }
+  .coursework-item:hover .coursework-grade,
+  .coursework-item:focus .coursework-grade { max-width: 10rem; margin-inline-start: 0.4rem; opacity: 1; transform: none; }
+}
+
+@media (hover: none), (pointer: coarse) {
+  .coursework-grade { max-width: none; opacity: 1; transform: none; }
+}
 
 @media (max-width: 63.9375rem) {
   .project-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -988,6 +1007,8 @@ a {
   .project-detail .project-figure-canvas { overflow-x: auto; }
   .project-detail .project-visual-svg { width: 48rem; max-width: none; }
   .education-grid { grid-template-columns: 1fr; }
+  .transcript-grid { grid-template-columns: 1fr; }
+  .coursework-grade { max-width: none; opacity: 1; transform: none; }
   .education-card-header,
   .cv-card-copy { align-items: flex-start; flex-direction: column; }
   .education-source { max-width: none; text-align: left; }
@@ -1091,6 +1112,7 @@ a {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .coursework-grade { transition-duration: 0.01ms !important; }
   .project-card,
   .project-card-cover,
   .project-visual-svg,
@@ -1114,6 +1136,8 @@ a {
   .project-card,
   .toolkit-grid article,
   .cv-card,
+  .coursework-item,
+  .transcript-card,
   .home-scene,
   .system-visual,
   .about-hero-visual,

@@ -17,6 +17,7 @@ export interface AcademicProfileCopy {
   periodSource: string;
   rank: string;
   selectedCoursework: string;
+  gradeLabel: string;
   researchFocus: string;
   resumeSource: string;
   editorialTranslationNote: string;
@@ -26,12 +27,13 @@ export const academicProfileCopyByLocale: Record<Locale, AcademicProfileCopy> = 
   zh: {
     eyebrow: '学术档案',
     title: '教育与学术基础',
-    intro: '仅展示经现有材料核实且适合公开的学术信息；不公开成绩单、成绩明细或身份标识。',
+    intro: '展示经现有材料核实且适合公开的学术信息与精选课程成绩；原始成绩单和身份标识仍不公开。',
     gpa: 'GPA',
     officialSource: '来源：官方成绩单',
     periodSource: '学习时间来源：本人简历',
     rank: '排名',
     selectedCoursework: '精选课程',
+    gradeLabel: '成绩',
     researchFocus: '研究方向',
     resumeSource: '来源：本人简历',
     editorialTranslationNote: '',
@@ -39,12 +41,13 @@ export const academicProfileCopyByLocale: Record<Locale, AcademicProfileCopy> = 
   en: {
     eyebrow: 'Academic Profile',
     title: 'Education and academic foundation',
-    intro: 'Only verified, publication-safe academic information is shown; transcripts, individual grades, and personal identifiers remain private.',
+    intro: 'Verified, publication-safe academic information and selected course grades are shown; original transcripts and personal identifiers remain private.',
     gpa: 'GPA',
     officialSource: 'Source: official transcript',
     periodSource: 'Study period source: owner-authored resume',
     rank: 'Rank',
     selectedCoursework: 'Selected coursework',
+    gradeLabel: 'Grade',
     researchFocus: 'Research focus',
     resumeSource: 'Source: owner-authored resume',
     editorialTranslationNote: 'Editorial translation: English course names translate the official Chinese transcript labels and are not school-issued English titles.',

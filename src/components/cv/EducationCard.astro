@@ -1,6 +1,7 @@
 ---
 import type { AcademicProfileCopy } from '../../data/cv';
 import type { EducationRecord } from '../../data/education';
+import CourseworkList from './CourseworkList.astro';
 
 interface Props {
   education: EducationRecord;
@@ -10,7 +11,7 @@ interface Props {
 const { education, copy } = Astro.props;
 ---
 
-<article class="education-card" data-education-card>
+<article class="education-card" data-education-card data-education-id={education.id}>
   <header class="education-card-header">
     <div>
       <p class="education-period">{education.period}</p>
@@ -50,8 +51,6 @@ const { education, copy } = Astro.props;
   <div class="education-coursework">
     <h4>{copy.selectedCoursework}</h4>
     {copy.editorialTranslationNote && <p class="education-translation-note">{copy.editorialTranslationNote}</p>}
-    <ul>
-      {education.coursework.map((course) => <li>{course.label}</li>)}
-    </ul>
+    <CourseworkList educationId={education.id} coursework={education.coursework} gradeLabel={copy.gradeLabel} />
   </div>
 </article>
