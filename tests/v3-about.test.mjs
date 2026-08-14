@@ -69,6 +69,11 @@ test('Education Journey uses the five profile schools in order without inventing
       const item = education.match(new RegExp(`<li[^>]*data-school-id="${id}"[^>]*>[\\s\\S]*?<\\/li>`))?.[0];
       assert.ok(item, `${id} is rendered`);
       assert.doesNotMatch(item, /<time\b|journey-date|education-period/);
+      assert.doesNotMatch(item, /data-period-source/);
+    }
+    for (const id of ['undergraduate', 'graduate']) {
+      const item = education.match(new RegExp(`<li[^>]*data-school-id="${id}"[^>]*>[\\s\\S]*?<\\/li>`))?.[0];
+      assert.match(item, /<time[^>]*data-period-source="verified-resume"/);
     }
   }
 });
@@ -151,6 +156,89 @@ test('About owns one route-scoped enhancement bundle with BFCache restoration ho
   for (const route of ['/', '/projects', '/cv', '/en', '/en/projects', '/en/cv']) {
     assert.doesNotMatch(page(route), new RegExp(assetName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
   }
+});
+
+test('DualTrackJourney wires the production bootstrap to desktop, reduced-motion, abort, and controller inputs', () => {
+  const component = readFileSync(join(root, 'src/components/about/DualTrackJourney.astro'), 'utf8');
+
+  assert.match(component, /createAboutJourneyBootstrap/);
+  assert.match(component, /createJourneyMotionController/);
+  assert.match(component, /matchMedia\(['"]\(min-width:\s*48\.001rem\)['"]\)/);
+  assert.match(component, /matchMedia\(['"]\(prefers-reduced-motion:\s*reduce\)['"]\)/);
+  assert.match(component, /new AbortController\(\)/);
+  assert.match(component, /await import\(['"]\.\.\/\.\.\/scripts\/about-journey['"]\)/);
+});
+
+test('About bootstrap prevents a stale pagehide initializer from clearing the active BFCache generation', async () => {
+  const motion = await import(`${pathToFileURL(join(root, 'src/scripts/journey-motion.ts')).href}?bootstrap=${Date.now()}`);
+  assert.equal(typeof motion.createAboutJourneyBootstrap, 'function');
+  if (typeof motion.createAboutJourneyBootstrap !== 'function') return;
+
+  class FakeMediaQuery {
+    listeners = new Set();
+    constructor(matches) { this.matches = matches; }
+    addEventListener(type, listener) { if (type === 'change') this.listeners.add(listener); }
+    removeEventListener(type, listener) { if (type === 'change') this.listeners.delete(listener); }
+    set(matches) {
+      this.matches = matches;
+      for (const listener of this.listeners) listener({ matches });
+    }
+  }
+
+  const deferred = () => {
+    let resolve;
+    const promise = new Promise((next) => { resolve = next; });
+    return { promise, resolve };
+  };
+  const firstLoad = deferred();
+  const secondLoad = deferred();
+  const loads = [firstLoad, secondLoad];
+  let loadIndex = 0;
+  const rootElement = { owner: 'plain' };
+  const desktop = new FakeMediaQuery(true);
+  const reduced = new FakeMediaQuery(false);
+  const lifecycle = motion.createAboutJourneyBootstrap({
+    roots: [rootElement],
+    desktop,
+    reduced,
+    createController: motion.createJourneyMotionController,
+    createAbortController: () => new AbortController(),
+    loadJourney: () => loads[loadIndex++].promise,
+  });
+  const settle = async () => {
+    await Promise.resolve();
+    await Promise.resolve();
+    await Promise.resolve();
+  };
+
+  lifecycle.mount();
+  assert.equal(loadIndex, 1);
+  lifecycle.teardown();
+  lifecycle.handlePageShow({ persisted: true });
+  assert.equal(loadIndex, 2);
+
+  secondLoad.resolve((root, { signal }) => {
+    assert.equal(signal.aborted, false);
+    root.owner = 'new-active';
+    return () => { root.owner = 'new-disposed'; };
+  });
+  await settle();
+  assert.equal(rootElement.owner, 'new-active');
+
+  firstLoad.resolve((root) => {
+    root.owner = 'old-active';
+    return () => { root.owner = 'old-disposed'; };
+  });
+  await settle();
+  assert.equal(rootElement.owner, 'new-active');
+
+  desktop.set(false);
+  await settle();
+  assert.equal(rootElement.owner, 'new-disposed');
+  assert.equal(desktop.listeners.size, 1, 'only the current BFCache generation owns a desktop listener');
+  lifecycle.teardown();
+  assert.equal(desktop.listeners.size, 0);
+  assert.equal(reduced.listeners.size, 0);
 });
 
 test('journey motion follows viewport and reduced-motion state without duplicate instances', async () => {

@@ -167,6 +167,10 @@ test('centralizes only the authorized contacts and user-provided personal profil
       profile.schoolJourney.every(({ source }) => source === 'User-provided'),
     ),
   );
+  for (const profile of Object.values(profileByLocale)) {
+    assert.ok(profile.schoolJourney.slice(0, 3).every(({ period, periodSource }) => period === undefined && periodSource === undefined));
+    assert.ok(profile.schoolJourney.slice(3).every(({ period, periodSource }) => Boolean(period) && periodSource === 'Verified Resume'));
+  }
 });
 
 test('keeps every transcript private behind a natural preparing state', async () => {

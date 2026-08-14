@@ -12,6 +12,7 @@ export interface SchoolJourneyRecord {
   id: 'primary-school' | 'middle-school' | 'high-school' | 'undergraduate' | 'graduate';
   name: string;
   period?: string;
+  periodSource?: 'Verified Resume';
   source: 'User-provided';
 }
 
@@ -53,8 +54,8 @@ export const profileByLocale: Record<Locale, PublicProfile> = {
       { id: 'primary-school', name: '宣城市第三小学', source: 'User-provided' },
       { id: 'middle-school', name: '宣城市第十二中学', source: 'User-provided' },
       { id: 'high-school', name: '宣城中学', source: 'User-provided' },
-      { id: 'undergraduate', name: '武汉大学', period: '2020.09 - 2024.06', source: 'User-provided' },
-      { id: 'graduate', name: '中国科学技术大学', period: '2024.09 - 2027.06（预计）', source: 'User-provided' },
+      { id: 'undergraduate', name: '武汉大学', period: '2020.09 - 2024.06', periodSource: 'Verified Resume', source: 'User-provided' },
+      { id: 'graduate', name: '中国科学技术大学', period: '2024.09 - 2027.06（预计）', periodSource: 'Verified Resume', source: 'User-provided' },
     ],
   },
   en: {
@@ -74,11 +75,12 @@ export const profileByLocale: Record<Locale, PublicProfile> = {
       { id: 'primary-school', name: 'Xuancheng No. 3 Primary School', source: 'User-provided' },
       { id: 'middle-school', name: 'Xuancheng No. 12 Middle School', source: 'User-provided' },
       { id: 'high-school', name: 'Xuancheng High School', source: 'User-provided' },
-      { id: 'undergraduate', name: 'Wuhan University', period: 'Sep 2020 - Jun 2024', source: 'User-provided' },
+      { id: 'undergraduate', name: 'Wuhan University', period: 'Sep 2020 - Jun 2024', periodSource: 'Verified Resume', source: 'User-provided' },
       {
         id: 'graduate',
         name: 'University of Science and Technology of China',
         period: 'Sep 2024 - Jun 2027 (expected)',
+        periodSource: 'Verified Resume',
         source: 'User-provided',
       },
     ],

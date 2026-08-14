@@ -23,7 +23,7 @@ const { content, eyebrow, title, intro } = Astro.props;
         <li data-school-id={school.id}>
           <span class="journey-index" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
           <article>
-            {school.period && <time class="journey-date">{school.period}</time>}
+            {school.period && <time class="journey-date" data-period-source={school.periodSource === 'Verified Resume' ? 'verified-resume' : undefined}>{school.period}</time>}
             <h3>{school.name}</h3>
             <p>{content.schoolNotes[school.id]}</p>
           </article>
