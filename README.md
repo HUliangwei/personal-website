@@ -146,6 +146,8 @@ npm run preview
 
 `npm test` builds the static output while checking bilingual routes, content contracts, CV hashes, accessibility landmarks, internal links, privacy boundaries, model/reference exclusions, and Wrangler invariants. `npm run build` writes deployable assets to `dist/`. Before release, use `npm ci`, run the full test and build gates, inspect the generated routes in a browser, and run `git diff --check`.
 
+Automated tests validate static responsive CSS prerequisites only; they do not prove layout at a real viewport. Actual browser viewport QA at 320, 375, 768, 1024, and 1440 CSS pixels is a Task 7 release gate, together with interaction and console checks.
+
 ## Cloudflare deployment
 
 The existing production architecture is intentionally unchanged:

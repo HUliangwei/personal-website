@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
-import { existsSync, readFileSync, readdirSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { dirname, extname, join, relative, sep } from 'node:path';
 import test, { before } from 'node:test';
 import { fileURLToPath } from 'node:url';
@@ -19,6 +19,60 @@ const routePairs = [
   ['/projects/lerobot', '/en/projects/lerobot'],
 ];
 const routes = routePairs.flat();
+const maximumPublicationBytes = 10 * 1024 * 1024;
+const authorizedCvSuffixes = [
+  '/cv/liangwei-hu-embodied-ai.pdf',
+  '/cv/liangwei-hu-ic-design.pdf',
+];
+
+function publicationSecurityViolations({ path, size, text }) {
+  const normalizedPath = `/${path.replaceAll('\\', '/')}`.replace(/\/+/g, '/');
+  const lowerPath = normalizedPath.toLowerCase();
+  const basename = lowerPath.slice(lowerPath.lastIndexOf('/') + 1);
+  const extension = extname(basename);
+  const authorizedCv = authorizedCvSuffixes.some((suffix) => lowerPath.endsWith(suffix));
+  const violations = [];
+
+  if (/^\.env(?:$|[._-])|^\.envrc$/i.test(basename)) violations.push('environment configuration filename');
+  if (new Set(['.gds', '.gds2', '.gdsii', '.oas', '.oasis', '.sp', '.spi', '.spice', '.cir', '.cdl', '.ckt', '.subckt', '.scs', '.dspf', '.pex', '.net', '.netlist']).has(extension)) {
+    violations.push('chip-confidential file extension');
+  }
+  if (/(?:^|[._-])(?:pdk|netlist|nda|confidential|foundry)(?:$|[._-])/i.test(basename)) {
+    violations.push('chip-confidential filename');
+  }
+  if (/(?:^|\/)(?:me\.glb|sen\.blend)(?:$|\/)|sen-3d-resume/i.test(lowerPath)) violations.push('reference asset filename');
+  if (extension === '.pdf' && !authorizedCv) violations.push('unauthorized PDF');
+  if (/(?:transcript|cet-?6|成绩单)/i.test(basename) && !new Set(['.ts', '.astro', '.mjs', '.md']).has(extension)) {
+    violations.push('private academic filename');
+  }
+  if (size > maximumPublicationBytes && !authorizedCv) violations.push('oversized publication file');
+
+  if (typeof text === 'string') {
+    const identifier = ['264', '584', '62'].join('');
+    const completeLocalPath = /[A-Z]:\\(?:Users|Desktop)\\/i;
+    const secretKeys = [
+      'api[_-]?key',
+      'api[_-]?token',
+      'access[_-]?token',
+      'auth[_-]?token',
+      'cloudflare[_-]?api[_-]?token',
+      'client[_-]?secret',
+      'private[_-]?key',
+      'secret[_-]?key',
+      'secret',
+      'token',
+    ].join('|');
+    const secretAssignment = new RegExp(
+      `(?:^|[^\\w])_*(?:${secretKeys})["']?\\s*[:=]\\s*(?:"[^"\\r\\n]{8,}"|'[^'\\r\\n]{8,}'|[A-Za-z0-9_./+=-]{8,})`,
+      'im',
+    );
+    if (text.includes(identifier)) violations.push('transcript identifier');
+    if (completeLocalPath.test(text)) violations.push('complete local path');
+    if (secretAssignment.test(text)) violations.push('secret assignment');
+  }
+
+  return violations;
+}
 
 function filesUnder(directory) {
   if (!existsSync(directory)) return [];
@@ -60,19 +114,22 @@ function routeForIndex(file) {
   return path ? `/${path}` : '/';
 }
 
-function readableTextFiles(files) {
-  const binaryExtensions = new Set(['.pdf', '.png', '.jpg', '.jpeg', '.webp', '.avif', '.gif', '.ico', '.woff', '.woff2', '.glb']);
+function publicationEntry(file) {
   const decoder = new TextDecoder('utf-8', { fatal: true });
-  return files.flatMap((file) => {
-    if (binaryExtensions.has(extname(file).toLowerCase())) return [];
-    const bytes = readFileSync(file);
-    if (bytes.subarray(0, 8192).includes(0)) return [];
+  const bytes = readFileSync(file);
+  let text;
+  if (!bytes.subarray(0, 8192).includes(0)) {
     try {
-      return [{ file, text: decoder.decode(bytes) }];
+      text = decoder.decode(bytes);
     } catch {
-      return [];
+      text = undefined;
     }
-  });
+  }
+  return {
+    path: relative(root, file).split(sep).join('/'),
+    size: bytes.length,
+    text,
+  };
 }
 
 before(() => {
@@ -164,6 +221,54 @@ test('V3 publishes only the two authorized contact channels', () => {
   assert.match(page('/en'), />\+86 187 9229 3249</);
 });
 
+test('publication security classification rejects runtime mutation samples without reading binary contents', () => {
+  const runtimePath = (...parts) => parts.join('');
+  const samples = [
+    { path: runtimePath('public/', '.', 'en', 'v.', 'SAMPLE', '.local'), size: 32, text: undefined },
+    { path: runtimePath('public/chip.', 'gd', 's'), size: 32, text: `\0SAMPLE` },
+    { path: runtimePath('public/chip.', 'gds', '2'), size: 32, text: undefined },
+    { path: runtimePath('public/chip.', 'gds', 'ii'), size: 32, text: undefined },
+    { path: runtimePath('public/chip.', 'oa', 'sis'), size: 32, text: undefined },
+    { path: runtimePath('public/foundry-', 'p', 'dk.zip'), size: 32, text: undefined },
+    { path: runtimePath('dist/layout.', 'spi', 'ce'), size: 32, text: undefined },
+    { path: runtimePath('dist/layout.', 'sc', 's'), size: 32, text: undefined },
+    { path: runtimePath('dist/extracted.', 'dsp', 'f'), size: 32, text: undefined },
+    { path: runtimePath('dist/extracted.', 'net', 'list'), size: 32, text: undefined },
+    { path: runtimePath('public/customer-', 'n', 'da.docx'), size: 32, text: undefined },
+    { path: runtimePath('public/foundry-', 'confidential.tar'), size: 32, text: undefined },
+    { path: 'public/assets/SAMPLE.bin', size: maximumPublicationBytes + 1, text: undefined },
+  ];
+
+  for (const sample of samples) {
+    assert.notEqual(publicationSecurityViolations(sample).length, 0, `${sample.path} is rejected from publication`);
+  }
+});
+
+test('publication security classification catches quoted and unquoted runtime secret assignments without flagging policy prose', () => {
+  const runtimeName = (...parts) => parts.join('');
+  const runtimeValue = runtimeName('SAMPLE', '_', 'VALUE', '_', '123456789');
+  const samples = [
+    `${runtimeName('API', '_KEY')}="${runtimeValue}"`,
+    `${runtimeName('ACCESS', '_TOKEN')}=${runtimeValue}`,
+    `${runtimeName('SECRET', '_KEY')}: '${runtimeValue}'`,
+    `${runtimeName('SE', 'CRET')}=${runtimeValue}`,
+    `${runtimeName('_AUTH', 'TOKEN')}=${runtimeValue}`,
+    `${runtimeName('CLIENT', '_SECRET')}="${runtimeValue}"`,
+    `${runtimeName('PRIVATE', '_KEY')}=${runtimeValue}`,
+    `${runtimeName('CLOUDFLARE', '_API', '_TOKEN')}: ${runtimeValue}`,
+  ];
+
+  for (const text of samples) {
+    assert.notEqual(publicationSecurityViolations({ path: 'src/sample.ts', size: text.length, text }).length, 0);
+  }
+
+  const policy = 'Repository policy forbids PDK, GDS/GDSII, OASIS, SPICE netlists, NDA material, and foundry-confidential assets.';
+  assert.deepEqual(publicationSecurityViolations({ path: 'README.md', size: policy.length, text: policy }), []);
+  assert.deepEqual(publicationSecurityViolations({ path: 'src/components/Sample.astro', size: 2048, text: '<p>Normal source</p>' }), []);
+  assert.deepEqual(publicationSecurityViolations({ path: 'public/cv/liangwei-hu-ic-design.pdf', size: 319440, text: undefined }), []);
+  assert.deepEqual(publicationSecurityViolations({ path: 'public/cv/liangwei-hu-embodied-ai.pdf', size: 264803, text: undefined }), []);
+});
+
 test('V3 publication excludes transcript identifiers, local paths, reference assets, and secrets', () => {
   const publicFiles = filesUnder(join(root, 'public'));
   const distFiles = filesUnder(dist);
@@ -178,31 +283,32 @@ test('V3 publication excludes transcript identifiers, local paths, reference ass
     .split('\0')
     .filter(Boolean)
     .map((file) => join(root, file));
-  const identifier = ['264', '584', '62'].join('');
-  const completeLocalPath = /[A-Z]:\\(?:Users|Desktop)\\/i;
-  const secretAssignment = /(?:api[_-]?key|cloudflare[_-]?api[_-]?token|secret[_-]?key)\s*[:=]\s*["'][^"']+["']/i;
+  const allFiles = [...new Set([...tracked, ...publicFiles, ...distFiles])];
 
-  for (const { file, text } of readableTextFiles([...tracked, ...publicFiles, ...distFiles])) {
-    assert.doesNotMatch(text, new RegExp(identifier), `${file} omits transcript filename identifiers`);
-    assert.doesNotMatch(text, completeLocalPath, `${file} omits complete local paths`);
-    assert.doesNotMatch(text, secretAssignment, `${file} omits committed secrets`);
+  for (const file of allFiles) {
+    const metadata = {
+      path: relative(root, file).split(sep).join('/'),
+      size: statSync(file).size,
+      text: undefined,
+    };
+    assert.deepEqual(publicationSecurityViolations(metadata), [], `${metadata.path} filename and size are publication-safe`);
   }
-
-  const publishedNames = [...publicFiles, ...distFiles].map((file) => relative(root, file).split(sep).join('/')).join('\n');
-  const forbiddenAsset = new RegExp(`(?:${['me', '\\.glb'].join('')}|${['sen', '\\.blend'].join('')}|sen-3d-resume)`, 'i');
-  assert.doesNotMatch(publishedNames, forbiddenAsset);
+  for (const file of allFiles) {
+    const entry = publicationEntry(file);
+    assert.deepEqual(publicationSecurityViolations(entry), [], `${entry.path} content is publication-safe`);
+  }
 
   const modelExists = existsSync(join(root, 'public', 'models', 'hlw.glb'));
   const homeHtml = `${page('/')}\n${page('/en')}`;
   assert.equal(homeHtml.includes('/models/hlw.glb'), modelExists, 'the optional model URL is emitted only when the verified file exists');
 });
 
-test('V3 responsive CSS covers small reflow, touch, focus, forced colors, and reduced motion', () => {
+test('V3 CSS exposes static prerequisites for Task 7 browser viewport QA', () => {
   const css = readFileSync(join(root, 'src', 'styles', 'global.css'), 'utf8');
   assert.match(css, /body\s*{[^}]*min-width:\s*20rem;[^}]*overflow-x:\s*hidden;/s);
-  assert.match(css, /@media \(max-width:\s*25rem\)/, '320px and 375px use the compact layout');
-  assert.match(css, /@media \(max-width:\s*44rem\)/, '768px transitions safely from the mobile layout');
-  assert.match(css, /@media \(max-width:\s*63\.9375rem\)/, '1024px uses the intermediate grid boundary');
+  assert.match(css, /@media \(max-width:\s*25rem\)/, 'compact query ends at 400 CSS pixels');
+  assert.match(css, /@media \(max-width:\s*44rem\)/, 'mobile query ends at 704 CSS pixels');
+  assert.match(css, /@media \(max-width:\s*63\.9375rem\)/, 'intermediate query ends below 1024 CSS pixels');
   assert.match(css, /\.primary-nav a,\s*\.nav-toggle,\s*\.button,\s*\.coursework-item,\s*\.project-filter button\s*{[^}]*min-height:\s*2\.75rem;/s);
   assert.match(css, /:focus-visible\s*{[^}]*outline:\s*3px solid/s);
   assert.match(css, /@media \(hover:\s*none\),\s*\(pointer:\s*coarse\)/);
@@ -230,5 +336,6 @@ test('V3 keeps the static Cloudflare deployment contract and documents the relea
   assert.match(readme, /official transcript grades/i);
   assert.match(readme, /Preparing/);
   assert.match(readme, /\/models\/hlw\.glb/);
+  assert.match(readme, /actual browser viewport QA[^.]*320[^.]*375[^.]*768[^.]*1024[^.]*1440/i);
   assert.match(readme, /GitHub\s*->\s*Cloudflare Build\s*->\s*npm ci\s*->\s*npm run build\s*->\s*dist\/\s*->\s*npx wrangler deploy/);
 });
