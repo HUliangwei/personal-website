@@ -232,6 +232,19 @@ test('V4 source frontmatter and generated cards retain exact completed-tool and 
   }
 });
 
+test('V4 source frontmatter and generated Home and Projects cards retain exact evidence-bounded highlights', () => {
+  for (const locale of locales) {
+    const homeRoute = locale.prefix || '/';
+    const projectsRoute = `${locale.prefix}/projects`;
+    for (const [slug, expected] of Object.entries(locale.cards)) {
+      assert.ok(expected.highlights.length >= 2 && expected.highlights.length <= 3, `${locale.prefix || '/'} ${slug} has a valid highlight count`);
+      assert.deepEqual(frontmatterList(frontmatter(locale, slug), 'highlights'), expected.highlights, `${locale.prefix || '/'} ${slug} source highlights are exact`);
+      assert.deepEqual(listItems(cardFor(homeRoute, slug), 'project-highlights'), expected.highlights, `${homeRoute} ${slug} Home highlights are exact`);
+      assert.deepEqual(listItems(cardFor(projectsRoute, slug), 'project-highlights'), expected.highlights, `${projectsRoute} ${slug} Projects highlights are exact`);
+    }
+  }
+});
+
 test('V4 source frontmatter and generated cards reject unsupported completed or fabricated project claims', () => {
   for (const locale of locales) {
     const route = `${locale.prefix}/projects`;
