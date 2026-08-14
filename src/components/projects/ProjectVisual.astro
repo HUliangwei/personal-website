@@ -13,18 +13,18 @@ const diagrams = { spad: SpadDiagram, lerobot: LeRobotDiagram, 'mobile-robot': M
 const Diagram = diagrams[slug];
 const compactSteps = {
   spad: ['SPAD', 'AFE', 'Control', 'FPGA'],
-  lerobot: ['Dataset', 'ACT', 'Inference', 'Action'],
+  lerobot: ['Learned', 'Practicing', 'Planned', 'Next'],
   'mobile-robot': ['Camera', 'YOLO', 'ROS', 'Robot'],
   'quantum-hfss': ['Geometry', 'HFSS', 'Sweep', 'Optimize'],
 } as const;
 const labels = {
   zh: {
     caption: '项目概念示意图',
-    alt: { spad: 'SPAD 读出芯片功能链路概念图', lerobot: '具身智能学习流程概念图', 'mobile-robot': '移动机器人感知至执行链路概念图', 'quantum-hfss': 'HFSS 电磁仿真工作流概念图' },
+    alt: { spad: 'SPAD 芯片设计功能链路概念图', lerobot: '具身智能学习状态地图概念图', 'mobile-robot': '智能小车感知至执行链路概念图', 'quantum-hfss': '超导量子计算相关结构 HFSS 仿真方法概念图' },
   },
   en: {
     caption: 'Conceptual project diagram',
-    alt: { spad: 'Conceptual SPAD readout functional chain', lerobot: 'Conceptual embodied AI learning workflow', 'mobile-robot': 'Conceptual mobile-robot perception-to-action chain', 'quantum-hfss': 'Conceptual HFSS electromagnetic simulation workflow' },
+    alt: { spad: 'Conceptual SPAD IC design functional chain', lerobot: 'Conceptual embodied AI learning status map', 'mobile-robot': 'Conceptual mobile robot perception-to-action chain', 'quantum-hfss': 'Conceptual HFSS simulation method for superconducting quantum computing structures' },
   },
 } as const;
 ---

@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const dist = join(root, 'dist');
-const slugs = ['spad', 'lerobot', 'mobile-robot', 'quantum-hfss'];
+const slugs = ['spad', 'mobile-robot', 'quantum-hfss', 'lerobot'];
 
 function output(route) {
   return join(dist, route.replace(/^\//, ''), 'index.html');
@@ -120,18 +120,21 @@ test('published project claims preserve evidence and measurement boundaries', ()
   assert.doesNotMatch(quantum, /(?:completed|performed|validated|achieved)[^.<]{0,50}(?:fabricat|tapeout|manufactur|measurement|measured)|(?:fabricated|taped out|manufactured|measured)[^.<]{0,50}(?:result|value|performance)|(?:完成|实现|开展)[^。]{0,30}(?:制备|流片|制造|实验测量|实测)|(?:实验结果为|实测(?:得到|结果为)|制备完成|流片完成)/i);
 
   const lerobot = `${page('/projects/lerobot')}\n${page('/en/projects/lerobot')}`;
-  for (const pendingSection of ['Dataset', 'ACT', 'Training', 'Checkpoint', 'Inference', 'MuJoCo', 'PushT', 'Evaluation']) {
-    assert.match(lerobot, new RegExp(pendingSection, 'i'));
+  for (const learningState of ['Learned', 'Practicing', 'Planned', 'Next']) {
+    assert.match(lerobot, new RegExp(learningState));
   }
-  assert.match(lerobot, /待核实|TODO: Verification required/i);
+  for (const plannedTopic of ['ROS2', 'Gazebo', 'MuJoCo', 'LeRobot', 'ACT', 'VLA', 'VLM', 'VCT']) {
+    assert.match(lerobot, new RegExp(`${plannedTopic}[^.。]{0,80}(?:not yet verified|尚未核实)`, 'i'));
+  }
+  assert.doesNotMatch(lerobot, /TODO|Need verification/i);
   assert.doesNotMatch(lerobot, /training succeeded|successful inference|achieved accuracy|训练成功|推理成功|达到.{0,8}(?:准确率|成功率)/i);
 
   for (const [locale, listRoute, detailRoute, status, role] of [
-    ['zh', '/projects', '/projects/lerobot', /学习项目\s*\/\s*进行中/, /待项目产物核实/],
-    ['en', '/en/projects', '/en/projects/lerobot', /Learning Project\s*\/\s*In Progress/, /artifact verification pending/i],
+    ['zh', '/projects', '/projects/lerobot', /学习地图\s*·\s*规划中/, /学习者与路线整理者/],
+    ['en', '/en/projects', '/en/projects/lerobot', /Learning Map\s*·\s*Planned/, /Learner and Roadmap Builder/i],
   ]) {
     const cardTech = projectCard(page(listRoute), 'lerobot').match(/<ul class="technology-list"[\s\S]*?<\/ul>/)?.[0] ?? '';
-    const detailMeta = page(detailRoute).match(/<dl class="project-meta">[\s\S]*?<\/dl>/)?.[0] ?? '';
+    const detailMeta = page(detailRoute).match(/<dl class="project-meta"[^>]*>[\s\S]*?<\/dl>/)?.[0] ?? '';
     assert.doesNotMatch(textContent(cardTech), /LeRobot|ACT|Imitation Learning/i, `${locale} card does not present unverified tools as normal technologies`);
     assert.doesNotMatch(textContent(detailMeta.match(/<div><dt>[^<]*(?:技术|Technologies)[\s\S]*?<\/div>/)?.[0] ?? ''), /LeRobot|ACT|Imitation Learning/i, `${locale} detail metadata does not present unverified tools as normal technologies`);
     assert.match(detailMeta, status);

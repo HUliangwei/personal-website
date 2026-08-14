@@ -4,7 +4,7 @@ interface Props { locale: Locale; }
 const { locale } = Astro.props;
 const titleId = `spad-title-${locale}`;
 const descId = `spad-desc-${locale}`;
-const title = locale === 'zh' ? 'SPAD 读出芯片概念架构' : 'Conceptual SPAD readout architecture';
+const title = locale === 'zh' ? 'SPAD 芯片设计概念架构' : 'Conceptual SPAD IC design architecture';
 const description = locale === 'zh'
   ? '概念图展示 SPAD 阵列经模拟前端、判别、电压域隔离、数字控制到 IO 和 FPGA，并表示外部高压偏置及淬火复位支路。'
   : 'A conceptual chain from the SPAD array through AFE, discrimination, voltage-domain isolation, digital control, and IO/FPGA, with external high-voltage bias and quench/reset paths.';

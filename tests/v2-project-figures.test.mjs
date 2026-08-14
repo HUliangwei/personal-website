@@ -50,10 +50,10 @@ test('conceptual diagrams disclose only verified architecture and pending learni
   }
 
   const lerobot = textContent(page('/en/projects/lerobot'));
-  for (const label of ['LeRobot Dataset', 'PushT', 'ACT Transformer', 'Checkpoint', 'Inference', 'MuJoCo / Robot Action']) {
+  for (const label of ['Learned', 'Practicing', 'Planned', 'Next']) {
     assert.match(lerobot, new RegExp(label.replace('/', '\\/')));
   }
-  assert.match(lerobot, /Conceptual learning pipeline · not a completed-result claim/i);
+  assert.match(lerobot, /Learning status map · planned topics are not completed technologies/i);
   assert.doesNotMatch(lerobot, /trained checkpoint|successful inference|completed pipeline/i);
 
   const mobile = textContent(page('/en/projects/mobile-robot'));
@@ -82,7 +82,8 @@ test('cards expose category, date, status, title, summary, technologies, and key
     assert.match(card, /class="project-status"/);
     assert.match(card, /<h2>/);
     assert.match(card, /class="project-summary"/);
-    assert.match(card, /class="technology-list"/);
+    if (slug === 'lerobot') assert.match(card, /class="project-technology-state"/);
+    else assert.match(card, /class="technology-list"/);
   }
   assert.match(html, /class="project-filter-controls"[^>]*role="toolbar"[^>]*aria-label="Filter projects by category"/);
   assert.match(html, /data-project-filter-empty[^>]*hidden/);
@@ -94,7 +95,7 @@ test('compact cards use readable semantic flows instead of scaling 960-unit SVG 
   assert.doesNotMatch(html, /<article class="project-card"[\s\S]*?<svg[^>]*viewBox="0 0 960 360"/);
   for (const labels of [
     ['SPAD', 'AFE', 'Control', 'FPGA'],
-    ['Dataset', 'ACT', 'Inference', 'Action'],
+    ['Learned', 'Practicing', 'Planned', 'Next'],
     ['Camera', 'YOLO', 'ROS', 'Robot'],
     ['Geometry', 'HFSS', 'Sweep', 'Optimize'],
   ]) {

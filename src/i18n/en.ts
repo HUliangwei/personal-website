@@ -12,7 +12,7 @@ const en = {
   meta: {
     home: { title: 'Liangwei Hu | Personal Technical Portfolio', description: 'Meet Liangwei Hu, a USTC graduate student working on SPAD readout IC design and exploring embodied AI, quantum computing, and embedded systems.' },
     about: { title: 'About | Liangwei Hu', description: "Liangwei Hu's education journey from Xuancheng to Wuhan University and USTC, plus the engineering and physics / quantum tracks behind his current work." },
-    projects: { title: 'Projects | Liangwei Hu', description: 'Research and engineering case studies across integrated circuits, robotics, and embodied AI.' },
+    projects: { title: 'Projects | Liangwei Hu', description: 'Four evidence-bounded projects: SPAD IC Design, Mobile Robot, Superconducting Quantum Computing, and Embodied AI Learning.' },
     cv: { title: 'CV | Liangwei Hu', description: 'CVs for integrated circuits and embodied AI, with a Quantum Computing track pending verification.' },
   },
   home: {
@@ -65,16 +65,16 @@ const en = {
     sideQuests: { eyebrow: '05 / Side Quests', title: 'Side Quests', interestsLabel: 'Life & Interests', gamesLabel: 'Games I Play' },
   },
   projects: {
-    intro: { eyebrow: 'Engineering & Research', title: 'Projects', description: 'Project details remain explicitly marked TODO until verified.' },
-    filterLabel: 'Filter projects by category', emptyState: 'No projects in this category yet.', allCategory: 'All', viewProject: 'View project', technologies: 'Technologies', coverPending: 'TODO: Add project cover image', coverAltSuffix: 'cover',
-    categories: { 'Integrated Circuits': 'Integrated Circuits', Robotics: 'Robotics', 'Embodied AI': 'Embodied AI', Quantum: 'Quantum', Software: 'Software' },
+    intro: { eyebrow: 'Projects', title: 'Four Core Projects', description: 'Four bodies of work at different stages: IC design, mobile robotics, electromagnetic simulation, and embodied AI learning. Completed, in-progress, and planned work stay visibly distinct.' },
+    filterLabel: 'Filter projects by category', emptyState: 'No projects in this category yet.', allCategory: 'All', viewProject: 'View project', technologies: 'Technologies', coverPending: 'Conceptual diagram used', coverAltSuffix: 'cover',
+    categories: { 'Integrated Circuits': 'IC Design', Robotics: 'Robotics / Embedded', 'Embodied AI': 'Embodied AI', Quantum: 'Quantum Computing', Software: 'Software' },
     entries: {
-      spad: { title: '1×16-Channel SPAD Readout IC', summary: 'A 1×16-channel mixed-signal readout IC for SPAD single-photon detection, now at post-layout simulation and pre-tapeout stage.' },
-      lerobot: { title: 'LeRobot / ACT Learning Project', summary: 'An in-progress robot-learning project whose unsupported stages remain explicitly pending verification.' },
-      'mobile-robot': { title: 'ROS-Based Mobile Robot', summary: 'An undergraduate mobile-robot project connecting Python / YOLO vision, ROS, MCU motor control, and a task loop.' },
-      'quantum-hfss': { title: 'HFSS Electromagnetic Simulation for Quantum-Chip Structures', summary: 'HFSS 3D electromagnetic simulation and geometry optimization for superconducting-quantum-chip-related microwave structures during a Baidu internship.' },
+      spad: { title: 'SPAD IC Design', summary: 'A 1×16-channel mixed-signal readout IC for SPAD single-photon detection, now at post-layout simulation and pre-tapeout stage.' },
+      lerobot: { title: 'Embodied AI Learning', summary: 'A status-based learning map whose planned tools and directions are not presented as completed technical experience.' },
+      'mobile-robot': { title: 'Mobile Robot', summary: 'An undergraduate mobile-robot project connecting Python / YOLO vision, ROS, upper/lower-controller communication, MCU, and motor control.' },
+      'quantum-hfss': { title: 'Superconducting Quantum Computing', summary: 'HFSS 3D electromagnetic simulation and geometry analysis of microwave structures related to superconducting quantum chips during a Baidu internship.' },
     },
-    detail: { back: 'All projects', date: 'Date', status: 'Status', role: 'Role', technologies: 'Technologies', links: 'Links', linksPending: 'TODO: Add verified project links.', coverPending: 'Project cover pending', descriptionPending: 'Project case-study details remain pending verification.', descriptionSuffix: 'Unverified details are not published as fact.' },
+    detail: { back: 'All projects', date: 'Date', status: 'Status', role: 'Role', technologies: 'Technologies', links: 'Links', linksPending: 'No public project link is available at present.', coverPending: 'Conceptual diagram used', descriptionPending: 'The case study reflects the current public evidence.', descriptionSuffix: 'Planned topics remain separate from completed work.', technologyState: 'Planned topics are not yet verified and are not listed as completed technologies.' },
   },
   cv: {
     eyebrow: 'CV', title: 'CVs for different technical directions.', intro: 'Select a track to preview, open, or download its PDF.',

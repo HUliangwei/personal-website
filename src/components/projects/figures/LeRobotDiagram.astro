@@ -4,18 +4,17 @@ interface Props { locale: Locale; }
 const { locale } = Astro.props;
 const titleId = `lerobot-title-${locale}`;
 const descId = `lerobot-desc-${locale}`;
-const title = locale === 'zh' ? 'LeRobot 学习流程概念图' : 'Conceptual LeRobot learning workflow';
-const description = locale === 'zh' ? '仅表示待核实的 LeRobot 数据、ACT、checkpoint、推理及 MuJoCo 或机器人动作流程，不代表已完成。' : 'A pending conceptual flow across LeRobot data, ACT, checkpoints, inference, and MuJoCo or robot action; it does not claim completion.';
+const title = locale === 'zh' ? '具身智能学习地图' : 'Embodied AI learning map';
+const description = locale === 'zh' ? '以已明确、正在练习、规划中和下一步四种状态组织学习路线；该图未表示技术已完成。' : 'A learning roadmap organized as Learned, Practicing, Planned, and Next; it does not mark technologies as completed.';
 ---
 <svg class="project-visual-svg" role="img" aria-labelledby={`${titleId} ${descId}`} viewBox="0 0 960 360" xmlns="http://www.w3.org/2000/svg">
   <title id={titleId}>{title}</title><desc id={descId}>{description}</desc>
   <path class="diagram-rail diagram-rail-dashed" d="M112 134H850" aria-hidden="true"/>
   <g class="diagram-nodes diagram-nodes-pending">
-    <g transform="translate(28 94)"><rect width="160" height="80" rx="14"/><text x="80" y="36">LeRobot Dataset</text><text x="80" y="57">/ PushT</text></g>
-    <g transform="translate(218 94)"><rect width="150" height="80" rx="14"/><text x="75" y="36">ACT</text><text x="75" y="57">Transformer</text></g>
-    <g transform="translate(398 94)"><rect width="135" height="80" rx="14"/><text x="67.5" y="48">Checkpoint</text></g>
-    <g transform="translate(563 94)"><rect width="130" height="80" rx="14"/><text x="65" y="48">Inference</text></g>
-    <g transform="translate(723 94)"><rect width="205" height="80" rx="14"/><text x="102.5" y="36">MuJoCo /</text><text x="102.5" y="57">Robot Action</text></g>
+    <g transform="translate(55 94)"><rect width="180" height="80" rx="14"/><text x="90" y="48">Learned</text></g>
+    <g transform="translate(275 94)"><rect width="180" height="80" rx="14"/><text x="90" y="48">Practicing</text></g>
+    <g transform="translate(495 94)"><rect width="180" height="80" rx="14"/><text x="90" y="48">Planned</text></g>
+    <g transform="translate(715 94)"><rect width="180" height="80" rx="14"/><text x="90" y="48">Next</text></g>
   </g>
-  <text class="diagram-disclosure" x="480" y="260">{locale === 'zh' ? '概念学习流程 · 非已完成结果声明' : 'Conceptual learning pipeline · not a completed-result claim'}</text>
+  <text class="diagram-disclosure" x="480" y="260">{locale === 'zh' ? '学习状态地图 · 规划主题未列为已完成技术' : 'Learning status map · planned topics are not completed technologies'}</text>
 </svg>

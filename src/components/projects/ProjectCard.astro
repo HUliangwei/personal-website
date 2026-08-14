@@ -12,9 +12,11 @@ const entry = content.entries[project.data.slug as keyof typeof content.entries]
 const title = display?.title ?? entry?.title ?? project.data.title;
 const summary = display?.summary ?? entry?.summary ?? project.data.summary;
 const category = content.categories[project.data.category];
+const status = display?.status ?? project.data.status;
+const technologies = display?.technologies ?? project.data.technologies;
 const projectHref = localizedPath(`/projects/${project.data.slug}`, locale);
 ---
-<article class="project-card" data-project-card data-category={project.data.category}>
+<article class="project-card" data-project-card data-category={project.data.category} data-project-state={status}>
   {
     project.data.cover ? (
       <div class="project-card-media"><img class="project-card-cover" src={project.data.cover} alt={`${title} ${content.coverAltSuffix}`} loading="lazy" /></div>
@@ -27,10 +29,14 @@ const projectHref = localizedPath(`/projects/${project.data.slug}`, locale);
     <p class="project-date"><span class="sr-only">{content.detail.date}: </span>{display?.date ?? project.data.date}</p>
   </div>
   <Heading>{title}</Heading>
-  <p class="project-status"><span class="sr-only">{content.detail.status}: </span>{display?.status ?? project.data.status}</p>
+  <p class="project-status"><span class="project-status-label">{content.detail.status}: </span><span>{status}</span></p>
   <p class="project-summary">{summary}</p>
-  <ul class="technology-list" aria-label={content.technologies}>
-    {(display?.technologies ?? project.data.technologies).map((technology) => <li>{technology}</li>)}
-  </ul>
+  {technologies.length ? (
+    <ul class="technology-list" aria-label={content.technologies}>
+      {technologies.map((technology) => <li>{technology}</li>)}
+    </ul>
+  ) : (
+    <p class="project-technology-state">{content.detail.technologyState}</p>
+  )}
   <a class="project-card-link" href={projectHref}>{content.viewProject} <span aria-hidden="true">→</span></a>
 </article>

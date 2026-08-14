@@ -4,8 +4,8 @@ interface Props { locale: Locale; }
 const { locale } = Astro.props;
 const titleId = `quantum-title-${locale}`;
 const descId = `quantum-desc-${locale}`;
-const title = locale === 'zh' ? 'HFSS 电磁仿真概念流程' : 'Conceptual HFSS electromagnetic simulation workflow';
-const description = locale === 'zh' ? '从几何和 HFSS 模型开始，经材料、边界、端口、网格、扫描、电磁场分析到几何优化的概念流程；并非真实 HFSS 结果图。' : 'A conceptual path from geometry and an HFSS model through materials, boundaries, ports, mesh, sweeps, field analysis, and geometry optimization; it is not HFSS result imagery.';
+const title = locale === 'zh' ? '超导量子计算：HFSS 仿真方法' : 'Superconducting Quantum Computing: HFSS simulation method';
+const description = locale === 'zh' ? '围绕超导量子芯片相关微波结构，从几何和 HFSS 模型开始，经材料、边界、端口、网格、扫描、电磁场分析到几何优化；这是概念方法图，并非真实 HFSS 结果图。' : 'For microwave structures related to superconducting quantum chips, a conceptual method from geometry and an HFSS model through materials, boundaries, ports, mesh, sweeps, field analysis, and geometry optimization; it is not HFSS result imagery.';
 const nodes = [['Geometry'], ['HFSS Model'], ['Material /', 'Boundary / Port'], ['Mesh'], ['Sweep'], ['EM Field'], ['Optimization']];
 ---
 <svg class="project-visual-svg" role="img" aria-labelledby={`${titleId} ${descId}`} viewBox="0 0 960 360" xmlns="http://www.w3.org/2000/svg">
