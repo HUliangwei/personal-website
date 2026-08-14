@@ -22,7 +22,7 @@ html {
 }
 
 body {
-  min-width: 20rem;
+  min-width: min(20rem, 100%);
   margin: 0;
   overflow-x: hidden;
   background: var(--color-canvas);
@@ -930,7 +930,7 @@ a {
 
 .cv-page { padding-top: clamp(4rem, 10vw, 8rem); padding-bottom: clamp(5rem, 10vw, 8rem); }
 .cv-intro { max-width: 48rem; margin-bottom: 3rem; }
-.cv-intro h1 { margin: 0; font-size: clamp(2.75rem, 7vw, 5.75rem); letter-spacing: -0.055em; line-height: 1; }
+.cv-intro h1 { margin: 0; font-size: clamp(2.75rem, 7vw, 5.75rem); letter-spacing: -0.055em; line-height: 1; text-wrap: balance; }
 .cv-intro > p:last-child { max-width: 36rem; color: var(--color-muted); font-size: 1.15rem; }
 .academic-profile { margin-top: clamp(3rem, 7vw, 6rem); }
 .academic-profile-heading,

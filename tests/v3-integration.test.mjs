@@ -305,7 +305,8 @@ test('V3 publication excludes transcript identifiers, local paths, reference ass
 
 test('V3 CSS exposes static prerequisites for Task 7 browser viewport QA', () => {
   const css = readFileSync(join(root, 'src', 'styles', 'global.css'), 'utf8');
-  assert.match(css, /body\s*{[^}]*min-width:\s*20rem;[^}]*overflow-x:\s*hidden;/s);
+  assert.match(css, /body\s*{[^}]*min-width:\s*min\(20rem,\s*100%\);[^}]*overflow-x:\s*hidden;/s);
+  assert.match(css, /\.cv-intro h1\s*{[^}]*text-wrap:\s*balance;/s);
   assert.match(css, /@media \(max-width:\s*25rem\)/, 'compact query ends at 400 CSS pixels');
   assert.match(css, /@media \(max-width:\s*44rem\)/, 'mobile query ends at 704 CSS pixels');
   assert.match(css, /@media \(max-width:\s*63\.9375rem\)/, 'intermediate query ends below 1024 CSS pixels');

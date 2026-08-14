@@ -106,6 +106,13 @@ test('scene bootstrap and controller enforce capability, motion, performance, an
   assert.match(controller, /IntersectionObserver/);
   assert.match(controller, /cancelAnimationFrame/);
   assert.match(controller, /removeEventListener/);
+  assert.match(controller, /new THREE\.Timer\(\)/);
+  assert.match(controller, /timer\.update\(\);/);
+  assert.doesNotMatch(controller, /timer\.update\(timestamp\)/);
+  assert.match(controller, /timer\.getElapsed\(\)/);
+  assert.match(controller, /timer\.reset\(\)/);
+  assert.match(controller, /timer\.dispose\(\)/);
+  assert.doesNotMatch(controller, /new THREE\.Clock\(\)/);
   assert.match(controller, /grid\.geometry\.dispose\(\)/);
   assert.match(controller, /\.dispose\(\)/);
   assert.match(controller, /forceContextLoss/);

@@ -151,7 +151,7 @@ export async function initHomeScene({ canvas, host, modelUrl, signal }: HomeScen
 
   const { root, signalCurve, pulses } = createResearchScene();
   scene.add(root);
-  const clock = new THREE.Clock();
+  const timer = new THREE.Timer();
   const cameraTarget = new THREE.Vector3(...CAMERA_PRESETS.device);
   const pointerTarget = new THREE.Vector2();
   const pointerCurrent = new THREE.Vector2();
@@ -174,7 +174,8 @@ export async function initHomeScene({ canvas, host, modelUrl, signal }: HomeScen
 
   const render = () => {
     if (disposed || !inViewport || !documentVisible) return;
-    const elapsed = clock.getElapsedTime();
+    timer.update();
+    const elapsed = timer.getElapsed();
     pointerCurrent.lerp(pointerTarget, 0.045);
     root.rotation.y = Math.sin(elapsed * 0.23) * 0.08 + pointerCurrent.x * 0.08;
     root.rotation.x = pointerCurrent.y * 0.035;
@@ -190,14 +191,13 @@ export async function initHomeScene({ canvas, host, modelUrl, signal }: HomeScen
   };
   const resume = () => {
     if (!disposed && inViewport && documentVisible && frame === 0) {
-      clock.start();
+      timer.reset();
       frame = requestAnimationFrame(render);
     }
   };
   const pause = () => {
     if (frame !== 0) cancelAnimationFrame(frame);
     frame = 0;
-    clock.stop();
   };
 
   const viewportObserver = new IntersectionObserver(([entry]) => {
@@ -232,6 +232,7 @@ export async function initHomeScene({ canvas, host, modelUrl, signal }: HomeScen
     disposed = true;
     signal?.removeEventListener('abort', dispose);
     pause();
+    timer.dispose();
     resizeObserver.disconnect();
     viewportObserver.disconnect();
     focusObserver.disconnect();
