@@ -97,7 +97,7 @@ test('Selected Projects renders the four concrete V3 identities from the collect
     const html = page(route);
     const projectGrid = html.match(/<div class="project-grid">([\s\S]*?)<\/div>\s*<\/div>\s*<\/section>/)?.[1] ?? '';
     assert.equal((projectGrid.match(/data-project-card/g) ?? []).length, 4, `${route} has four selected projects`);
-    for (const title of titles) assert.match(projectGrid, new RegExp(`<h3>${title}</h3>`));
+    for (const title of titles) assert.match(projectGrid, new RegExp(`<h3[^>]*>${title}</h3>`));
   }
 });
 

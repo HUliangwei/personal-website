@@ -25,11 +25,11 @@ const projectHref = localizedPath(`/projects/${project.data.slug}`, locale);
     )
   }
   <div class="project-card-meta-line">
-    <p class="project-category">{category}</p>
+    <p class="project-category" data-project-field="category">{category}</p>
     <p class="project-date"><span class="sr-only">{content.detail.date}: </span>{display?.date ?? project.data.date}</p>
   </div>
-  <Heading>{title}</Heading>
-  <p class="project-status"><span class="project-status-label">{content.detail.status}: </span><span>{status}</span></p>
+  <Heading data-project-field="title">{title}</Heading>
+  <p class="project-status"><span class="project-status-label">{content.detail.status}: </span><span data-project-field="status">{status}</span></p>
   <p class="project-summary">{summary}</p>
   {technologies.length ? (
     <ul class="technology-list" aria-label={content.technologies}>

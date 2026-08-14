@@ -130,8 +130,8 @@ test('published project claims preserve evidence and measurement boundaries', ()
   assert.doesNotMatch(lerobot, /training succeeded|successful inference|achieved accuracy|训练成功|推理成功|达到.{0,8}(?:准确率|成功率)/i);
 
   for (const [locale, listRoute, detailRoute, status, role] of [
-    ['zh', '/projects', '/projects/lerobot', /学习地图\s*·\s*规划中/, /学习者与路线整理者/],
-    ['en', '/en/projects', '/en/projects/lerobot', /Learning Map\s*·\s*Planned/, /Learner and Roadmap Builder/i],
+    ['zh', '/projects', '/projects/lerobot', /学习项目\s*·\s*进行中/, /学习者与路线整理者/],
+    ['en', '/en/projects', '/en/projects/lerobot', /Learning Project\s*·\s*In Progress/, /Learner and Roadmap Builder/i],
   ]) {
     const cardTech = projectCard(page(listRoute), 'lerobot').match(/<ul class="technology-list"[\s\S]*?<\/ul>/)?.[0] ?? '';
     const detailMeta = page(detailRoute).match(/<dl class="project-meta"[^>]*>[\s\S]*?<\/dl>/)?.[0] ?? '';

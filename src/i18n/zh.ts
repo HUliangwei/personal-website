@@ -68,7 +68,7 @@ const zh = {
         spad: { title: 'SPAD 芯片设计', summary: '面向 SPAD 单光子探测的 1×16 通道混合信号读出芯片，当前处于版图后仿真与流片前阶段。', date: '2024.09–至今', status: '研究生科研 / 进行中', technologies: ['Cadence Virtuoso', 'Spectre', 'Calibre', 'FPGA'] },
         'mobile-robot': { title: '智能小车', summary: '本科项目，连接 Python / YOLO 视觉、ROS 任务逻辑、MCU 控制与电机执行。', date: '本科项目', status: '已完成', technologies: ['Python', 'YOLO', 'ROS', 'MCU'] },
         'quantum-hfss': { title: '超导量子计算', summary: '围绕超导量子芯片相关微波结构开展 HFSS 三维电磁仿真与几何分析。', date: '2023.09–2023.12', status: '已完成 / 仅限仿真', technologies: ['Ansys HFSS', '3D EM Simulation', 'Parameter Sweep'] },
-        lerobot: { title: '具身智能学习', summary: '持续整理机器人学习路线；尚无项目产物支撑的端到端实现不作为已完成经历展示。', date: '持续学习中', status: '学习项目 / 进行中', technologies: [] },
+        lerobot: { title: '具身智能学习', summary: '持续整理机器人学习路线；尚无项目产物支撑的端到端实现不作为已完成经历展示。', date: '持续学习中', status: '学习项目 · 进行中', technologies: [] },
       },
     },
     toolkit: {

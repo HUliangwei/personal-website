@@ -40,7 +40,7 @@ const en = {
         spad: { title: 'SPAD IC Design', summary: 'A 1×16-channel mixed-signal SPAD readout IC at post-layout simulation and pre-tapeout stage.', date: '2024.09–Present', status: 'Graduate Research / In Progress', technologies: ['Cadence Virtuoso', 'Spectre', 'Calibre', 'FPGA'] },
         'mobile-robot': { title: 'Mobile Robot', summary: 'An undergraduate system connecting Python / YOLO vision, ROS task logic, MCU control, and motor actuation.', date: 'Undergraduate project', status: 'Completed', technologies: ['Python', 'YOLO', 'ROS', 'MCU'] },
         'quantum-hfss': { title: 'Superconducting Quantum Computing', summary: 'HFSS 3D electromagnetic simulation and geometry analysis of microwave structures related to superconducting quantum chips.', date: '2023.09–2023.12', status: 'Completed / Simulation Only', technologies: ['Ansys HFSS', '3D EM Simulation', 'Parameter Sweep'] },
-        lerobot: { title: 'Embodied AI Learning', summary: 'An in-progress learning map for robot learning; it does not claim an unsupported end-to-end implementation.', date: 'Ongoing learning', status: 'Learning Project / In Progress', technologies: [] },
+        lerobot: { title: 'Embodied AI Learning', summary: 'An in-progress learning map for robot learning; it does not claim an unsupported end-to-end implementation.', date: 'Ongoing learning', status: 'Learning Project · In Progress', technologies: [] },
       },
     },
     toolkit: {

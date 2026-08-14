@@ -74,8 +74,8 @@ test('final content semantics and truthful fallbacks are present', () => {
   const projects = readFileSync(join(root, 'dist', 'en', 'projects', 'index.html'), 'utf8');
   const robotics = readFileSync(join(root, 'dist', 'en', 'projects', 'mobile-robot', 'index.html'), 'utf8');
 
-  assert.match(projects, /<h2>Mobile Robot<\/h2>/);
-  assert.match(home, /<h3>Mobile Robot<\/h3>/);
+  assert.match(projects, /<h2[^>]*>Mobile Robot<\/h2>/);
+  assert.match(home, /<h3[^>]*>Mobile Robot<\/h3>/);
   assert.doesNotMatch(projects, />[^<]*ROS2[^<]*</);
   assert.doesNotMatch(robotics, /an Robotics project/i);
   assert.match(robotics, /No public project link is available at present/);

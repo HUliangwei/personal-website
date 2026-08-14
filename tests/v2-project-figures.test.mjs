@@ -80,7 +80,7 @@ test('cards expose category, date, status, title, summary, technologies, and key
     assert.match(card, /class="project-category"/);
     assert.match(card, /class="project-date"/);
     assert.match(card, /class="project-status"/);
-    assert.match(card, /<h2>/);
+    assert.match(card, /<h2[^>]*>/);
     assert.match(card, /class="project-summary"/);
     if (slug === 'lerobot') assert.match(card, /class="project-technology-state"/);
     else assert.match(card, /class="technology-list"/);
