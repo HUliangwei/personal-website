@@ -198,6 +198,13 @@ test('V4 generated copy has no development markers or generic portfolio template
     /连贯视角/,
     /持续追问/,
     /跨层实践/,
+    /证据边界/,
+    /项目产物支撑/,
+    /不把[^。！？]{0,50}写成/,
+    /evidence[- ]bounded/i,
+    /project artifacts/i,
+    /without presenting[^.!?]{0,80}as/i,
+    /visibly separate from completed experience/i,
   ];
   for (const pattern of forbidden) assert.doesNotMatch(publicText, pattern, `generated visible text excludes ${pattern}`);
 

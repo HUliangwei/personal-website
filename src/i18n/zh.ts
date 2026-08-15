@@ -35,7 +35,7 @@ const zh = {
     },
     projects: {
       title: '项目 | 胡良玮',
-      description: 'SPAD 芯片设计、智能小车、超导量子计算与具身智能学习四个证据边界清晰的项目。',
+      description: 'SPAD 芯片设计、智能小车、超导量子计算与具身智能学习四个核心项目。',
     },
     cv: {
       title: '简历 | 胡良玮',
@@ -45,7 +45,7 @@ const zh = {
   home: {
     hero: {
       eyebrow: '你好，我是',
-      summary: '目前主要从事 SPAD 单光子探测芯片设计，也在主线科研之外持续探索具身智能、量子计算和嵌入式系统。',
+      summary: '目前主要从事 SPAD 单光子探测芯片设计，同时持续探索具身智能、量子计算和嵌入式系统。',
       curiosity: '我喜欢学习、折腾技术，也愿意尝试新事物；运动、唱歌、游戏和朋友同样构成了我的日常。',
       projectsAction: '浏览项目',
       cvAction: '查看简历',
@@ -54,26 +54,26 @@ const zh = {
       diagramLabels: ['器件 / 传感器', '信号', '集成电路 / 计算', '智能系统 / 机器人'],
     },
     focus: {
-      eyebrow: '01 / 当前方向', title: '当前方向', description: '一条研究生科研主线，以及三个持续拓展视野的方向。',
+      eyebrow: '01 / 当前方向', title: '当前方向', description: '以 SPAD 芯片设计为当前科研重点，同时持续关注具身智能、量子计算和嵌入式系统。',
       areas: [
-        { title: 'SPAD 芯片设计', state: '研究生科研', description: '围绕 1×16 通道混合信号读出芯片，推进版图后仿真与流片前工作。' },
-        { title: '具身智能', state: '学习与探索', description: '逐步建立机器人学习的知识地图，不把学习路线写成已经完成的项目经历。' },
-        { title: '量子计算', state: '学术兴趣', description: '从物理背景和仿真经历出发，持续理解超导量子计算。' },
-        { title: '嵌入式系统', state: '工程兴趣', description: '关注感知、通信、控制与物理动作之间的工程接口。' },
+        { title: 'SPAD 芯片设计', state: '研究生科研', description: '围绕 1×16 通道混合信号读出芯片，推进整体版图验证、PEX、版图后仿真与流片前准备。' },
+        { title: '具身智能', state: '学习与探索', description: '从智能小车的系统经验出发，继续学习机器人仿真、模仿学习与动作生成。' },
+        { title: '量子计算', state: '学术兴趣', description: '从物理与超导量子比特仿真经历出发，持续理解量子计算与量子通信。' },
+        { title: '嵌入式系统', state: '工程兴趣', description: '持续关注传感、通信、控制与执行机构如何组成完整硬件系统。' },
       ],
     },
     projects: {
       eyebrow: '02 / 核心项目', title: '核心项目', all: '全部项目',
     },
     toolkit: {
-      eyebrow: '03 / 技术栈', title: '技术栈', description: '这里的工具与方法来自已展示的工作；学习方向与已完成经验明确分开。',
+      eyebrow: '03 / 技术栈', title: '技术栈', description: '覆盖集成电路、数字硬件、机器人、量子仿真与日常开发。',
       groups: [
         { title: '集成电路设计', items: ['Cadence Virtuoso', 'Spectre / ADE', 'Calibre', 'DRC / LVS / PEX', 'Layout', 'Analog / Mixed-Signal Design'], learning: false, note: '' },
         { title: '数字与硬件描述', items: ['FPGA', 'Digital Logic', 'Digital Control'], learning: false, note: '' },
         { title: '机器人与嵌入式', items: ['Python', 'YOLO', 'ROS', 'MCU', 'Motor Control', 'Hardware Communication'], learning: false, note: '' },
         { title: '量子与仿真', items: ['Ansys HFSS', '3D Electromagnetic Simulation', 'Parameter Sweep', 'Field Analysis'], learning: false, note: '' },
         { title: '开发工具', items: ['Git', 'GitHub'], learning: false, note: '' },
-        { title: '机器人学习（学习中）', items: [], learning: true, note: '学习路线——只有得到项目产物支撑后，具体工具和里程碑才会列入技术栈。' },
+        { title: '机器人学习（学习中）', items: ['机器人仿真', '模仿学习', '动作生成'], learning: true, note: '' },
       ],
     },
     interests: { eyebrow: '04 / 兴趣与生活', title: '兴趣与生活', description: '离开屏幕和实验室后，我喜欢运动、唱歌、和朋友打牌，也会沉浸在几个喜欢的游戏世界里。', activitiesLabel: '日常爱好', gamesLabel: '常玩的游戏' },
@@ -109,14 +109,14 @@ const zh = {
     intro: {
       eyebrow: '项目',
       title: '四个核心项目',
-      description: '四段处于不同阶段的实践：芯片设计、移动机器人、电磁仿真与具身智能学习。每个项目都明确区分已完成、进行中与规划内容。',
+      description: '四段来自不同阶段的技术实践：SPAD 芯片设计、视觉引导智能小车、超导量子计算与具身智能学习。',
     },
     date: '日期',
     status: '状态',
     highlights: '项目亮点',
     completedTools: '已完成工具',
     learningTopics: '学习主题',
-    coverPending: '使用概念示意图',
+    coverPending: '项目概念示意图',
     coverAltSuffix: '封面',
     categories: {
       'Integrated Circuits': '集成电路设计',
@@ -149,7 +149,7 @@ const zh = {
       },
       {
         title: '量子计算',
-        description: '量子计算方向简历正在准备，目前不提供 PDF。',
+        description: '量子计算方向简历准备中。',
         pdf: '',
         available: false,
       },

@@ -138,7 +138,12 @@ test('Technical Toolkit publishes only evidence-backed completed tools and an ho
     assert.match(toolkit, /YOLO/);
     assert.match(toolkit, />ROS</);
     assert.match(toolkit, /Ansys HFSS/);
-    assert.match(toolkit, /Learning map|学习路线/);
+    if (route === '/') {
+      for (const topic of ['机器人仿真', '模仿学习', '动作生成']) assert.match(toolkit, new RegExp(`<li>${topic}</li>`));
+    } else {
+      for (const topic of ['Robot Simulation', 'Imitation Learning', 'Action Generation']) assert.match(toolkit, new RegExp(`<li>${topic}</li>`));
+    }
+    assert.doesNotMatch(toolkit, /Learning map|学习路线|项目产物支撑|project artifacts/i);
     assert.doesNotMatch(toolkit, /<li>(?:ROS2|Gazebo|MuJoCo|LeRobot|ACT)<\/li>/);
     assert.doesNotMatch(toolkit, /<li>(?:Astro|TypeScript)<\/li>/, 'site implementation tools are not personal toolkit claims');
   }
@@ -166,8 +171,8 @@ test('Home removes the old abstractions and all public development or template c
     const html = page(route);
     const text = visibleText(html);
     assert.doesNotMatch(text, /Research & Engineering|研究与工程|Technical trajectory|技术轨迹|Capabilities|能力版图/);
-    assert.doesNotMatch(text, /TODO|Placeholder|Need verification|Add verified|待核实|待补充/i);
-    assert.doesNotMatch(html, /TODO|Placeholder|Need verification|Add verified|待核实|待补充/i);
-    assert.doesNotMatch(text, /I am passionate about|at the intersection of|bridging\s+\w+\s+and\s+\w+/i);
+    assert.doesNotMatch(text, /TODO|Placeholder|Need verification|Add verified|待核实|待补充|证据边界|项目产物支撑/i);
+    assert.doesNotMatch(html, /TODO|Placeholder|Need verification|Add verified|待核实|待补充|证据边界|项目产物支撑/i);
+    assert.doesNotMatch(text, /I am passionate about|at the intersection of|bridging\s+\w+\s+and\s+\w+|evidence[- ]bounded|project artifacts|without presenting the learning path|visibly separate from completed experience/i);
   }
 });

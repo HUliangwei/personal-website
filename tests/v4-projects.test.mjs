@@ -36,8 +36,8 @@ const locales = [
       },
       lerobot: {
         title: '具身智能学习', date: '持续学习', status: '学习项目 · 进行中',
-        summary: '持续搭建以证据和可复现产物为前提的具身智能学习路线，不将学习主题表述为已完成项目经验。',
-        highlights: ['以任务、数据、训练与评估拆解学习问题', '以可复现产物作为实践陈述的门槛'],
+        summary: '持续学习机器人仿真、模仿学习与动作生成，逐步建立从任务、数据、训练到评估的机器人学习知识框架。',
+        highlights: ['以任务、数据、训练与评估拆解学习问题', '持续探索机器人仿真、模仿学习与动作生成方法'],
         topics: ['Linux', 'ROS2', 'Gazebo', 'MuJoCo', 'LeRobot', 'ACT'],
         learning: true,
       },
@@ -69,8 +69,8 @@ const locales = [
       },
       lerobot: {
         title: 'Embodied AI Learning', date: 'Ongoing Learning', status: 'Learning Project · In Progress',
-        summary: 'Building an embodied-AI learning path around evidence and reproducible artifacts without presenting learning topics as completed project experience.',
-        highlights: ['Frames learning through tasks, data, training, and evaluation', 'Uses reproducible artifacts as the threshold for practice claims'],
+        summary: 'Continuing to study robot simulation, imitation learning, and action generation while building a structured understanding of tasks, data, training, and evaluation.',
+        highlights: ['Organizes robot learning around tasks, data, training, and evaluation', 'Continues exploring simulation, imitation learning, and action generation'],
         topics: ['Linux', 'ROS2', 'Gazebo', 'MuJoCo', 'LeRobot', 'ACT'],
         learning: true,
       },
