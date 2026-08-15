@@ -37,47 +37,35 @@ export interface AcademicProfileCopy {
   title: string;
   intro: string;
   gpa: string;
-  officialSource: string;
-  periodSource: string;
   rank: string;
   selectedCoursework: string;
   courseLabel: string;
   gradeLabel: string;
   researchFocus: string;
-  resumeSource: string;
-  editorialTranslationNote: string;
 }
 
 export const academicProfileCopyByLocale: Record<Locale, AcademicProfileCopy> = {
   zh: {
     eyebrow: '学术档案',
     title: '教育与学术基础',
-    intro: '展示经现有材料核实且适合公开的学术信息与精选课程成绩；原始成绩单和身份标识仍不公开。',
+    intro: '本科与研究生阶段的学术背景、GPA、研究方向与核心课程成绩。',
     gpa: 'GPA',
-    officialSource: '来源：官方成绩单',
-    periodSource: '学习时间来源：本人简历',
-    rank: '排名',
+    rank: '专业综合排名',
     selectedCoursework: '精选课程',
     courseLabel: '课程',
     gradeLabel: '成绩',
     researchFocus: '研究方向',
-    resumeSource: '来源：本人简历',
-    editorialTranslationNote: '',
   },
   en: {
     eyebrow: 'Academic Profile',
     title: 'Education and academic foundation',
-    intro: 'Verified, publication-safe academic information and selected course grades are shown; original transcripts and personal identifiers remain private.',
+    intro: 'Academic background, GPA, research focus, and selected core course grades from my undergraduate and graduate studies.',
     gpa: 'GPA',
-    officialSource: 'Source: official transcript',
-    periodSource: 'Study period source: owner-authored resume',
-    rank: 'Rank',
+    rank: 'Comprehensive rank',
     selectedCoursework: 'Selected coursework',
     courseLabel: 'Course',
     gradeLabel: 'Grade',
     researchFocus: 'Research focus',
-    resumeSource: 'Source: owner-authored resume',
-    editorialTranslationNote: 'Editorial translation: English course names translate the official Chinese transcript labels and are not school-issued English titles.',
   },
 };
 
@@ -100,7 +88,7 @@ export const cvTracksByLocale: Record<Locale, CvTrack[]> = {
     {
       id: 'quantum-computing',
       title: '量子计算',
-      description: '量子计算方向简历将在内容得到核实后发布。',
+      description: '量子计算方向简历准备中。',
       available: false,
     },
   ],
@@ -122,7 +110,7 @@ export const cvTracksByLocale: Record<Locale, CvTrack[]> = {
     {
       id: 'quantum-computing',
       title: 'Quantum Computing',
-      description: 'A dedicated Quantum Computing CV will be published after its contents are verified.',
+      description: 'Quantum Computing CV in preparation.',
       available: false,
     },
   ],

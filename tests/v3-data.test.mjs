@@ -107,7 +107,11 @@ test('preserves official GPA context and keeps the resume-only rank explicitly n
     assert.match(undergraduate.gpa.context, /2023-12-12/);
     assert.match(
       undergraduate.gpa.context,
-      locale === 'zh' ? /不应表述为最终毕业 GPA/ : /not necessarily the final graduation GPA/i,
+      locale === 'zh' ? /官方成绩单快照/ : /Official transcript snapshot/i,
+    );
+    assert.doesNotMatch(
+      undergraduate.gpa.context,
+      /最终毕业 GPA|final graduation GPA/i,
     );
     assert.deepEqual(
       {

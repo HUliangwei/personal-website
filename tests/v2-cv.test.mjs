@@ -15,7 +15,7 @@ before(() => {
   });
 });
 
-test('Academic CV renders the verified bilingual education record with qualified evidence', () => {
+test('Academic CV renders the verified bilingual education record with HR-facing evidence context', () => {
   const zh = read('dist', 'cv', 'index.html');
   const en = read('dist', 'en', 'cv', 'index.html');
 
@@ -32,10 +32,8 @@ test('Academic CV renders the verified bilingual education record with qualified
   assert.match(zh, /武汉大学/);
   assert.match(zh, /物理学/);
   assert.match(zh, /2020\.09\s*-\s*2024\.06/);
-  assert.match(zh, /2023-12-12/);
-  assert.match(zh, /打印时点/);
-  assert.match(zh, /简历自述/);
-  assert.doesNotMatch(zh, /官方排名/);
+  assert.match(zh, /官方成绩单快照[^]*?2023-12-12/);
+  assert.doesNotMatch(zh, /来源：|学习时间来源|简历自述|官方排名/);
   assert.match(zh, /半导体单光子探测器及读出电路/);
   assert.match(zh, /半导体器件原理/);
   assert.match(zh, /数字逻辑电路实验/);
@@ -45,10 +43,8 @@ test('Academic CV renders the verified bilingual education record with qualified
   assert.match(en, /Sep 2024\s*-\s*Jun 2027 \(expected\)/);
   assert.match(en, /Wuhan University/);
   assert.match(en, /BSc in Physics/);
-  assert.match(en, /not necessarily the final graduation GPA/);
-  assert.match(en, /self-reported[^<]*resume/i);
-  assert.doesNotMatch(en, /official rank/i);
-  assert.match(en, /Editorial translation/);
+  assert.match(en, /Official transcript snapshot[^]*?2023-12-12/);
+  assert.doesNotMatch(en, /Source:\s|owner-authored resume|self-reported|Editorial translation|official rank/i);
   assert.match(en, /Quantum Optics/);
   assert.match(en, /Circuit Analysis/);
 });
@@ -71,8 +67,8 @@ test('Academic CV keeps exactly two owner-authorized PDF snapshots and a non-lin
     assert.doesNotMatch(html, /<object[^>]+application\/pdf/i);
   }
 
-  assert.match(zh, /量子计算[^]*?即将提供/);
-  assert.match(en, /Quantum Computing[^]*?Coming soon/);
+  assert.match(zh, /量子计算[^]*?准备中/);
+  assert.match(en, /Quantum Computing[^]*?Preparing/);
   assert.ok(!existsSync(join(root, 'public', 'cv', 'liangwei-hu-quantum-computing.pdf')));
 });
 

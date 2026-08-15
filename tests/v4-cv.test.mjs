@@ -138,6 +138,19 @@ test('core-course selection returns the exact official records and rejects missi
   );
 });
 
+test('CV academic copy is HR-facing while preserving the undergraduate GPA snapshot context', () => {
+  const allHtml = Object.values(pages).join('\n');
+
+  assert.match(pages.zh, /官方成绩单快照 · 2023-12-12/);
+  assert.match(pages.en, /Official transcript snapshot · 2023-12-12/);
+
+  assert.doesNotMatch(
+    allHtml,
+    /来源：|学习时间来源|Source:\s|owner-authored resume|Editorial translation|education-source|education-evidence|education-translation-note/i,
+  );
+  assert.doesNotMatch(allHtml, /最终毕业 GPA|final graduation GPA/i);
+});
+
 test('CV exposes no transcript interface and preserves the two authorized lazy CV PDFs', () => {
   const allHtml = Object.values(pages).join('\n');
   assert.equal(html('/cv').includes('data-transcripts'), false);

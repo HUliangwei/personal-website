@@ -56,8 +56,9 @@ test('publishes transcript-supported GPA values with an official source classifi
     { value: undergraduate.gpa.value, scale: undergraduate.gpa.scale, source: undergraduate.gpa.source },
     { value: '3.86', scale: '4.00', source: 'Official' },
   );
+  assert.match(undergraduate.gpa.context, /Official transcript snapshot/i);
   assert.match(undergraduate.gpa.context, /2023-12-12/);
-  assert.match(undergraduate.gpa.context, /not.*final graduation GPA/i);
+  assert.doesNotMatch(undergraduate.gpa.context, /final graduation GPA/i);
   assert.deepEqual(
     { value: graduate.gpa.value, scale: graduate.gpa.scale, source: graduate.gpa.source },
     { value: '3.55', scale: '4.30', source: 'Official' },

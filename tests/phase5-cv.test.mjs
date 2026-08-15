@@ -40,7 +40,7 @@ test('Phase 5 publishes accessible multi-track CV downloads without inventing a 
   assert.doesNotMatch(cv, /<object[^>]*data="\/cv\//);
   assert.match(cv, /Open PDF/);
   assert.match(cv, /Download PDF/);
-  assert.match(cv, /Quantum Computing[^]*?Coming soon/);
+  assert.match(cv, /Quantum Computing[^]*?Preparing/);
   assert.doesNotMatch(cv, /quantum[^"']*\.pdf/i);
   for (const [filename, expected] of Object.entries(publishedPdfs)) {
     const output = join(root, `dist/cv/${filename}`);

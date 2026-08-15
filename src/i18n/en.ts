@@ -74,7 +74,7 @@ const en = {
       { title: 'Embodied AI', description: 'A CV tailored to robotics, embodied intelligence, and AI systems work.', pdf: '/cv/liangwei-hu-embodied-ai.pdf', available: true },
       { title: 'Quantum Computing', description: 'The Quantum Computing CV is being prepared; no PDF is available yet.', pdf: '', available: false },
     ],
-    actions: { groupSuffix: 'PDF actions', preview: 'Preview PDF', hidePreview: 'Hide preview', open: 'Open PDF', download: 'Download PDF', fallbackPrefix: 'Your browser cannot display this PDF inline.', fallbackLink: 'Open PDF', comingSoon: 'Preparing — Coming soon; the Quantum Computing CV is not published yet.' },
+    actions: { groupSuffix: 'PDF actions', preview: 'Preview PDF', hidePreview: 'Hide preview', open: 'Open PDF', download: 'Download PDF', fallbackPrefix: 'Your browser cannot display this PDF inline.', fallbackLink: 'Open PDF', comingSoon: 'Preparing' },
   },
 } as const satisfies Dictionary;
 

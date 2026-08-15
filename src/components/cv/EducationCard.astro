@@ -20,22 +20,19 @@ const coreCoursework = selectCoreCoursework(education);
       <h3>{education.institution}</h3>
       <p class="education-program">{education.program}</p>
     </div>
-    <p class="education-source">{copy.periodSource}</p>
   </header>
 
   <dl class="education-facts">
     <div>
       <dt>{copy.gpa}</dt>
       <dd>{education.gpa.value} / {education.gpa.scale}</dd>
-      <dd class="education-evidence">{copy.officialSource}</dd>
-      <dd class="education-context">{education.gpa.context}</dd>
+      {education.gpa.context && <dd class="education-context">{education.gpa.context}</dd>}
     </div>
     {
       education.rank && (
         <div>
           <dt>{copy.rank}</dt>
           <dd>{education.rank.value}</dd>
-          <dd class="education-evidence">{education.rank.context}</dd>
         </div>
       )
     }
@@ -44,7 +41,6 @@ const coreCoursework = selectCoreCoursework(education);
         <div>
           <dt>{copy.researchFocus}</dt>
           <dd>{education.researchFocus.label}</dd>
-          <dd class="education-evidence">{copy.resumeSource}</dd>
         </div>
       )
     }
@@ -52,7 +48,6 @@ const coreCoursework = selectCoreCoursework(education);
 
   <div class="education-coursework">
     <h4 id={courseworkHeadingId}>{copy.selectedCoursework}</h4>
-    {copy.editorialTranslationNote && <p class="education-translation-note">{copy.editorialTranslationNote}</p>}
     <CourseworkTable
       educationId={education.id}
       coursework={coreCoursework}

@@ -162,7 +162,7 @@ const zh = {
       download: '下载 PDF',
       fallbackPrefix: '浏览器无法内嵌显示此 PDF。请改为',
       fallbackLink: '打开 PDF',
-      comingSoon: '准备中——量子计算方向简历即将提供，目前尚未发布。',
+      comingSoon: '准备中',
     },
   },
 } as const;
