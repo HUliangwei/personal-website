@@ -1,7 +1,7 @@
 import type { Locale } from '../i18n/types';
 
 export type JourneyMotif = 'physics' | 'robot' | 'hfss' | 'spad' | 'learning' | 'focus';
-export type JourneyEvidence = 'Official' | 'Verified Resume' | 'TODO';
+export type JourneyEvidence = 'Official' | 'Verified Resume' | 'User-provided';
 
 export interface JourneyStage {
   id: string;
@@ -30,16 +30,16 @@ export const journeyByLocale: Record<Locale, JourneyStage[]> = {
       date: '本科阶段',
       title: '智能小车：从模块走向系统',
       summary: '本科智能小车实践把视觉感知、ROS 任务逻辑、硬件通信、MCU 与电机控制连接起来。',
-      detail: '这段经历没有被改写成精确但无依据的日期；它保留在真实的本科时间范围内，也成为理解感知—决策—行动闭环的早期入口。',
+      detail: '这段实践成为我理解感知—决策—行动闭环以及软硬件系统集成的早期入口。',
       motif: 'robot',
       evidence: 'Verified Resume',
     },
     {
       id: 'quantum-hfss',
       date: '2023.09 - 2023.12',
-      title: 'HFSS 电磁仿真',
+      title: '超导量子比特与 HFSS',
       summary: '在百度实习中，围绕超导量子芯片相关微波结构开展 Ansys HFSS 三维电磁仿真与几何分析。',
-      detail: '这是一段有明确时间与来源的仿真工作，不被扩展成未经证实的量子计算实验、制备或测量故事。',
+      detail: '这段实习让我从超导量子比特相关电路与微波结构出发，实际使用 HFSS 完成三维电磁建模、参数扫描与场分布分析。',
       motif: 'hfss',
       evidence: 'Verified Resume',
     },
@@ -57,9 +57,9 @@ export const journeyByLocale: Record<Locale, JourneyStage[]> = {
       date: '学习中 / 进行中',
       title: 'LeRobot 与具身学习',
       summary: '把对完整机器人系统的兴趣继续延伸到模仿学习与动作生成；当前定位为学习项目。',
-      detail: '待核实：LeRobot、ACT、数据集、训练、checkpoint、推理与评估环节仍需项目材料支持，不把计划中的流程写成已经完成的结果。',
+      detail: '当前从机器人系统经验继续向仿真、模仿学习与动作生成等方向学习。',
       motif: 'learning',
-      evidence: 'TODO',
+      evidence: 'User-provided',
       state: 'Learning / In Progress',
     },
     {
@@ -67,7 +67,7 @@ export const journeyByLocale: Record<Locale, JourneyStage[]> = {
       date: '当前',
       title: '当前关注',
       summary: '以 SPAD 读出电路研究为当前锚点，同时持续学习机器人与具身智能。',
-      detail: '这不是把多个方向包装成同等成熟的经历，而是保留它们各自的证据边界，继续探索从物理信号到智能行动的连接。',
+      detail: '当前以 SPAD 芯片设计为科研主线，同时继续向量子计算、机器人学习和嵌入式系统拓展知识边界。',
       motif: 'focus',
       evidence: 'Verified Resume',
     },
@@ -87,16 +87,16 @@ export const journeyByLocale: Record<Locale, JourneyStage[]> = {
       date: 'Undergraduate period',
       title: 'A mobile robot: from modules to a system',
       summary: 'An undergraduate mobile-robot project connected visual perception, ROS task logic, hardware communication, an MCU, and motor control.',
-      detail: 'The evidence does not support a more precise date, so the work stays within its verified undergraduate period. It became an early route into thinking about the perception–decision–action loop.',
+      detail: 'This project became an early route into understanding both the perception–decision–action loop and full software–hardware system integration.',
       motif: 'robot',
       evidence: 'Verified Resume',
     },
     {
       id: 'quantum-hfss',
       date: 'Sep - Dec 2023',
-      title: 'HFSS electromagnetic simulation',
+      title: 'Superconducting qubits & HFSS',
       summary: 'During a Baidu internship, I worked on Ansys HFSS 3D electromagnetic simulation and geometry analysis for microwave structures related to superconducting quantum chips.',
-      detail: 'This is a simulation experience with a verified time and source—not a claim about quantum-computing experiments, fabrication, or measurement.',
+      detail: 'The internship connected superconducting-qubit-related circuits and microwave structures with hands-on HFSS modeling, parameter sweeps, and field analysis.',
       motif: 'hfss',
       evidence: 'Verified Resume',
     },
@@ -114,9 +114,9 @@ export const journeyByLocale: Record<Locale, JourneyStage[]> = {
       date: 'Learning / In progress',
       title: 'LeRobot and embodied learning',
       summary: 'I am extending my interest in complete robotic systems toward imitation learning and action generation; this remains a learning project.',
-      detail: 'TODO verification: LeRobot, ACT, datasets, training, checkpoints, inference, and evaluation still need supporting project artifacts. Planned pipeline stages are not presented as completed results.',
+      detail: 'I am extending my robotics background toward simulation, imitation learning, and action-generation methods.',
       motif: 'learning',
-      evidence: 'TODO',
+      evidence: 'User-provided',
       state: 'Learning / In Progress',
     },
     {
@@ -124,7 +124,7 @@ export const journeyByLocale: Record<Locale, JourneyStage[]> = {
       date: 'Current',
       title: 'Current focus',
       summary: 'SPAD readout-circuit research is the present anchor, alongside continued learning in robotics and embodied AI.',
-      detail: 'The goal is not to present every direction as equally mature, but to preserve their different evidence boundaries while exploring the path from physical signals to intelligent action.',
+      detail: 'SPAD IC design remains my research anchor while I continue expanding into quantum computing, robot learning, and embedded systems.',
       motif: 'focus',
       evidence: 'Verified Resume',
     },

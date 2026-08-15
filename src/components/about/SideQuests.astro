@@ -5,11 +5,9 @@ interface Props {
   content: AboutContent;
   eyebrow: string;
   title: string;
-  interestsLabel: string;
-  gamesLabel: string;
 }
 
-const { content, eyebrow, title, interestsLabel, gamesLabel } = Astro.props;
+const { content, eyebrow, title } = Astro.props;
 ---
 
 <section class="section section-surface side-quests" data-about-section="side-quests" aria-labelledby="side-quests-title">
@@ -27,16 +25,6 @@ const { content, eyebrow, title, interestsLabel, gamesLabel } = Astro.props;
           <p>{quest.description}</p>
         </article>
       ))}
-    </div>
-    <div class="side-quest-life">
-      <div>
-        <h3>{interestsLabel}</h3>
-        <ul class="interest-chips">{content.sideQuests.interests.map((interest) => <li>{interest}</li>)}</ul>
-      </div>
-      <div>
-        <h3>{gamesLabel}</h3>
-        <ul class="interest-chips">{content.sideQuests.games.map((game) => <li>{game}</li>)}</ul>
-      </div>
     </div>
   </div>
 </section>

@@ -49,7 +49,7 @@ test('About explains Liangwei Hu through the complete V3 section order', () => {
   assert.match(page('/en/about'), /<h1[^>]*>About Me<\/h1>/);
 });
 
-test('Education Journey uses the five profile schools in order without inventing early dates', () => {
+test('Education Journey uses the five schools in order with the user-provided early-school periods', () => {
   const cases = [
     ['/about', ['宣城市第三小学', '宣城市第十二中学', '宣城中学', '武汉大学', '中国科学技术大学']],
     ['/en/about', ['Xuancheng No. 3 Primary School', 'Xuancheng No. 12 Middle School', 'Xuancheng High School', 'Wuhan University', 'University of Science and Technology of China']],
@@ -65,11 +65,23 @@ test('Education Journey uses the five profile schools in order without inventing
       assert.ok(position > cursor, `${school} follows the preceding school`);
       cursor = position;
     }
-    for (const id of ['primary-school', 'middle-school', 'high-school']) {
+    const earlyPeriods = route === '/about'
+      ? {
+          'primary-school': '2008.09 - 2014.06',
+          'middle-school': '2014.09 - 2017.06',
+          'high-school': '2017.09 - 2020.07',
+        }
+      : {
+          'primary-school': 'Sep 2008 - Jun 2014',
+          'middle-school': 'Sep 2014 - Jun 2017',
+          'high-school': 'Sep 2017 - Jul 2020',
+        };
+    for (const [id, period] of Object.entries(earlyPeriods)) {
       const item = education.match(new RegExp(`<li[^>]*data-school-id="${id}"[^>]*>[\\s\\S]*?<\\/li>`))?.[0];
       assert.ok(item, `${id} is rendered`);
-      assert.doesNotMatch(item, /<time\b|journey-date|education-period/);
-      assert.doesNotMatch(item, /data-period-source/);
+      assert.match(item, /<time\b/);
+      assert.match(item, new RegExp(period.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+      assert.doesNotMatch(item, /data-period-source="verified-resume"/);
     }
     for (const id of ['undergraduate', 'graduate']) {
       const item = education.match(new RegExp(`<li[^>]*data-school-id="${id}"[^>]*>[\\s\\S]*?<\\/li>`))?.[0];
@@ -95,13 +107,12 @@ test('Technical Journey renders two independent ordered tracks with evidence-bou
     }
   }
 
-  assert.match(zh, /工程主线[\s\S]*电子信息[\s\S]*SPAD 芯片设计/);
-  assert.match(en, /Engineering Track[\s\S]*Electronic Information[\s\S]*SPAD IC Design/);
-  assert.match(en, /SPAD IC Design[\s\S]*Embodied AI Learning/);
-  assert.match(zh, /物理与量子主线[\s\S]*量子科学与技术[\s\S]*超导量子计算/);
-  assert.match(en, /Physics \/ Quantum Track[\s\S]*Quantum Science &amp; Technology[\s\S]*Superconducting Quantum Computing/);
-  assert.match(zh, /data-stage-id="superconducting-quantum"[\s\S]*<h3[^>]*>超导量子计算<\/h3>[\s\S]*HFSS[\s\S]*参数扫描[\s\S]*场分布分析/);
-  assert.match(en, /data-stage-id="superconducting-quantum"[\s\S]*<h3[^>]*>Superconducting Quantum Computing<\/h3>[\s\S]*HFSS[\s\S]*parameter sweeps[\s\S]*field analysis/i);
+  assert.match(zh, /工程主线[\s\S]*智能小车[\s\S]*SPAD 芯片设计[\s\S]*具身智能学习/);
+  assert.match(en, /Engineering Track[\s\S]*Mobile Robot[\s\S]*SPAD IC Design[\s\S]*Embodied AI Learning/);
+  assert.match(zh, /物理与量子主线[\s\S]*物理学基础[\s\S]*超导量子比特[\s\S]*量子科学与技术[\s\S]*量子计算与量子通信/);
+  assert.match(en, /Physics \/ Quantum Track[\s\S]*Physics Foundations[\s\S]*Superconducting Qubits[\s\S]*Quantum Science &amp; Technology[\s\S]*Quantum Computing &amp; Communication/);
+  assert.match(zh, /data-stage-id="superconducting-quantum"[\s\S]*<h3[^>]*>超导量子比特<\/h3>[\s\S]*HFSS[\s\S]*参数扫描[\s\S]*场分布分析/);
+  assert.match(en, /data-stage-id="superconducting-quantum"[\s\S]*<h3[^>]*>Superconducting Qubits<\/h3>[\s\S]*HFSS[\s\S]*parameter sweeps[\s\S]*field analysis/i);
   assert.doesNotMatch(zh, /<h3[^>]*>HFSS[^<]*<\/h3>/i);
   assert.doesNotMatch(en, /<h3[^>]*>HFSS[^<]*<\/h3>/i);
   assert.doesNotMatch(zh, />[^<]*ROS2[^<]*</i);
@@ -120,7 +131,7 @@ test('How I Work shows verified end-to-end workflows instead of self-rating clai
   assert.doesNotMatch(en, /I am a fast learner|I have a global perspective/i);
 });
 
-test('Now stays on the verified SPAD work while Side Quests uses authorized interests and games', () => {
+test('Now stays on the SPAD work while Side Quests contains only the three technical explorations', () => {
   const zhNow = section(page('/about'), 'now');
   const enNow = section(page('/en/about'), 'now');
   assert.match(zhNow, /SPAD 单光子探测器读出芯片[\s\S]*芯片设计[\s\S]*版图[\s\S]*验证[\s\S]*PEX[\s\S]*版图后仿真[\s\S]*流片准备/);
@@ -130,16 +141,18 @@ test('Now stays on the verified SPAD work while Side Quests uses authorized inte
 
   const zhSide = section(page('/about'), 'side-quests');
   const enSide = section(page('/en/about'), 'side-quests');
-  for (const value of ['量子计算', '具身智能', '嵌入式系统', '足球', '篮球', '羽毛球', 'KTV', '麻将', '骑马与砍杀', '维多利亚', '无畏契约']) assert.match(zhSide, new RegExp(value));
-  for (const value of ['Quantum Computing', 'Embodied AI', 'Embedded Systems', 'Football', 'Basketball', 'Badminton', 'Karaoke', 'Mahjong', 'Mount &amp; Blade', 'Victoria', 'VALORANT']) assert.match(enSide, new RegExp(value));
+  for (const value of ['量子计算', '具身智能', '嵌入式系统']) assert.match(zhSide, new RegExp(value));
+  for (const value of ['Quantum Computing', 'Embodied AI', 'Embedded Systems']) assert.match(enSide, new RegExp(value));
+  assert.doesNotMatch(zhSide, /足球|篮球|羽毛球|KTV|麻将|骑马与砍杀|维多利亚|无畏契约/);
+  assert.doesNotMatch(enSide, /Football|Basketball|Badminton|Karaoke|Mahjong|Mount &amp; Blade|Victoria|VALORANT/);
 });
 
 test('About removes public development markers and the abstract V2 template framing', () => {
   for (const html of [page('/about'), page('/en/about')]) {
     assert.doesNotMatch(html, /TODO|Placeholder|Need verification|Add verified|待核实/i);
   }
-  assert.doesNotMatch(page('/about'), /值得持续追问的问题|一个连贯视角|跨层实践/);
-  assert.doesNotMatch(page('/en/about'), /Questions worth returning to|One connected view|Working across layers/i);
+  assert.doesNotMatch(page('/about'), /值得持续追问的问题|一个连贯视角|跨层实践|没有公开日期|证据边界|待核实|不表述为|不是已流片|仅限仿真/);
+  assert.doesNotMatch(page('/en/about'), /Questions worth returning to|One connected view|Working across layers|No dates are published|evidence boundary|TODO verification|not presented as|does not claim|simulation only/i);
 });
 
 test('About owns one route-scoped enhancement bundle with BFCache restoration hooks', () => {

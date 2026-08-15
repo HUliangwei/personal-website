@@ -35,5 +35,9 @@ const content = aboutByLocale[locale];
   <DualTrackJourney content={content} locale={locale} {...labels.technicalJourney} />
   <HowIWork content={content} {...labels.howIWork} />
   <Now content={content} {...labels.now} />
-  <SideQuests content={content} {...labels.sideQuests} />
+  <SideQuests
+    content={content}
+    eyebrow={labels.sideQuests.eyebrow}
+    title={labels.sideQuests.title}
+  />
 </BaseLayout>

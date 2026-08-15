@@ -178,9 +178,42 @@ test('centralizes only the authorized contacts and user-provided personal profil
       profile.schoolJourney.every(({ source }) => source === 'User-provided'),
     ),
   );
+  assert.deepEqual(
+    profileByLocale.zh.schoolJourney.slice(0, 3).map(({ period }) => period),
+    [
+      '2008.09 - 2014.06',
+      '2014.09 - 2017.06',
+      '2017.09 - 2020.07',
+    ],
+  );
+
+  assert.deepEqual(
+    profileByLocale.en.schoolJourney.slice(0, 3).map(({ period }) => period),
+    [
+      'Sep 2008 - Jun 2014',
+      'Sep 2014 - Jun 2017',
+      'Sep 2017 - Jul 2020',
+    ],
+  );
+
   for (const profile of Object.values(profileByLocale)) {
-    assert.ok(profile.schoolJourney.slice(0, 3).every(({ period, periodSource }) => period === undefined && periodSource === undefined));
-    assert.ok(profile.schoolJourney.slice(3).every(({ period, periodSource }) => Boolean(period) && periodSource === 'Verified Resume'));
+    assert.ok(
+      profile.schoolJourney
+        .slice(0, 3)
+        .every(({ periodSource, source }) =>
+          periodSource === undefined &&
+          source === 'User-provided'
+        ),
+    );
+
+    assert.ok(
+      profile.schoolJourney
+        .slice(3)
+        .every(({ period, periodSource }) =>
+          Boolean(period) &&
+          periodSource === 'Verified Resume'
+        ),
+    );
   }
 });
 

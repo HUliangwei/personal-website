@@ -13,6 +13,7 @@ export interface SchoolJourneyRecord {
   name: string;
   period?: string;
   periodSource?: 'Verified Resume';
+  duration?: string;
   source: 'User-provided';
 }
 
@@ -51,9 +52,9 @@ export const profileByLocale: Record<Locale, PublicProfile> = {
     games: ['骑马与砍杀', '维多利亚', '无畏契约'],
     personalFactsSource: 'User-provided',
     schoolJourney: [
-      { id: 'primary-school', name: '宣城市第三小学', source: 'User-provided' },
-      { id: 'middle-school', name: '宣城市第十二中学', source: 'User-provided' },
-      { id: 'high-school', name: '宣城中学', source: 'User-provided' },
+      { id: 'primary-school', name: '宣城市第三小学', period: '2008.09 - 2014.06', source: 'User-provided' },
+      { id: 'middle-school', name: '宣城市第十二中学', period: '2014.09 - 2017.06', source: 'User-provided' },
+      { id: 'high-school', name: '宣城中学', period: '2017.09 - 2020.07', source: 'User-provided' },
       { id: 'undergraduate', name: '武汉大学', period: '2020.09 - 2024.06', periodSource: 'Verified Resume', source: 'User-provided' },
       { id: 'graduate', name: '中国科学技术大学', period: '2024.09 - 2027.06（预计）', periodSource: 'Verified Resume', source: 'User-provided' },
     ],
@@ -72,9 +73,9 @@ export const profileByLocale: Record<Locale, PublicProfile> = {
     games: ['Mount & Blade', 'Victoria', 'VALORANT'],
     personalFactsSource: 'User-provided',
     schoolJourney: [
-      { id: 'primary-school', name: 'Xuancheng No. 3 Primary School', source: 'User-provided' },
-      { id: 'middle-school', name: 'Xuancheng No. 12 Middle School', source: 'User-provided' },
-      { id: 'high-school', name: 'Xuancheng High School', source: 'User-provided' },
+      { id: 'primary-school', name: 'Xuancheng No. 3 Primary School', period: 'Sep 2008 - Jun 2014', source: 'User-provided' },
+      { id: 'middle-school', name: 'Xuancheng No. 12 Middle School', period: 'Sep 2014 - Jun 2017', source: 'User-provided' },
+      { id: 'high-school', name: 'Xuancheng High School', period: 'Sep 2017 - Jul 2020', source: 'User-provided' },
       { id: 'undergraduate', name: 'Wuhan University', period: 'Sep 2020 - Jun 2024', periodSource: 'Verified Resume', source: 'User-provided' },
       {
         id: 'graduate',

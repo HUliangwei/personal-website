@@ -52,8 +52,8 @@ const en = {
     contact: { eyebrow: '05 / Contact', title: "Let's Connect", description: 'For a project conversation, research exchange, or a simple hello, these are the best ways to reach me.', cvAction: 'View CV' },
   },
   about: {
-    education: { eyebrow: '01 / Education', title: 'Education Journey', intro: 'From primary, middle, and high school in Xuancheng to Wuhan University and USTC. No dates are published for the first three schools because none were provided.' },
-    technicalJourney: { eyebrow: '02 / Technical Journey', title: 'Two technical tracks', intro: 'Engineering work and physics / quantum study influence each other without being forced into one timeline. Every stage stays within the evidence available from coursework, resumes, or project materials.' },
+    education: { eyebrow: '01 / Education', title: 'Education Journey', intro: 'From primary, middle, and high school in Xuancheng to Physics at Wuhan University and Quantum Science and Technology at USTC.' },
+    technicalJourney: { eyebrow: '02 / Technical Journey', title: 'Two technical tracks', intro: 'One engineering path moves from complete systems into board-level hardware and a custom IC, then back toward intelligent algorithms; the other moves from physics into superconducting qubits and quantum computing.' },
     howIWork: { eyebrow: '03 / How I Work', title: 'Run the full path, then go deeper' },
     now: { eyebrow: '04 / Now', title: 'Now' },
     sideQuests: { eyebrow: '05 / Side Quests', title: 'Side Quests', interestsLabel: 'Life & Interests', gamesLabel: 'Games I Play' },
