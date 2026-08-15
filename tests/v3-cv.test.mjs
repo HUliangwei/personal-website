@@ -125,54 +125,35 @@ before(() => {
   compiledCss = cssFiles.map((file) => readFileSync(file, 'utf8')).join('\n');
 });
 
-test('renders every audited grade in the correct locale and education card', () => {
+test('renders every selected audited grade in the correct locale and education table', () => {
   for (const locale of ['zh', 'en']) {
     const html = pages[locale];
     for (const educationId of ['undergraduate', 'graduate']) {
       const card = elementWithData(html, 'article', 'data-education-id', educationId);
-      const expected = coursework[locale][educationId];
-      assert.equal((card.match(/data-course-id=/g) ?? []).length, expected.length);
+      const expected = coursework[locale][educationId].filter(([courseId]) => courseId !== 'programmable-logic-devices');
+      const rendered = elementWithData(card, 'table', 'data-coursework-table', educationId);
+      assert.match(rendered, /<thead>[\s\S]*?<th[^>]*>[^<]+<\/th>[\s\S]*?<th[^>]*>[^<]+<\/th>[\s\S]*?<\/thead>/);
+      assert.equal((rendered.match(/data-course-id=/g) ?? []).length, expected.length);
       for (const [courseId, label, grade] of expected) {
-        const item = elementWithData(card, 'li', 'data-course-id', courseId);
-        assert.match(item, new RegExp(`>${escapeRegex(label)}<`));
-        assert.match(item, new RegExp(`data-grade="${escapeRegex(grade)}"`));
-        assert.match(item, new RegExp(`>${escapeRegex(grade)}(?:\\s*\\/\\s*100)?<`));
+        const row = elementWithData(rendered, 'tr', 'data-course-id', courseId);
+        assert.match(row, new RegExp(`>${escapeRegex(label)}<`));
+        assert.match(row, new RegExp(`>${escapeRegex(grade)}<`));
       }
     }
   }
 });
 
-test('keeps coursework grades readable without JavaScript and keyboard focus reveals them on fine pointers', () => {
+test('keeps coursework grades always readable in semantic tables without focus-reveal behavior', () => {
   for (const html of Object.values(pages)) {
-    assert.equal((html.match(/data-course-id=/g) ?? []).length, 18);
-    assert.equal((html.match(/data-course-grade(?:\s|>)/g) ?? []).length, 18);
-    assert.equal((html.match(/data-course-id="[^"]+"[^>]*tabindex="0"/g) ?? []).length, 18);
-    assert.equal((html.match(/data-course-id="[^"]+"[^>]*aria-describedby="course-grade-[^"]+"/g) ?? []).length, 18);
-    assert.doesNotMatch(html, /data-coursework-(?:toggle|button)|aria-expanded="(?:true|false)"[^>]*data-course/i);
+    assert.equal((html.match(/data-course-id=/g) ?? []).length, 17);
+    assert.equal((html.match(/data-coursework-table=/g) ?? []).length, 2);
+    assert.doesNotMatch(html, /coursework-item|data-course-grade|tabindex="0"[^>]*data-course-id|aria-describedby="course-grade-/);
   }
 
-  const baseGrade = cssBlock(compiledCss, '.coursework-grade');
-  assert.match(baseGrade, /opacity:1/);
-
-  const finePointer = cssBlock(compiledCss, '@media (hover:hover) and (pointer:fine)');
-  assert.match(cssBlock(finePointer, '.coursework-grade'), /opacity:0/);
-  const hoverReveal = cssBlock(finePointer, '.coursework-item:hover .coursework-grade');
-  assert.match(hoverReveal, /opacity:1/);
-  const focusReveal = cssBlock(finePointer, '.coursework-item:focus .coursework-grade');
-  assert.match(focusReveal, /opacity:1/);
-
-  const coarsePointer = cssBlock(compiledCss, '@media (hover:none),(pointer:coarse)');
-  assert.match(cssBlock(coarsePointer, '.coursework-grade'), /opacity:1/);
-
-  const mobile = cssBlock(compiledCss, '@media (width<=44rem)');
-  const mobileGrade = cssBlock(mobile, '.coursework-grade');
-  assert.match(mobileGrade, /max-width:none/);
-  assert.match(mobileGrade, /opacity:1/);
-
-  const reducedMotion = cssBlock(compiledCss, '@media (prefers-reduced-motion:reduce)');
-  assert.match(cssBlock(reducedMotion, '.coursework-grade'), /transition-duration:/);
+  assert.match(cssBlock(compiledCss, '.coursework-table'), /width:100%/);
+  assert.doesNotMatch(compiledCss, /coursework-(?:item|grade)|@media\(hover:hover\)and\(pointer:fine\)/);
   const forcedColors = cssBlock(compiledCss, '@media (forced-colors:active)');
-  assert.match(forcedColors, /\.coursework-item/);
+  assert.match(forcedColors, /\.coursework-table(?:\s+th|\s+td)/);
 });
 
 test('renders three CV tracks while preserving the two authorized PDFs and a non-link Quantum Preparing state', () => {
@@ -204,21 +185,11 @@ test('renders three CV tracks while preserving the two authorized PDFs and a non
   assert.equal(existsSync(join(root, 'dist', 'cv', 'liangwei-hu-quantum-computing.pdf')), false);
 });
 
-test('renders two localized Preparing transcript cards without links, PDF controls, or objects', () => {
-  const titles = {
-    zh: { undergraduate: '本科成绩单', graduate: '研究生成绩单', status: '准备中' },
-    en: { undergraduate: 'Undergraduate transcript', graduate: 'Graduate transcript', status: 'Preparing' },
-  };
-
-  for (const locale of ['zh', 'en']) {
-    const section = elementWithData(pages[locale], 'section', 'data-transcripts', 'academic');
-    assert.equal((section.match(/data-transcript-id=/g) ?? []).length, 2);
-    for (const id of ['undergraduate', 'graduate']) {
-      const card = elementWithData(section, 'article', 'data-transcript-id', id);
-      assert.match(card, new RegExp(`<h3[^>]*>${titles[locale][id]}</h3>`));
-      assert.match(card, new RegExp(`<p[^>]*role="status"[^>]*>${titles[locale].status}</p>`));
-      assert.doesNotMatch(card, /<(?:a|button|object)\b|href=|download|\.pdf/i);
-    }
+test('renders no transcript interface, link, preview, or status card', () => {
+  for (const html of Object.values(pages)) {
+    assert.doesNotMatch(html, /data-transcripts|data-transcript-id|transcript-card/);
+    assert.doesNotMatch(html, /<h[1-6][^>]*>[^<]*(?:transcript|成绩单)/i);
+    assert.doesNotMatch(html, /(?:href|download)="[^"]*(?:transcript|academic[-_ ]?record|成绩单)[^"]*"/i);
   }
 });
 
@@ -235,10 +206,10 @@ test('keeps transcript PDFs and private academic identifiers out of public and b
   assert.deepEqual(leaked, []);
 });
 
-test('keeps the CV document outline ordered from Academic Profile through CV Versions to transcripts', () => {
+test('keeps the CV document outline ordered from Academic Profile through CV Versions', () => {
   const headings = {
-    zh: ['教育与学术基础', '面向三个技术方向', '学业成绩单'],
-    en: ['Education and academic foundation', 'Three technical tracks', 'Academic transcripts'],
+    zh: ['教育与学术基础', '面向三个技术方向'],
+    en: ['Education and academic foundation', 'Three technical tracks'],
   };
 
   for (const locale of ['zh', 'en']) {

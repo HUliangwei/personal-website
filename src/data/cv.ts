@@ -1,4 +1,28 @@
 import type { Locale } from '../i18n/types';
+import type { CourseworkRecord, EducationRecord } from './education';
+
+export const CORE_COURSE_IDS = {
+  undergraduate: [
+    'mathematical-methods-for-physics', 'computational-physics', 'c-programming',
+    'quantum-mechanics', 'calculus', 'linear-algebra', 'electrodynamics',
+    'digital-logic-circuits', 'digital-logic-lab', 'probability-and-statistics',
+    'circuit-analysis',
+  ],
+  graduate: [
+    'physical-electronics-logic-lab', 'computational-physics',
+    'quantum-materials-and-devices', 'quantum-optics',
+    'digital-signal-processing-ii', 'semiconductor-device-physics',
+  ],
+} as const;
+
+export function selectCoreCoursework(record: EducationRecord): CourseworkRecord[] {
+  return CORE_COURSE_IDS[record.id].map((courseId) => {
+    const matches = record.coursework.filter(({ id }) => id === courseId);
+    if (matches.length === 0) throw new Error(`Missing selected coursework ID: ${courseId}`);
+    if (matches.length > 1) throw new Error(`Duplicate selected coursework ID: ${courseId}`);
+    return matches[0];
+  });
+}
 
 export interface CvTrack {
   id: 'integrated-circuits' | 'embodied-ai' | 'quantum-computing';
@@ -17,6 +41,7 @@ export interface AcademicProfileCopy {
   periodSource: string;
   rank: string;
   selectedCoursework: string;
+  courseLabel: string;
   gradeLabel: string;
   researchFocus: string;
   resumeSource: string;
@@ -33,6 +58,7 @@ export const academicProfileCopyByLocale: Record<Locale, AcademicProfileCopy> = 
     periodSource: '学习时间来源：本人简历',
     rank: '排名',
     selectedCoursework: '精选课程',
+    courseLabel: '课程',
     gradeLabel: '成绩',
     researchFocus: '研究方向',
     resumeSource: '来源：本人简历',
@@ -47,6 +73,7 @@ export const academicProfileCopyByLocale: Record<Locale, AcademicProfileCopy> = 
     periodSource: 'Study period source: owner-authored resume',
     rank: 'Rank',
     selectedCoursework: 'Selected coursework',
+    courseLabel: 'Course',
     gradeLabel: 'Grade',
     researchFocus: 'Research focus',
     resumeSource: 'Source: owner-authored resume',

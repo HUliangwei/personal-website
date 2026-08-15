@@ -306,9 +306,8 @@ test('V4 CSS exposes static prerequisites for browser viewport QA', () => {
   assert.match(css, /@media \(max-width:\s*25rem\)/, 'compact query ends at 400 CSS pixels');
   assert.match(css, /@media \(max-width:\s*44rem\)/, 'mobile query ends at 704 CSS pixels');
   assert.match(css, /@media \(max-width:\s*63\.9375rem\)/, 'intermediate query ends below 1024 CSS pixels');
-  assert.match(css, /\.primary-nav a,\s*\.nav-toggle,\s*\.button,\s*\.coursework-item\s*{[^}]*min-height:\s*2\.75rem;/s);
+  assert.match(css, /\.primary-nav a,\s*\.nav-toggle,\s*\.button\s*{[^}]*min-height:\s*2\.75rem;/s);
   assert.match(css, /:focus-visible\s*{[^}]*outline:\s*3px solid/s);
-  assert.match(css, /@media \(hover:\s*none\),\s*\(pointer:\s*coarse\)/);
   assert.match(css, /@media \(prefers-reduced-motion:\s*reduce\)/);
   assert.match(css, /@media \(forced-colors:\s*active\)/);
 });

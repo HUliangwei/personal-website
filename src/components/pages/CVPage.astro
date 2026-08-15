@@ -1,17 +1,14 @@
 ---
 import CVCard from '../cv/CVCard.astro';
 import AcademicProfile from '../cv/AcademicProfile.astro';
-import TranscriptCard from '../cv/TranscriptCard.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { cvTracksByLocale } from '../../data/cv';
-import { transcriptsByLocale } from '../../data/transcripts';
 import { getDictionary } from '../../i18n/utils';
 import type { Locale } from '../../i18n/types';
 interface Props { locale: Locale; }
 const { locale } = Astro.props;
 const dictionary = getDictionary(locale); const cv = dictionary.cv;
 const tracks = cvTracksByLocale[locale];
-const transcripts = transcriptsByLocale[locale];
 ---
 <BaseLayout locale={locale} title={dictionary.meta.cv.title} description={dictionary.meta.cv.description}>
   <section class="section cv-page" aria-labelledby="cv-heading"><div class="container">
@@ -23,16 +20,6 @@ const transcripts = transcriptsByLocale[locale];
         <h2 id="cv-versions-heading">{cv.sections.versionsTitle}</h2>
       </div>
       <div class="cv-grid">{tracks.map((track) => <CVCard {...track} labels={cv.actions} />)}</div>
-    </section>
-    <section class="transcripts" data-transcripts="academic" aria-labelledby="transcripts-heading">
-      <div class="section-heading transcripts-heading">
-        <p class="eyebrow">{cv.sections.transcriptsEyebrow}</p>
-        <h2 id="transcripts-heading">{cv.sections.transcriptsTitle}</h2>
-        <p>{cv.sections.transcriptsIntro}</p>
-      </div>
-      <div class="transcript-grid">
-        {transcripts.map((transcript) => <TranscriptCard transcript={transcript} />)}
-      </div>
     </section>
   </div></section>
 </BaseLayout>

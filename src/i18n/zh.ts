@@ -133,9 +133,6 @@ const zh = {
     sections: {
       versionsEyebrow: '简历版本',
       versionsTitle: '面向三个技术方向',
-      transcriptsEyebrow: '公开成绩单',
-      transcriptsTitle: '学业成绩单',
-      transcriptsIntro: '原始成绩单包含身份与验证信息，不会直接发布；当前两份公开脱敏版均在准备中。',
     },
     tracks: [
       {

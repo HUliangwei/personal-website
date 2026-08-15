@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { execFile } from 'node:child_process';
-import { readFile, readdir } from 'node:fs/promises';
+import { access, readFile, readdir } from 'node:fs/promises';
 import test from 'node:test';
 import { promisify } from 'node:util';
 
@@ -180,20 +180,8 @@ test('centralizes only the authorized contacts and user-provided personal profil
   }
 });
 
-test('keeps every transcript private behind a natural preparing state', async () => {
-  const { transcriptsByLocale } = await loadData('transcripts');
-
-  for (const locale of ['zh', 'en']) {
-    assert.deepEqual(transcriptsByLocale[locale].map(({ id }) => id), ['undergraduate', 'graduate']);
-    assert.ok(
-      transcriptsByLocale[locale].every(
-        ({ available, pdf, status }) => available === false && pdf === null && status === 'preparing',
-      ),
-    );
-  }
-
-  assert.ok(transcriptsByLocale.zh.every(({ statusLabel }) => statusLabel === '准备中'));
-  assert.ok(transcriptsByLocale.en.every(({ statusLabel }) => statusLabel === 'Preparing'));
+test('keeps transcript data out of the public data model', async () => {
+  await assert.rejects(access(new URL('../src/data/transcripts.ts', import.meta.url)), /ENOENT/);
 });
 
 test('does not track academic PDFs, labeled private identifiers, or complete local provenance paths', async () => {
@@ -227,7 +215,13 @@ test('does not track academic PDFs, labeled private identifiers, or complete loc
   for (const file of trackedFiles) {
     const extension = file.slice(file.lastIndexOf('.'));
     if (!textExtensions.has(extension)) continue;
-    const content = await readFile(new URL(`../${file}`, import.meta.url), 'utf8');
+    let content;
+    try {
+      content = await readFile(new URL(`../${file}`, import.meta.url), 'utf8');
+    } catch (error) {
+      if (error.code === 'ENOENT') continue;
+      throw error;
+    }
     if (completeLocalPath.test(content) || containsPrivateAcademicValue(content)) matches.push(file);
   }
 

@@ -68,9 +68,6 @@ const en = {
     sections: {
       versionsEyebrow: 'CV Versions',
       versionsTitle: 'Three technical tracks',
-      transcriptsEyebrow: 'Public transcripts',
-      transcriptsTitle: 'Academic transcripts',
-      transcriptsIntro: 'The originals contain identity and verification details, so they are never published directly; both public redacted copies are currently being prepared.',
     },
     tracks: [
       { title: 'Integrated Circuits', description: 'A CV tailored to integrated-circuit design and related engineering work.', pdf: '/cv/liangwei-hu-ic-design.pdf', available: true },

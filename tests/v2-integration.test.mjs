@@ -158,6 +158,6 @@ test('global polish preserves zoom, overflow, forced-colors, and motion accessib
   assert.match(css, /overflow-wrap:\s*anywhere/);
   const standardMotionCss = css.split('@media (prefers-reduced-motion: reduce)')[0];
   const motionDurations = [...standardMotionCss.matchAll(/(?:transition|animation)(?:-[\w-]+)?\s*:[^;}]*?(\d+)ms/g)].map((match) => Number(match[1]));
-  assert.ok(motionDurations.length >= 8, 'interactive motion is explicitly timed');
+  assert.ok(motionDurations.length >= 7, 'interactive motion is explicitly timed after removing coursework focus-reveal animation');
   assert.ok(motionDurations.every((duration) => duration >= 150 && duration <= 500), 'motion stays within 150–500ms');
 });

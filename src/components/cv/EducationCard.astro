@@ -1,7 +1,7 @@
 ---
-import type { AcademicProfileCopy } from '../../data/cv';
+import { selectCoreCoursework, type AcademicProfileCopy } from '../../data/cv';
 import type { EducationRecord } from '../../data/education';
-import CourseworkList from './CourseworkList.astro';
+import CourseworkTable from './CourseworkTable.astro';
 
 interface Props {
   education: EducationRecord;
@@ -9,6 +9,8 @@ interface Props {
 }
 
 const { education, copy } = Astro.props;
+const courseworkHeadingId = `coursework-heading-${education.id}`;
+const coreCoursework = selectCoreCoursework(education);
 ---
 
 <article class="education-card" data-education-card data-education-id={education.id}>
@@ -49,8 +51,14 @@ const { education, copy } = Astro.props;
   </dl>
 
   <div class="education-coursework">
-    <h4>{copy.selectedCoursework}</h4>
+    <h4 id={courseworkHeadingId}>{copy.selectedCoursework}</h4>
     {copy.editorialTranslationNote && <p class="education-translation-note">{copy.editorialTranslationNote}</p>}
-    <CourseworkList educationId={education.id} coursework={education.coursework} gradeLabel={copy.gradeLabel} />
+    <CourseworkTable
+      educationId={education.id}
+      coursework={coreCoursework}
+      courseLabel={copy.courseLabel}
+      gradeLabel={copy.gradeLabel}
+      headingId={courseworkHeadingId}
+    />
   </div>
 </article>

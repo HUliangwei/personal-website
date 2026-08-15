@@ -1,0 +1,32 @@
+---
+import type { CourseworkRecord, EducationRecord } from '../../data/education';
+
+interface Props {
+  educationId: EducationRecord['id'];
+  coursework: CourseworkRecord[];
+  courseLabel: string;
+  gradeLabel: string;
+  headingId: string;
+}
+
+const { educationId, coursework, courseLabel, gradeLabel, headingId } = Astro.props;
+---
+
+<table class="coursework-table" data-coursework-table={educationId} aria-labelledby={headingId}>
+  <thead>
+    <tr>
+      <th scope="col">{courseLabel}</th>
+      <th scope="col">{gradeLabel}</th>
+    </tr>
+  </thead>
+  <tbody>
+    {
+      coursework.map((course) => (
+        <tr data-course-id={course.id}>
+          <td>{course.label}</td>
+          <td>{course.grade}</td>
+        </tr>
+      ))
+    }
+  </tbody>
+</table>
