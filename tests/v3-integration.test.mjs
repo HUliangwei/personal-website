@@ -326,7 +326,7 @@ test('V3 CSS defines every custom property it consumes', () => {
   assert.deepEqual([...used].filter((property) => !defined.has(property)).sort(), []);
 });
 
-test('V3 keeps the static Cloudflare deployment contract and documents the release architecture', () => {
+test('V4 keeps the static Cloudflare deployment contract and documents the release architecture', () => {
   const astro = readFileSync(join(root, 'astro.config.mjs'), 'utf8');
   const wrangler = readFileSync(join(root, 'wrangler.jsonc'), 'utf8');
   assert.match(astro, /output:\s*'static'/);
@@ -336,16 +336,19 @@ test('V3 keeps the static Cloudflare deployment contract and documents the relea
   assert.doesNotMatch(wrangler, /"main"|compatibility_flags/);
 
   const readme = readFileSync(join(root, 'README.md'), 'utf8');
-  for (const heading of ['V3 information architecture', 'Internationalization', 'Projects', 'Academic data', 'Transcript privacy workflow', '3D model', 'Cloudflare deployment']) {
+  for (const heading of ['V4 information architecture', 'Internationalization', 'Projects', 'Academic data', 'Transcript privacy workflow', '3D model', 'Linux / Cloudflare verification', 'Cloudflare deployment']) {
     assert.match(readme, new RegExp(`^## ${heading}$`, 'mi'), `README documents ${heading}`);
   }
   for (const identity of ['SPAD IC Design', 'Mobile Robot', 'Superconducting Quantum Computing', 'Embodied AI Learning']) {
     assert.match(readme, new RegExp(identity), `README documents ${identity}`);
   }
-  assert.match(readme, /shared locale-aware page components/i);
-  assert.match(readme, /official transcript grades/i);
+  assert.match(readme, /exactly eight public routes/i);
+  assert.match(readme, /Project cards are non-interactive overview articles/i);
+  assert.match(readme, /does not publish transcript cards, transcript URLs, transcript previews, or transcript downloads/i);
   assert.match(readme, /Preparing/);
   assert.match(readme, /\/models\/hlw\.glb/);
   assert.match(readme, /actual browser viewport QA[^.]*320[^.]*375[^.]*768[^.]*1024[^.]*1440/i);
+  assert.match(readme, /Node 24 and npm 10\.x/i);
+  assert.doesNotMatch(readme, /\/projects\/<slug>|ProjectLayout|ProjectFilter|TranscriptCard|transcript states/i);
   assert.match(readme, /GitHub\s*->\s*Cloudflare Build\s*->\s*npm ci\s*->\s*npm run build\s*->\s*dist\/\s*->\s*npx wrangler deploy/);
 });

@@ -1,131 +1,176 @@
-# Liangwei Hu Portfolio V3
+# Liangwei Hu Portfolio V4
 
-A bilingual, static personal technical portfolio for Liangwei Hu. V3 presents his current SPAD IC work, education and dual-track technical journey, four evidence-bounded projects, verified coursework grades, interests, and authorized contact channels. Missing or unverified material is omitted or shown as a natural state such as `Preparing`; the site never invents experience or results.
+A bilingual, static personal technical portfolio for Liangwei Hu. V4 is organized for public / HR-facing use: it introduces current SPAD IC work, education and technical journey, four concise project cards, selected coursework, technical interests, and authorized contact channels without exposing private source documents or internal review notes.
 
 ## Stack
 
 - Astro 7 with TypeScript and static output
-- Tailwind CSS 4 through the Vite plugin, with the design system in `src/styles/global.css`
-- Astro Content Collections and MDX for bilingual project case studies
-- Three.js, dynamically imported on the Home hero only
-- Framework-free scripts for navigation, filters, PDF previews, and scroll enhancement
-- Node's built-in test runner for source, build-output, privacy, and deployment contracts
-- Cloudflare Workers Static Assets through the existing Wrangler configuration
+- Tailwind CSS 4 through the Vite plugin
+- Astro Content Collections / MDX for bilingual project records
+- Three.js as an optional, dynamically imported Home enhancement
+- Framework-free progressive enhancement for navigation, PDF preview, and About / Home interactions
+- Node's built-in test runner for source, generated-output, privacy, accessibility, and deployment contracts
+- Cloudflare Workers Static Assets through Wrangler
 
-There is no SPA framework, SSR adapter, database, analytics SDK, or required client-side model.
+There is no SPA framework, SSR adapter, database, analytics SDK, or required client-side 3D model.
 
-## V3 information architecture
+## V4 information architecture
 
-The four top-level pages have distinct roles and share one implementation per locale:
+V4 publishes exactly eight public routes:
 
 ```text
-Home      Introduces Liangwei Hu, current focus, projects, toolkit, interests, and contact
-About     Explains the five-school education journey and the engineering / physics-quantum tracks
-Projects  Presents four concrete bodies of work with explicit evidence and completion boundaries
-CV        Presents the academic profile, official grades, three CV directions, and transcript states
+Chinese                     English
+/                           /en
+/about                      /en/about
+/projects                   /en/projects
+/cv                         /en/cv
 ```
 
-Home renders `Current Focus`, `Selected Projects`, `Technical Toolkit`, `Life & Interests`, and `Contact`. About renders `Education Journey`, two independent technical tracks, `How I Work`, `Now`, and `Side Quests`. Projects and CV keep their specialized interactions progressively enhanced so their core content remains usable without JavaScript.
+The four top-level page roles are:
+
+```text
+Home      Personal introduction, current focus, four projects, toolkit, interests, contact
+About     Education journey, two technical tracks, working method, current work, side quests
+Projects  Four self-contained overview cards; no project-detail pages or single-project CTAs
+CV        Academic profile, selected coursework, and three CV directions
+```
+
+Project detail routes are intentionally not published in V4. Home and Projects reuse the same localized collection records so titles, status, summaries, highlights, and topic boundaries stay consistent.
 
 ## Architecture
 
 ```text
 public/
-  cv/                         Owner-authorized public CV snapshots only
-  models/hlw.glb              Optional verified personal model (not yet present)
+  cv/                         Two owner-authorized public CV snapshots
+  models/hlw.glb              Optional verified personal model; currently optional
   favicon.*
   robots.txt
 src/
   components/
-    about/                    Narrative journey sections and visuals
-    cv/                       Academic profile, CV cards, opt-in PDF preview
-    home/                     Hero, lazy 3D scene, and Home sections
+    about/                    Education, dual-track journey, workflows, Now, Side Quests
+    cv/                       Academic profile, coursework tables, CV cards, PDF preview
+    home/                     Hero, lazy 3D scene, focus, projects, toolkit, interests, contact
     layout/                   Navigation and footer
     pages/                    Shared locale-aware page components
-    projects/                 Cards, filters, figures, and concept diagrams
-  config/                     Stable site and project taxonomy configuration
-  content/projects/           Four Chinese and four English MDX case studies
-  data/                       Typed profile, education, grades, transcripts, CV, and journey data
+    projects/                 Non-interactive cards, figures, and conceptual diagrams
+  config/                     Stable site configuration
+  content/projects/           Four Chinese and four English project records
+  data/                       Typed profile, education, CV, About, and journey data
   i18n/                       Dictionaries, locale types, and route helpers
-  layouts/                    Base metadata shell and project detail layout
-  pages/                      Chinese routes plus mirrored `/en` routes
-  scripts/                    Progressive Home/About interaction modules
-  styles/global.css           Design tokens, responsive layout, accessibility
-  utils/model.ts              Build-time verified-model gate
+  layouts/                    Shared base metadata shell
+  pages/                      Four Chinese routes plus mirrored `/en` routes
+  scripts/                    Progressive Home / About interaction modules
+  styles/global.css           Design tokens, responsive layout, and accessibility rules
+  utils/                      Build-time helpers such as the verified-model gate
 docs/
-  CONTENT_SOURCES.md          Non-public provenance and evidence ledger
+  CONTENT_SOURCES.md          Internal provenance / evidence ledger; never a public asset
   HLW_MODEL_GUIDE.md          Safe `/models/hlw.glb` replacement contract
-tests/                        Phase, V2 regression, and V3 integration contracts
-astro.config.mjs             Static Astro and MDX configuration
-wrangler.jsonc               Existing Cloudflare static-assets contract
+tests/                        Regression, integration, privacy, accessibility, and release gates
+astro.config.mjs             Static Astro + MDX configuration
+wrangler.jsonc               Cloudflare static-assets deployment contract
 ```
 
 Generated `dist/` and installed `node_modules/` are not source files and must not be edited or committed.
 
 ## Internationalization
 
-Chinese is the default locale: `/`, `/about`, `/projects`, `/projects/<slug>`, and `/cv`. English mirrors each route under `/en`. Shared locale-aware page components receive a locale, while `src/i18n/zh.ts` and `src/i18n/en.ts` own interface copy. `src/i18n/utils.ts` maps paths and preserves the current route—including project slugs—when switching language.
+Chinese is the default locale. English mirrors each public route under `/en`.
 
-Every locale page emits its own title, description, canonical URL, `zh-CN`/`en`/`x-default` alternates, HTML language, and Open Graph locale. When adding a route or project, add both locale versions and extend integration tests so the switch cannot fall back to a language home page.
+Shared locale-aware page components receive a locale, while `src/i18n/zh.ts` and `src/i18n/en.ts` own interface copy. The language switch preserves the current top-level route instead of returning users to the home page.
+
+Every locale page emits:
+
+- its own `<html lang>`
+- localized title and description
+- canonical URL
+- `zh-CN`, `en`, and `x-default` alternates
+- localized Open Graph locale and description
+
+When adding a new public top-level route, add both locale versions and extend the integration tests. V4 does not publish project-detail routes.
 
 ## Projects
 
-The public collection contains exactly four evidence-audited identities in both languages:
+The public collection contains exactly four project identities in both languages:
 
-- **SPAD IC Design** — a 1×16-channel mixed-signal readout IC at post-layout simulation and pre-tapeout stage.
-- **Mobile Robot** — an undergraduate system connecting Python / YOLO vision, ROS task logic, MCU control, and motor actuation.
-- **Superconducting Quantum Computing** — HFSS 3D electromagnetic simulation used as a method for studying related microwave structures; no fabricated or measured quantum result is claimed.
-- **Embodied AI Learning** — a status-based learning map. Planned tools are not presented as completed experience.
+- **SPAD IC Design** — a 1×16-channel mixed-signal SPAD readout IC in SMIC 180 nm BCD, currently at physical verification / PEX / post-layout simulation and pre-tapeout preparation.
+- **Vision-Guided Mobile Robot** — an undergraduate system connecting Python / YOLO vision, ROS task logic, upper/lower-controller communication, MCU control, and motor control.
+- **Superconducting Quantum Computing** — HFSS 3D electromagnetic simulation, parameter sweeps, and field / geometry analysis of microwave structures related to superconducting quantum chips; simulation only.
+- **Embodied AI Learning** — an in-progress learning project. Linux, ROS2, Gazebo, MuJoCo, LeRobot, and ACT remain **Learning Topics**, not completed tools.
 
-To update one:
+Project cards are non-interactive overview articles. V4 does not publish `View Project`, `Read More`, or project-detail links.
 
-1. Edit the matching `slug.mdx` and `slug.en.mdx` entries in `src/content/projects/`.
-2. Keep the `slug`, `locale`, category, status, date, role, technologies, featured flag, and links compatible with `src/content.config.ts`.
-3. Record factual provenance or conflicts in `docs/CONTENT_SOURCES.md` before publishing claims.
-4. Omit unsupported results or use a natural state; distinguish measured, simulated, pre-layout, and post-layout evidence.
-5. Use `ProjectFigure.astro` and a correct figure type (`real`, `conceptual`, `simulation`, or `measured`). Concept diagrams must remain explicitly labelled and must not imitate experimental evidence.
+To update a project:
+
+1. Edit the matching `slug.mdx` and `slug.en.mdx` records in `src/content/projects/`.
+2. Preserve the schema and keep Chinese / English records aligned.
+3. Keep completed tools separate from learning topics.
+4. Distinguish simulation, measured data, pre-layout, post-layout, and pre-tapeout states accurately.
+5. Keep conceptual diagrams explicitly labelled as conceptual.
 6. Run `npm test` and `npm run build`.
 
-Do not add a fifth speculative project or infer tools, metrics, awards, fabrication, or measurements from adjacent material.
+Do not add unsupported fabrication, measurement, training-success, inference-success, award, metric, or tool claims.
 
 ## Academic data
 
-Publication-safe academic facts live in `src/data/education.ts`; page templates must not hard-code GPA, rank, course, grade, or source semantics. `docs/CONTENT_SOURCES.md` records the private source hierarchy and known conflicts without publishing transcript files.
+Publication-safe academic facts live in `src/data/education.ts`; templates should not hard-code GPA, rank, course, or grade values.
 
-The CV page publishes selected official transcript grades for eleven undergraduate course records (including separate Calculus I and II values) and seven graduate course records. Fine-pointer desktop users reveal grades on hover or keyboard focus; coarse-pointer and mobile layouts show grades without depending on hover. English course labels are editorial translations, while grade values retain official transcript semantics.
+The CV page publishes:
 
-Only the verified school/program labels, periods, official GPA values, evidence-labelled rank state, selected coursework, grades, and focus may render. Private academic identifiers, QR/verification data, birth data, and calculated GPA presented as official remain excluded.
+- the undergraduate GPA with the official transcript snapshot context dated `2023-12-12`
+- the graduate GPA from the official transcript
+- the resume-sourced undergraduate rank as explicitly non-official
+- selected undergraduate and graduate coursework in semantic tables
+
+The original transcript PDFs are not public assets. Private academic identifiers, QR / verification data, birth information, and other transcript-only identity fields remain excluded.
+
+English course names are editorial translations of the official Chinese labels; numeric grades preserve the official transcript values.
 
 ## CV documents
 
-Track definitions live in `src/data/cv.ts`; owner-authorized public CV snapshots live in `public/cv/`. The current public documents are:
+Track definitions live in `src/data/cv.ts`; owner-authorized public CV snapshots live in `public/cv/`.
+
+The two current public documents are:
 
 - `liangwei-hu-ic-design.pdf`
 - `liangwei-hu-embodied-ai.pdf`
 
-Quantum Computing remains a non-link `Preparing` state until an owner-authorized public CV snapshot exists. Never generate a substitute PDF or use a transcript in its place.
+Quantum Computing remains a non-link **`Preparing`** state until an owner-authorized public PDF is supplied.
 
-The two published PDFs are owner-authored directional CV snapshots approved for public access. That authorization does not mean every statement inside the documents has been independently certified for reuse as website copy. The website keeps its own evidence ledger and uses the more conservative, newer audited boundary for the Mobile Robot project.
-
-To replace a CV, confirm owner authorization, privacy, and public metadata; retain the stable filename; update the expected byte length and SHA-256 digest in `tests/phase5-cv.test.mjs`; and test Preview, Open, Download, and mobile fallback behavior. PDF embedding remains user-triggered so page load does not fetch documents automatically.
+PDF preview is user-triggered. The page also preserves Open / Download actions and mobile fallbacks for the two published CVs.
 
 ## Transcript privacy workflow
 
-The original undergraduate and graduate transcripts contain identity and verification material and are never copied into `public/`. V3 publishes verified course facts through the typed academic data model while both transcript cards remain non-link `Preparing` states.
+V4 does not publish transcript cards, transcript URLs, transcript previews, or transcript downloads.
 
-A transcript PDF may be published only when the owner supplies or approves a sanitized public copy and a manual review confirms that academic identifiers, QR codes, verification data, and unrelated personal information are absent. An approved file would use a stable path under `public/academic/` and be clearly labelled as a public redacted copy. Until then, the UI emits no transcript URL, preview object, Open action, or Download action.
+The private undergraduate and graduate transcript files are evidence sources only. Selected publication-safe facts are transcribed into the typed academic data model and covered by tests.
+
+If a transcript is ever considered for publication, it must first be separately sanitized and explicitly approved. Until then, no transcript PDF belongs in `public/` or generated output.
 
 ## 3D model
 
-The Home hero lazy-loads Three.js only after the scene approaches the viewport and WebGL is available. Until a verified model is supplied, a copyright-safe procedural scene is used; reduced-motion and unsupported clients receive the complete SVG fallback.
+The Home hero uses Three.js only as progressive enhancement. The scene is dynamically imported after capability / viewport checks, and reduced-motion or unsupported clients retain complete non-3D content.
 
-The only supported personal-model interface is `public/models/hlw.glb`, served as `/models/hlw.glb`. Read `docs/HLW_MODEL_GUIDE.md` before adding it. The file is currently optional and absent; when absent, no model URL is emitted. The model is progressive enhancement: copy, navigation, calls to action, and project content cannot depend on it.
+The optional personal-model interface is:
+
+```text
+public/models/hlw.glb
+```
+
+served as:
+
+```text
+/models/hlw.glb
+```
+
+When the file is absent, no model request target is emitted. Read `docs/HLW_MODEL_GUIDE.md` before replacing it.
+
+The 3D scene must never be required for navigation, project content, calls to action, or accessibility.
 
 ## Reference policy
 
-`sen-3d-resume` was studied only as a local reference for ideas such as lazy 3D initialization and scroll-linked scene state. Do not copy its personal model (`me.glb`), Blender source (`sen.blend`), likeness, name, resume content, visual assets, or repository code into this project. Reference repositories belong outside this Git repository and outside `public/`.
+External reference repositories may be studied for ideas, but personal models, likenesses, private assets, and unlicensed code must not be copied into this repository or `public/`.
 
-Any future external reference must be license-reviewed. Record attribution when required and prefer an original implementation that matches this site's content and accessibility architecture.
+Any future external reference should be license-reviewed, with attribution added when required.
 
 ## Local development
 
@@ -136,37 +181,72 @@ npm ci
 npm run dev
 ```
 
-Astro normally serves `http://localhost:4321`. In Codex-managed environments, use `astro dev --background`, then `astro dev status`, `astro dev logs`, and `astro dev stop` as documented in `AGENTS.md`.
+Astro normally serves:
+
+```text
+http://localhost:4321
+```
 
 ## Build and verification
 
+Primary release gates:
+
 ```sh
+npm ci
 npm test
 npm run build
-npm run preview
+git diff --check
+git status
 ```
 
-`npm test` builds the static output while checking bilingual routes, content contracts, CV hashes, accessibility landmarks, internal links, privacy boundaries, model/reference exclusions, and Wrangler invariants. `npm run build` writes deployable assets to `dist/`. Before release, use `npm ci`, run the full test and build gates, inspect the generated routes in a browser, and run `git diff --check`.
+`npm test` uses Node's built-in test runner and runs the repository's `*.test.mjs` contracts serially. The tests cover generated routes, localized copy, project boundaries, academic data, public CV hashes, accessibility landmarks, internal links, privacy / secret exclusions, responsive CSS prerequisites, and the Wrangler deployment contract.
 
-Automated tests validate static responsive CSS prerequisites only; they do not prove layout at a real viewport. Actual browser viewport QA at 320, 375, 768, 1024, and 1440 CSS pixels is a Task 7 release gate, together with interaction and console checks.
+`npm run build` writes deployable static assets to `dist/`.
+
+Automated tests validate static responsive prerequisites, but they do not prove real browser layout. Actual browser viewport QA at 320, 375, 768, 1024, and 1440 CSS pixels is a release gate, together with navigation, language switching, PDF behavior, reduced-motion behavior, and console checks.
+
+## Linux / Cloudflare verification
+
+Because a previous Cloudflare build exposed a cross-platform npm lockfile issue, final release validation should include Linux / WSL with Node 24 and npm 10.x:
+
+```sh
+rm -rf node_modules
+npm ci
+npm test
+npm run build
+```
+
+Do not replace `npm ci` with `npm install` as a release workaround.
+
+The current lockfile includes the optional WASM dependency records required by the present dependency graph, but only a clean Linux `npm ci` can close the platform-specific release gate.
 
 ## Cloudflare deployment
 
-The existing production architecture is intentionally unchanged:
+Production remains a static-assets deployment:
 
 ```text
 GitHub -> Cloudflare Build -> npm ci -> npm run build -> dist/ -> npx wrangler deploy
 ```
 
-`astro.config.mjs` must remain static. `wrangler.jsonc` must retain Worker name `personal-website` and `assets.directory` set to `./dist`. Do not add an SSR adapter, create another Worker, or move deployment credentials into repository files.
+Required invariants:
 
-Pushing `main` triggers the existing GitHub-to-Cloudflare integration. A successful local build does not prove production deployment; check the external Cloudflare build separately when access is available. Tokens and account credentials belong only in the hosting provider's encrypted secret store.
+```text
+Astro output     static
+Worker name      personal-website
+Assets directory ./dist
+```
+
+Do not add an SSR adapter, create a second Worker for this site, or commit deployment credentials.
+
+Merge `feat/portfolio-v4` into `main` only after local tests, build, browser QA, privacy checks, and the Linux / Cloudflare dependency gate pass. Pushing `main` then triggers the existing GitHub-to-Cloudflare deployment flow.
 
 ## Truthfulness and security
 
-- Publish only evidence-supported education, work, project, award, result, link, and identity claims.
-- Omit evidence gaps from public pages or use natural states such as `Preparing`, `Not yet verified`, or `尚未核实`.
-- Treat everything under `public/` as internet-public and review documents for metadata and personal identifiers.
-- Never publish transcripts, CET6 records, PDK/foundry material, GDS, complete netlists, NDA data, internal measurements, `.env` files, tokens, or API keys.
-- Use safe new-tab relationships and preserve keyboard, reduced-motion, forced-colors, zoom, and no-JavaScript fallbacks.
-- Review every dependency and lockfile change before release.
+- Keep public wording natural and HR-facing; do not expose TODO, verification, provenance, or developer-note language in generated pages.
+- Publish only supported education, project, result, award, and identity claims.
+- Keep completed tools separate from learning topics.
+- Treat everything under `public/` as internet-public.
+- Never publish raw transcripts, CET records, PDK / foundry material, GDS / OASIS, complete netlists, NDA material, `.env` files, tokens, API keys, or private local paths.
+- Keep the two authorized CV PDFs stable unless the owner explicitly replaces them.
+- Preserve keyboard access, zoom, reduced-motion, forced-colors, no-JavaScript fallbacks, and route-preserving language switching.
+- Review dependency and lockfile changes before release.
