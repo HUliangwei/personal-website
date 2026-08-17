@@ -8,9 +8,9 @@ import { fileURLToPath } from 'node:url';
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const dist = join(root, 'dist');
 const expectedRoutes = [
-  '/', '/about', '/cv', '/en', '/en/about', '/en/cv', '/en/projects', '/projects',
+  '/', '/about', '/cv', '/en', '/en/about', '/en/cv', '/en/projects',
   '/en/projects/programming/personal-website', '/en/projects/programming/videoto3d',
-  '/projects/programming/personal-website', '/projects/programming/videoto3d',
+  '/projects', '/projects/programming/personal-website', '/projects/programming/videoto3d',
 ];
 
 const locales = [
@@ -133,10 +133,6 @@ function projectDetailLinks(value) {
   return [...value.matchAll(/href="(?:\/en)?\/projects\/(?!programming\/)[^"]+"/g)];
 }
 
-function programmingDetailLinks(value) {
-  return [...value.matchAll(/href="(?:\/en)?\/projects\/programming\/[^"]+"/g)];
-}
-
 function singleProjectCtas(value) {
   return value.match(/(?:查看项目|View project)/gi) ?? [];
 }
@@ -171,7 +167,15 @@ test('V4/V5 publishes four self-contained research cards plus programming showca
   assert.equal(projectCards('/projects').length, 4);
   assert.equal(projectCards('/en/projects').length, 4);
   assert.equal(projectDetailLinks(allPublicHtml()).length, 0);
-  assert.equal(programmingDetailLinks(allPublicHtml()).length, 4);
+  const programmingRoutes = new Set(
+    [...allPublicHtml().matchAll(/href="(\/(?:en\/)?projects\/programming\/[^"]+)"/g)].map((match) => match[1]),
+  );
+  assert.deepEqual([...programmingRoutes].sort(), [
+    '/en/projects/programming/personal-website',
+    '/en/projects/programming/videoto3d',
+    '/projects/programming/personal-website',
+    '/projects/programming/videoto3d',
+  ]);
   assert.equal(singleProjectCtas(visibleText(allPublicHtml())).length, 0);
 });
 

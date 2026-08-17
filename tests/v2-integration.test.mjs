@@ -133,7 +133,7 @@ test('static Cloudflare deployment contract and crawler policy remain explicit',
   assert.match(robots, /^User-agent:\s*\*\s*\nAllow:\s*\/$/m);
 });
 
-test('documentation defines the V2 architecture and safe hlw.glb replacement contract', () => {
+test('documentation defines the V5 architecture and safe model replacement contract', () => {
   const readme = readFileSync(join(root, 'README.md'), 'utf8');
   const modelGuidePath = join(root, 'docs', 'HLW_MODEL_GUIDE.md');
   assert.ok(existsSync(modelGuidePath), 'model guide exists');
@@ -142,7 +142,7 @@ test('documentation defines the V2 architecture and safe hlw.glb replacement con
   for (const topic of ['Architecture', 'Internationalization', 'Projects', 'Academic data', 'CV documents', '3D model', 'Reference policy', 'Cloudflare deployment']) {
     assert.match(readme, new RegExp(`^## ${topic}$`, 'm'), `README documents ${topic}`);
   }
-  for (const contract of ['/models/hlw.glb', 'Y-up', 'origin', 'camera', 'lighting', 'GLB', 'texture', 'polygon', 'focus-start', 'fallback']) {
+  for (const contract of ['/models/hlw.ply', '/models/hlw.glb', 'camera', 'GLB', 'fallback', 'procedural', 'Gaussian Splat', 'bounds']) {
     assert.match(guide, new RegExp(contract, 'i'), `model guide documents ${contract}`);
   }
 });

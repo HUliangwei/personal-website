@@ -1,10 +1,10 @@
 import { existsSync } from 'node:fs';
+import { join } from 'node:path';
 
-const verifiedPlyModel = new URL('../../public/models/hlw.ply', import.meta.url);
-const verifiedGlbModel = new URL('../../public/models/hlw.glb', import.meta.url);
+const publicModelPath = (name: string) => join(process.cwd(), 'public', 'models', name);
 
 export function getVerifiedModelUrl(): string | undefined {
-  if (existsSync(verifiedPlyModel)) return '/models/hlw.ply';
-  if (existsSync(verifiedGlbModel)) return '/models/hlw.glb';
+  if (existsSync(publicModelPath('hlw.ply'))) return '/models/hlw.ply';
+  if (existsSync(publicModelPath('hlw.glb'))) return '/models/hlw.glb';
   return undefined;
 }
