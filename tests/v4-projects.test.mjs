@@ -9,8 +9,8 @@ const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const dist = join(root, 'dist');
 const expectedRoutes = [
   '/', '/about', '/cv', '/en', '/en/about', '/en/cv', '/en/projects',
-  '/en/projects/programming/personal-website', '/en/projects/programming/videoto3d',
-  '/projects', '/projects/programming/personal-website', '/projects/programming/videoto3d',
+  '/en/projects/programming/personal-website', '/en/projects/programming/robot', '/en/projects/programming/videoto3d',
+  '/projects', '/projects/programming/personal-website', '/projects/programming/robot', '/projects/programming/videoto3d',
 ];
 
 const locales = [
@@ -39,10 +39,10 @@ const locales = [
         topics: ['Ansys HFSS', '3D Electromagnetic Simulation', 'Parameter Sweep'],
       },
       lerobot: {
-        title: '具身智能学习', date: '持续学习', status: '学习项目 · 进行中',
-        summary: '持续学习机器人仿真、模仿学习与动作生成，逐步建立从任务、数据、训练到评估的机器人学习知识框架。',
-        highlights: ['以任务、数据、训练与评估拆解学习问题', '持续探索机器人仿真、模仿学习与动作生成方法'],
-        topics: ['Linux', 'ROS2', 'Gazebo', 'MuJoCo', 'LeRobot', 'ACT'],
+        title: '具身智能学习', date: '2026.08–至今', status: '进行中 · PushT 主线完成',
+        summary: '以公开的 robot 仓库为载体，完成 LeRobot × MuJoCo 的 PushT 任务复现：从数据集、ACT 训练到双环境闭环推理，并继续向 LIBERO 桌面操作与 VLA 模型进阶。',
+        highlights: ['在自建 MuJoCo 环境复现 PushT 官方任务，覆盖率 0.953 复现成功', '打通数据 → ACT 训练 → 双环境（pymunk / MuJoCo）推理的完整工作区'],
+        topics: ['LIBERO', 'SmolVLA', 'OpenVLA'],
         learning: true,
       },
     },
@@ -72,10 +72,10 @@ const locales = [
         topics: ['Ansys HFSS', '3D Electromagnetic Simulation', 'Parameter Sweep'],
       },
       lerobot: {
-        title: 'Embodied AI Learning', date: 'Ongoing Learning', status: 'Learning Project · In Progress',
-        summary: 'Continuing to study robot simulation, imitation learning, and action generation while building a structured understanding of tasks, data, training, and evaluation.',
-        highlights: ['Organizes robot learning around tasks, data, training, and evaluation', 'Continues exploring simulation, imitation learning, and action generation'],
-        topics: ['Linux', 'ROS2', 'Gazebo', 'MuJoCo', 'LeRobot', 'ACT'],
+        title: 'Embodied AI Learning', date: '2026.08–Present', status: 'In Progress · PushT Main Line Complete',
+        summary: 'A public robot workspace that reproduces the LeRobot × MuJoCo PushT task end to end — dataset, ACT training, and dual-environment inference — while moving toward LIBERO and VLA models.',
+        highlights: ['Reproduced the official PushT task in a self-built MuJoCo environment with 0.953 coverage', 'A complete workspace from dataset and ACT training to dual-environment inference in pymunk and MuJoCo'],
+        topics: ['LIBERO', 'SmolVLA', 'OpenVLA'],
         learning: true,
       },
     },
@@ -172,8 +172,10 @@ test('V4/V5 publishes four self-contained research cards plus programming showca
   );
   assert.deepEqual([...programmingRoutes].sort(), [
     '/en/projects/programming/personal-website',
+    '/en/projects/programming/robot',
     '/en/projects/programming/videoto3d',
     '/projects/programming/personal-website',
+    '/projects/programming/robot',
     '/projects/programming/videoto3d',
   ]);
   assert.equal(singleProjectCtas(visibleText(allPublicHtml())).length, 0);
@@ -198,7 +200,7 @@ test('V4 project cards use one localized collection record on Home and Projects'
       for (const highlight of expected.highlights) assert.match(highlights, new RegExp(`<li>${highlight}</li>`));
       const topics = [...list.matchAll(/<ul class="(?:technology-list|learning-topic-list)"[\s\S]*?<\/ul>/g)].map((match) => match[0]);
       const visibleTopics = topics.flatMap((topic) => [...topic.matchAll(/<li>([^<]+)<\/li>/g)].map((match) => match[1]));
-      assert.ok(visibleTopics.length >= 3 && visibleTopics.length <= 6);
+      assert.ok(visibleTopics.length >= 3 && visibleTopics.length <= 8);
       for (const topic of expected.topics) assert.ok(visibleTopics.includes(topic));
       assert.equal(cardMetadata(home), cardMetadata(list), `${slug} card metadata is identical on Home and Projects`);
       assert.match(list, new RegExp(expected.learning ? locale.learningLabel : locale.completedLabel));
@@ -215,7 +217,7 @@ test('V4 cards keep mobile, quantum, SPAD, and embodied-AI evidence boundaries v
     assert.match(cardFor(route, 'spad'), /流片前|Pre-tapeout/i);
     const embodied = cardFor(route, 'lerobot');
     assert.match(embodied, new RegExp(locale.learningLabel));
-    assert.doesNotMatch(embodied, new RegExp(locale.completedLabel));
+    assert.match(embodied, new RegExp(locale.completedLabel));
   }
 });
 
@@ -224,13 +226,13 @@ test('V4 source frontmatter and generated cards retain exact completed-tool and 
     spad: ['Cadence Virtuoso', 'Spectre', 'Calibre', 'FPGA'],
     'mobile-robot': ['Python', 'YOLO', 'ROS', 'MCU', 'Motor Control'],
     'quantum-hfss': ['Ansys HFSS', '3D Electromagnetic Simulation', 'Parameter Sweep'],
-    lerobot: [],
+    lerobot: ['Python', 'LeRobot', 'MuJoCo', 'ACT', 'PyTorch'],
   };
   const learningTopics = {
     spad: [],
     'mobile-robot': [],
     'quantum-hfss': [],
-    lerobot: ['Linux', 'ROS2', 'Gazebo', 'MuJoCo', 'LeRobot', 'ACT'],
+    lerobot: ['LIBERO', 'SmolVLA', 'OpenVLA'],
   };
 
   for (const locale of locales) {
@@ -282,9 +284,9 @@ test('V4 source frontmatter and generated cards reject unsupported completed or 
 
     const embodiedSource = frontmatter(locale, 'lerobot');
     const embodied = cardFor(route, 'lerobot');
-    assert.match(embodiedSource, /学习项目|Learning Project/i);
+    assert.match(embodiedSource, /进行中|In Progress/i);
     assert.match(embodied, /学习主题|Learning Topics/i);
-    assert.doesNotMatch(embodied, /Completed Tools|已完成工具/);
+    assert.match(embodied, /已完成工具|Completed Tools/);
     assert.doesNotMatch(embodiedSource, /training succeeded|successful inference|completed pipeline|训练成功|推理成功|端到端完成/i);
     assert.doesNotMatch(embodied, /training succeeded|successful inference|completed pipeline|训练成功|推理成功|端到端完成/i);
   }

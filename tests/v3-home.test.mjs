@@ -56,7 +56,7 @@ test('Home introduces Liangwei Hu through the shared V4 information architecture
     for (const heading of headings) assert.match(text, new RegExp(heading.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
     for (const eyebrow of eyebrows) assert.match(text, new RegExp(eyebrow.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
     for (const fact of identity) assert.match(text, new RegExp(fact.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
-    assert.equal((html.match(/<section\b/g) ?? []).length, 10, `${route} renders six page sections plus four card topic groups`);
+    assert.equal((html.match(/<section\b/g) ?? []).length, 11, `${route} renders six page sections plus five card topic groups`);
     assert.equal((html.match(/data-scene-focus=/g) ?? []).length, 6, `${route} exposes one scene anchor per Home section`);
   }
 });

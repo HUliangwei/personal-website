@@ -71,7 +71,7 @@ test('V4 publishes localized routes, route-preserving navigation, and complete l
   assert.match(page('/en/projects'), /<h1[^>]*>[^<]*Projects/i);
   assert.match(page('/cv'), /<h1[^>]*>[^<]*简历/);
   assert.match(page('/en/cv'), /<h1[^>]*>[^<]*CV/i);
-  assert.match(page('/en/projects'), /Learning Topics[\s\S]*?<li>ROS2<\/li>/);
+  assert.match(page('/en/projects'), /Learning Topics[\s\S]*?<li>LIBERO<\/li>/);
 
   for (const route of routePairs.flat()) {
     const html = page(route);

@@ -42,7 +42,7 @@ Research project detail routes are intentionally not published: Home and Project
 ```text
 public/
   cv/                         Two owner-authorized public CV snapshots
-  models/hlw.glb              Optional verified personal model; currently optional
+  models/hlw.glb              Verified personal model assets (PLY preferred, GLB fallback)
   favicon.*
   robots.txt
 src/
@@ -97,7 +97,7 @@ The public collection contains exactly four project identities in both languages
 - **SPAD IC Design** — a 1×16-channel mixed-signal SPAD readout IC in SMIC 180 nm BCD, currently at physical verification / PEX / post-layout simulation and pre-tapeout preparation.
 - **Vision-Guided Mobile Robot** — an undergraduate system connecting Python / YOLO vision, ROS task logic, upper/lower-controller communication, MCU control, and motor control.
 - **Superconducting Quantum Computing** — HFSS 3D electromagnetic simulation, parameter sweeps, and field / geometry analysis of microwave structures related to superconducting quantum chips; simulation only.
-- **Embodied AI Learning** — an in-progress learning project. Linux, ROS2, Gazebo, MuJoCo, LeRobot, and ACT remain **Learning Topics**, not completed tools.
+- **Embodied AI Learning** — a public LeRobot × MuJoCo workspace (`HUliangwei/robot`) that reproduces the PushT task end to end — dataset, ACT training, and dual-environment (pymunk / MuJoCo) inference — with LIBERO and VLA models still in progress.
 
 Project cards are non-interactive overview articles. V4 does not publish `View Project`, `Read More`, or detail links for the four research projects. The V5 programming collection is the exception: every programming showcase file produces one card plus a detail page at `/projects/programming/{slug}` (and the `/en` mirror), per `docs/编程项目 展示规范.md`.
 
@@ -162,19 +162,14 @@ If a transcript is ever considered for publication, it must first be separately 
 
 The Home hero uses Three.js only as progressive enhancement. The scene is dynamically imported after capability / viewport checks, and reduced-motion or unsupported clients retain complete non-3D content.
 
-The optional personal-model interface is:
+The personal-model interface ships with the repository:
 
 ```text
-public/models/hlw.glb
+public/models/hlw.ply     preferred (Gaussian Splat, rendered with @sparkjsdev/spark)
+public/models/hlw.glb     fallback (GLTF)
 ```
 
-served as:
-
-```text
-/models/hlw.glb
-```
-
-When the file is absent, no model request target is emitted. Read `docs/HLW_MODEL_GUIDE.md` before replacing it.
+served as `/models/hlw.ply` when present, else `/models/hlw.glb`. When neither file exists, no model request target is emitted and the procedural scene is used. Read `docs/HLW_MODEL_GUIDE.md` before replacing the assets.
 
 The 3D scene must never be required for navigation, project content, calls to action, or accessibility.
 

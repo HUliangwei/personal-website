@@ -1,0 +1,60 @@
+---
+title: Robot · 具身智能学习
+slug: robot
+locale: zh
+status: 持续迭代
+summary: LeRobot × MuJoCo 具身智能学习工作区：复现 PushT 任务的数据、ACT 训练与双环境闭环推理，并向 LIBERO 与 VLA 模型进阶。
+technologies:
+  - Python
+  - LeRobot
+  - MuJoCo
+  - ACT
+  - PyTorch
+  - gym-pusht
+  - pymunk
+date: 2026.08–至今
+featured: true
+highlights:
+  - 官方环境复现成功：ACT 覆盖率 0.9534
+  - 物理保真修复：MuJoCo rollout 奖励总和 +104%
+links:
+  - label: GitHub
+    url: https://github.com/HUliangwei/robot
+---
+
+## 项目简介
+
+Robot 是一个 **LeRobot × MuJoCo 具身智能学习工作区**：把 LeRobot 官方 PushT 任务从数据集、ACT 训练到双环境（官方 pymunk 2D / 自建 MuJoCo）闭环推理完整复现，并以此为跳板向 3D 机械臂操作（LIBERO）与 VLA 模型进阶。
+
+## 功能特性
+
+- **PushT 完整复现**：数据 → ACT 训练 → 双环境推理的端到端工作区，主线已完成。
+- **双环境推理**：同一策略可分别在官方 pymunk 2D 与自建 MuJoCo 环境跑 rollout，结果分开记录。
+- **本地网页仪表盘**：`gui/server.py` 提供零依赖的进度 / 命令 / 视频 / 文件浏览。
+- **学习路径沉淀**：`docs/` 工作流文档与可视化报告、`note/` 算法分类与踩坑笔记、每个小项目带 README + PROGRESS + commands。
+
+## 技术架构
+
+- **语言 / 生态**：Python；关键版本 LeRobot 0.6.1、torch 2.11、MuJoCo 3.11.0、gym-pusht 0.1.6、pymunk 6.8.0。
+- **子项目组织**：
+  - `embodied_learning/`（PushT 主线，已完成）
+  - `libero/`（LIBERO 基准，已立项，ACT → SmolVLA 路线）
+- **运行环境**：Windows + conda 环境 `lerobot-win`，RTX 4060 Laptop 8GB（CUDA）。
+- **不入库内容**：权重、缓存等超 GitHub 100MB 限制的资产（见仓库 .gitignore），按需从 Hugging Face 重新下载或训练。
+
+## 关键实现
+
+- 自建 MuJoCo PushT 环境与官方 pymunk 环境物理对齐：对照关节阻尼与摩擦参数，修复「推完不立即停下」的保真问题。
+- ACT 推理管线支持官方权重（aadarshram / Lemon-03）与自训权重（25k 步）三类来源。
+- 物理修复以量化指标验证：修复后 MuJoCo rollout 奖励总和提升 **+104%**。
+
+## 挑战与解决
+
+- **物理保真**：MuJoCo 与 pymunk 的接触模型差异导致块体运动不一致，通过逐项对齐阻尼与摩擦参数解决，并用奖励与转动量指标量化。
+- **已知残余问题**：真实 MuJoCo rollout 中块体转动量仍大于官方（累计 380° vs 56°），已记录于 `embodied_learning/PROGRESS.md`（含已排除假设与下一步）。
+- **权重体积**：checkpoint 超过 GitHub 限制，约定不入库、按需恢复。
+
+## 成果与展望
+
+- 官方环境复现成功：aadarshram ACT @seed1000 覆盖率 **0.9534**（134 步完成）；自训 ACT（25k 步）0.39 / 0.82。
+- 展望：完成 LIBERO 桌面操作（ACT → SmolVLA → OpenVLA）路线，沉淀更多可复现的机器人学习示例与评估协议。

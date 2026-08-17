@@ -46,9 +46,11 @@ test('V5 programming collection generates cards and detail pages from showcase m
     '/en/cv',
     '/en/projects',
     '/en/projects/programming/personal-website',
+    '/en/projects/programming/robot',
     '/en/projects/programming/videoto3d',
     '/projects',
     '/projects/programming/personal-website',
+    '/projects/programming/robot',
     '/projects/programming/videoto3d',
   ]);
 
@@ -58,14 +60,18 @@ test('V5 programming collection generates cards and detail pages from showcase m
   for (const html of [zh, en]) {
     assert.match(html, /data-programming-collection/);
     assert.match(html, /data-programming-project="personal-website"/);
+    assert.match(html, /data-programming-project="robot"/);
     assert.match(html, /data-programming-project="videoto3d"/);
     assert.match(html, /https:\/\/github\.com\/HUliangwei\/personal-website/);
     assert.match(html, /https:\/\/github\.com\/HUliangwei\/Videoto3D/);
+    assert.match(html, /https:\/\/github\.com\/HUliangwei\/robot/);
   }
 
   assert.match(zh, /href="\/projects\/programming\/personal-website"/);
+  assert.match(zh, /href="\/projects\/programming\/robot"/);
   assert.match(zh, /href="\/projects\/programming\/videoto3d"/);
   assert.match(en, /href="\/en\/projects\/programming\/personal-website"/);
+  assert.match(en, /href="\/en\/projects\/programming\/robot"/);
   assert.match(en, /href="\/en\/projects\/programming\/videoto3d"/);
   assert.match(zh, />已完成</);
   assert.match(en, />Completed</);
@@ -90,6 +96,18 @@ test('V5 programming detail pages render frontmatter and markdown body', () => {
   assert.match(zhWebsite, /<h1[^>]*>个人网站<\/h1>/);
   assert.match(zhWebsite, /<h2[^>]*>项目简介<\/h2>/);
   assert.match(zhWebsite, /https:\/\/github\.com\/HUliangwei\/personal-website/);
+
+  const zhRobot = page('/projects/programming/robot');
+  const enRobot = page('/en/projects/programming/robot');
+  assert.match(zhRobot, /<h1[^>]*>Robot · 具身智能学习<\/h1>/);
+  assert.match(zhRobot, /<h2[^>]*>项目简介<\/h2>/);
+  assert.match(zhRobot, /https:\/\/github\.com\/HUliangwei\/robot/);
+  assert.match(zhRobot, />持续迭代</);
+  assert.match(zhRobot, /href="\/projects"/);
+  assert.match(enRobot, /<h1[^>]*>Robot · Embodied AI Learning<\/h1>/);
+  assert.match(enRobot, /<h2[^>]*>Overview<\/h2>/);
+  assert.match(enRobot, />Actively Iterated</);
+  assert.match(enRobot, /href="\/en\/projects"/);
 });
 
 test('V5 Home uses Spark for PLY and bounds-based GLB framing', () => {

@@ -14,6 +14,7 @@ const routePairs = [
   ['/projects', '/en/projects'],
   ['/cv', '/en/cv'],
   ['/projects/programming/personal-website', '/en/projects/programming/personal-website'],
+  ['/projects/programming/robot', '/en/projects/programming/robot'],
   ['/projects/programming/videoto3d', '/en/projects/programming/videoto3d'],
 ];
 const routes = routePairs.flat();

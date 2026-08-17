@@ -100,7 +100,7 @@ test('publication excludes private academic, reference-project, model, and secre
 
   const privateDocumentPattern = new RegExp(`成绩单|transcript|cet-?6|${['264', '584', '62'].join('')}`, 'i');
   assert.deepEqual(published.filter((file) => privateDocumentPattern.test(file)), []);
-  assert.doesNotMatch(tracked, /(?:^|\/)(?:me\.glb|sen\.blend|hlw\.glb)$/im);
+  assert.doesNotMatch(tracked, /(?:^|\/)(?:me\.glb|sen\.blend)$/im);
   assert.doesNotMatch(tracked, /ref\/sen-3d-resume|web\/public\/models/i);
   assert.doesNotMatch(sourceText, /Sen Zhan|dayinji\/sen-3d-resume/i);
   assert.doesNotMatch(sourceText, /(?:api[_-]?key|cloudflare[_-]?api[_-]?token|secret[_-]?key)\s*[:=]\s*["'][^"']+["']/i);

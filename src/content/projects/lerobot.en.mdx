@@ -3,69 +3,76 @@ title: Embodied AI Learning
 slug: lerobot
 locale: en
 category: Embodied AI
-summary: Continuing to study robot simulation, imitation learning, and action generation while building a structured understanding of tasks, data, training, and evaluation.
+summary: A public robot workspace that reproduces the LeRobot × MuJoCo PushT task end to end — dataset, ACT training, and dual-environment inference — while moving toward LIBERO and VLA models.
 highlights:
-  - Organizes robot learning around tasks, data, training, and evaluation
-  - Continues exploring simulation, imitation learning, and action generation
+  - Reproduced the official PushT task in a self-built MuJoCo environment with 0.953 coverage
+  - A complete workspace from dataset and ACT training to dual-environment inference in pymunk and MuJoCo
 learningTopics:
-  - Linux
-  - ROS2
-  - Gazebo
-  - MuJoCo
+  - LIBERO
+  - SmolVLA
+  - OpenVLA
+date: 2026.08–Present
+status: In Progress · PushT Main Line Complete
+role: Learner and Reproduction Engineer
+technologies:
+  - Python
   - LeRobot
+  - MuJoCo
   - ACT
-date: Ongoing Learning
-status: Learning Project · In Progress
-role: Learner and Roadmap Builder
-technologies: []
+  - PyTorch
 featured: true
+links:
+  - label: GitHub
+    url: https://github.com/HUliangwei/robot
 ---
 
 ## Overview
 
-This is an **Embodied AI learning map**, not a completed LeRobot or ACT implementation. The current public evidence supports only a Learning Project · In Progress framing, so the page communicates states and evidence gates without turning planned tools, training stages, or outcomes into experience claims.
+This project turns embodied-AI learning into reproducible engineering through the public [HUliangwei/robot](https://github.com/HUliangwei/robot) workspace: it fully reproduces the LeRobot PushT task in a self-built MuJoCo environment (dataset → ACT training → dual-environment inference) and uses the same workspace to move toward 3D manipulation (LIBERO) and VLA models.
 
 ## Problem / Motivation
 
-The goal is to divide embodied AI into questions that can be verified step by step: how a task is defined, how data is formed, how a policy is trained, and how results are evaluated. No project artifact yet establishes a specific task, hardware platform, or simulation environment, so completed collection, training, inference, and deployment are not claimed.
+PushT is a classic task for verifying an imitation-learning loop. The goal is to split "dataset, policy training, inference, and evaluation" into verifiable stages and achieve coverage comparable to the official pymunk environment in a self-built MuJoCo environment, instead of staying at the level of tool names.
 
 ## My Role
 
-The present role is learner and roadmap builder: framing questions, defining evidence gates, and keeping “planning to learn” separate from “implemented.” Work without a repository, experiment record, or reproducible run is not counted as a personal result.
+Learner and reproduction engineer: setting up the workspace, training and inference scripts, and a self-built MuJoCo environment; aligning physics parameters, recording results, and documenting the process in notes and docs.
 
 ## Architecture
 
-The learning map uses four states:
+The workspace is organized into sub-projects:
 
-- **Learned:** the public evidence boundary is understood; no technical milestone is currently marked complete.
-- **Practicing:** breaking a target task into verifiable questions about data, policy, run records, and evaluation.
-- **Planned:** Linux, ROS2, Gazebo, MuJoCo, LeRobot, and ACT are not yet verified as technologies used in a project.
-- **Next:** VLA, VLM, and VCT are not yet verified as studied or implemented topics.
+- **embodied_learning (PushT)** — main line complete. From LeRobot dataset, through ACT training, to closed-loop inference in both the official pymunk 2D and the self-built MuJoCo environments.
+- **libero (LIBERO benchmark)** — scoped. Franka + MuJoCo tabletop manipulation along an ACT → SmolVLA learning route.
 
 ## Design / Method
 
-The method starts with evidence rather than a tool list. Each stage needs a defined task, traceable and licensed data, a reproducible environment, training logs, checkpoints, inference output, and an evaluation protocol before its state can move from Planned to practiced project work.
+Evidence comes from reproducible artifacts: every stage ships environment scripts, training configs, rollout outputs, and metric files; official-environment results are recorded separately from self-built-environment results, with physics differences investigated independently.
 
 ## Implementation
 
-No audited implementation artifact currently supports a public technology stack. Linux, ROS2, Gazebo, MuJoCo, LeRobot, and ACT remain **Planned / not yet verified** and do not appear as completed technologies on the card or project metadata.
+- A self-built MuJoCo PushT environment aligned with the official pymunk environment (joint damping and friction), including a fix for the "block does not stop immediately" physics-fidelity issue.
+- ACT inference supports official checkpoints (aadarshram / Lemon-03) and a self-trained checkpoint (25k steps).
+- A local web dashboard (`gui/server.py`) for progress, commands, videos, and file browsing.
 
 ## Verification / Experiments
 
-Evidence gates include traceable data, an environment lock, training and inference records, a defined evaluation task, and reproducible results. Those gates have not yet been met, so this page makes no completed-experiment claim.
+- Official environment reproduced: aadarshram ACT @seed1000 coverage **0.9534** (finished in 134 steps).
+- Self-trained ACT (25k steps) coverage 0.39 / 0.82.
+- After the physics-fidelity fix, total MuJoCo rollout reward increased by **+104%**.
 
 ## Results
 
-The current result is an evidence-first learning map. No end-to-end completion or quantitative accuracy, success-rate, or performance result is claimed.
+The PushT main line is complete and public in the repository; a known residual issue (the block still rotates more in real MuJoCo rollouts than in the official environment, 380° vs 56°) is recorded in PROGRESS.md. LIBERO and VLA remain learning topics, not completed tools.
 
 ## Challenges & Decisions
 
-The central decision is to resist treating tool names as project experience. Planned technologies can explain direction, but only reproducible artifacts can change their public state.
+The main challenge is physics fidelity: contact-model differences between MuJoCo and pymunk cause inconsistent block motion. The fix aligns damping and friction item by item and quantifies differences with reward and rotation metrics, recording "fixed" and "residual" issues separately.
 
 ## What I Learned
 
-The present learning outcome is a clearer study and verification framework. Technology-specific outcomes will be described only after project artifacts support them.
+A shift from "learning tool names" to "reproducing a verifiable closed loop": every stage of data, training, inference, and evaluation needs artifacts behind it, and simulation-physics consistency affects policy evaluation conclusions more than expected.
 
 ## Links
 
-No public code or experiment-record link is available at present.
+- GitHub: https://github.com/HUliangwei/robot

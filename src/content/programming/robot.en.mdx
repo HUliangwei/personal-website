@@ -1,0 +1,60 @@
+---
+title: Robot · Embodied AI Learning
+slug: robot
+locale: en
+status: Actively Iterated
+summary: "LeRobot × MuJoCo workspace reproducing PushT: dataset, ACT training, dual-environment inference, toward LIBERO."
+technologies:
+  - Python
+  - LeRobot
+  - MuJoCo
+  - ACT
+  - PyTorch
+  - gym-pusht
+  - pymunk
+date: 2026.08–Present
+featured: true
+highlights:
+  - Official environment reproduced with 0.9534 ACT coverage
+  - Physics-fidelity fix raising MuJoCo rollout reward by +104%
+links:
+  - label: GitHub
+    url: https://github.com/HUliangwei/robot
+---
+
+## Overview
+
+Robot is a **LeRobot × MuJoCo embodied-AI learning workspace** that fully reproduces the official LeRobot PushT task — from dataset and ACT training to closed-loop inference in two environments (official pymunk 2D / self-built MuJoCo) — and uses it as a springboard toward 3D manipulation (LIBERO) and VLA models.
+
+## Features
+
+- **Complete PushT reproduction**: an end-to-end workspace from dataset to ACT training to dual-environment inference; the main line is complete.
+- **Dual-environment inference**: the same policy can roll out in both the official pymunk 2D and the self-built MuJoCo environments, with results recorded separately.
+- **Local web dashboard**: `gui/server.py` provides zero-dependency progress / command / video / file browsing.
+- **Documented learning path**: workflow docs and a visual report in `docs/`, algorithm classification and pitfalls in `note/`, and each sub-project ships README + PROGRESS + commands.
+
+## Architecture
+
+- **Language / ecosystem**: Python; key versions LeRobot 0.6.1, torch 2.11, MuJoCo 3.11.0, gym-pusht 0.1.6, pymunk 6.8.0.
+- **Sub-projects**:
+  - `embodied_learning/` (PushT main line, complete)
+  - `libero/` (LIBERO benchmark, scoped; ACT → SmolVLA route)
+- **Runtime**: Windows with the `lerobot-win` conda environment, RTX 4060 Laptop 8GB (CUDA).
+- **Not committed**: weights and caches that exceed GitHub's 100MB limit (see the repo `.gitignore`), re-downloaded from Hugging Face or re-trained on demand.
+
+## Key Implementation
+
+- A self-built MuJoCo PushT environment aligned with the official pymunk environment: joint damping and friction tuned to fix the "block does not stop immediately" fidelity issue.
+- An ACT inference pipeline supporting official checkpoints (aadarshram / Lemon-03) and a self-trained checkpoint (25k steps).
+- Physics fixes validated by metrics: total MuJoCo rollout reward increased by **+104%** after the fix.
+
+## Challenges & Decisions
+
+- **Physics fidelity**: contact-model differences between MuJoCo and pymunk caused inconsistent block motion; resolved by aligning damping and friction item by item, quantified with reward and rotation metrics.
+- **Known residual issue**: the block still rotates more in real MuJoCo rollouts than officially (cumulative 380° vs 56°), recorded in `embodied_learning/PROGRESS.md` with eliminated hypotheses and next steps.
+- **Checkpoint size**: weights exceed GitHub's limit, so they stay out of the repo and are restored on demand.
+
+## Results & Next Steps
+
+- Official environment reproduced: aadarshram ACT @seed1000 coverage **0.9534** (finished in 134 steps); self-trained ACT (25k steps) 0.39 / 0.82.
+- Next: complete the LIBERO tabletop route (ACT → SmolVLA → OpenVLA) and publish more reproducible robot-learning examples and evaluation protocols.
