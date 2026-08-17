@@ -16,7 +16,7 @@ There is no SPA framework, SSR adapter, database, analytics SDK, or required cli
 
 ## V4 information architecture
 
-V4 publishes exactly eight public routes:
+V4 published exactly eight public routes; V5 adds one detail page per programming showcase project:
 
 ```text
 Chinese                     English
@@ -31,11 +31,11 @@ The four top-level page roles are:
 ```text
 Home      Personal introduction, current focus, four projects, toolkit, interests, contact
 About     Education journey, two technical tracks, working method, current work, side quests
-Projects  Four self-contained overview cards; no project-detail pages or single-project CTAs
+Projects  Four research overview cards plus an expandable programming collection with detail pages
 CV        Academic profile, selected coursework, and three CV directions
 ```
 
-Project detail routes are intentionally not published in V4. Home and Projects reuse the same localized collection records so titles, status, summaries, highlights, and topic boundaries stay consistent.
+Research project detail routes are intentionally not published: Home and Projects reuse the same localized collection records so titles, status, summaries, highlights, and topic boundaries stay consistent. The V5 programming collection is the exception — each programming showcase markdown file under `src/content/programming/` auto-generates one card in the collection and one detail page (see `docs/编程项目 展示规范.md`).
 
 ## Architecture
 
@@ -52,19 +52,21 @@ src/
     home/                     Hero, lazy 3D scene, focus, projects, toolkit, interests, contact
     layout/                   Navigation and footer
     pages/                    Shared locale-aware page components
-    projects/                 Non-interactive cards, figures, and conceptual diagrams
+    projects/                 Research cards, programming collection, figures, and conceptual diagrams
   config/                     Stable site configuration
-  content/projects/           Four Chinese and four English project records
-  data/                       Typed profile, education, CV, About, and journey data
+  content/projects/           Four Chinese and four English research project records
+  content/programming/        Programming showcase markdown driving cards and detail pages
+  data/                       Typed profile, education, CV, About, journey, and programming copy
   i18n/                       Dictionaries, locale types, and route helpers
   layouts/                    Shared base metadata shell
-  pages/                      Four Chinese routes plus mirrored `/en` routes
+  pages/                      Chinese routes plus mirrored `/en` routes, including programming detail pages
   scripts/                    Progressive Home / About interaction modules
   styles/global.css           Design tokens, responsive layout, and accessibility rules
   utils/                      Build-time helpers such as the verified-model gate
 docs/
   CONTENT_SOURCES.md          Internal provenance / evidence ledger; never a public asset
   HLW_MODEL_GUIDE.md          Safe `/models/hlw.glb` replacement contract
+  编程项目 展示规范.md          Programming showcase authoring contract (cards + detail pages)
 tests/                        Regression, integration, privacy, accessibility, and release gates
 astro.config.mjs             Static Astro + MDX configuration
 wrangler.jsonc               Cloudflare static-assets deployment contract
@@ -86,7 +88,7 @@ Every locale page emits:
 - `zh-CN`, `en`, and `x-default` alternates
 - localized Open Graph locale and description
 
-When adding a new public top-level route, add both locale versions and extend the integration tests. V4 does not publish project-detail routes.
+When adding a new public route, add both locale versions and extend the integration tests. V5 publishes programming project-detail routes generated from showcase files in `src/content/programming/`.
 
 ## Projects
 
@@ -97,7 +99,17 @@ The public collection contains exactly four project identities in both languages
 - **Superconducting Quantum Computing** — HFSS 3D electromagnetic simulation, parameter sweeps, and field / geometry analysis of microwave structures related to superconducting quantum chips; simulation only.
 - **Embodied AI Learning** — an in-progress learning project. Linux, ROS2, Gazebo, MuJoCo, LeRobot, and ACT remain **Learning Topics**, not completed tools.
 
-Project cards are non-interactive overview articles. V4 does not publish `View Project`, `Read More`, or project-detail links.
+Project cards are non-interactive overview articles. V4 does not publish `View Project`, `Read More`, or detail links for the four research projects. The V5 programming collection is the exception: every programming showcase file produces one card plus a detail page at `/projects/programming/{slug}` (and the `/en` mirror), per `docs/编程项目 展示规范.md`.
+
+## Programming showcase
+
+The `软件 / 编程` section on the Projects page is content-driven. Each programming project lives as a bilingual pair of showcase markdown files in `src/content/programming/` (`{slug}.mdx` for Chinese, `{slug}.en.mdx` for English) with validated frontmatter (`title`, `slug`, `locale`, `status`, `summary`, `technologies`, `date`, `featured`, optional `highlights` / `cover` / `links`). The build:
+
+1. reads every showcase file through the `programming` content collection (`src/content.config.ts`),
+2. renders one card in the expandable collection (`src/components/projects/ProgrammingCollection.astro`),
+3. renders one detail page per locale (`/projects/programming/{slug}` via `src/pages/projects/programming/[slug].astro`).
+
+Adding or updating a programming project only requires editing the showcase markdown — no `.astro` or `.ts` code changes. The authoring contract, field tables, and a full template live in `docs/编程项目 展示规范.md`.
 
 To update a project:
 
@@ -238,7 +250,7 @@ Assets directory ./dist
 
 Do not add an SSR adapter, create a second Worker for this site, or commit deployment credentials.
 
-Merge `feat/portfolio-v4` into `main` only after local tests, build, browser QA, privacy checks, and the Linux / Cloudflare dependency gate pass. Pushing `main` then triggers the existing GitHub-to-Cloudflare deployment flow.
+Merge `feat/portfolio-v5` into `main` only after local tests, build, browser QA, privacy checks, and the Linux / Cloudflare dependency gate pass. Pushing `main` then triggers the existing GitHub-to-Cloudflare deployment flow.
 
 ## Truthfulness and security
 

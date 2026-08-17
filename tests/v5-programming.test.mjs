@@ -36,14 +36,24 @@ before(() => {
   });
 });
 
-test('V5 keeps Personal Website and Videoto3D inside one expandable programming collection', () => {
-  assert.deepEqual(routeSet(), ['/', '/about', '/cv', '/en', '/en/about', '/en/cv', '/en/projects', '/projects']);
+test('V5 programming collection generates cards and detail pages from showcase markdown', () => {
+  assert.deepEqual(routeSet(), [
+    '/',
+    '/about',
+    '/cv',
+    '/en',
+    '/en/about',
+    '/en/cv',
+    '/en/projects',
+    '/en/projects/programming/personal-website',
+    '/en/projects/programming/videoto3d',
+    '/projects',
+    '/projects/programming/personal-website',
+    '/projects/programming/videoto3d',
+  ]);
 
   const zh = page('/projects');
   const en = page('/en/projects');
-
-  assert.match(zh, />已完成</);
-  assert.match(en, />Completed</);
 
   for (const html of [zh, en]) {
     assert.match(html, /data-programming-collection/);
@@ -51,8 +61,35 @@ test('V5 keeps Personal Website and Videoto3D inside one expandable programming 
     assert.match(html, /data-programming-project="videoto3d"/);
     assert.match(html, /https:\/\/github\.com\/HUliangwei\/personal-website/);
     assert.match(html, /https:\/\/github\.com\/HUliangwei\/Videoto3D/);
-    assert.doesNotMatch(html, /href="(?:\/en)?\/projects\/[^"]+"/);
   }
+
+  assert.match(zh, /href="\/projects\/programming\/personal-website"/);
+  assert.match(zh, /href="\/projects\/programming\/videoto3d"/);
+  assert.match(en, /href="\/en\/projects\/programming\/personal-website"/);
+  assert.match(en, /href="\/en\/projects\/programming\/videoto3d"/);
+  assert.match(zh, />已完成</);
+  assert.match(en, />Completed</);
+});
+
+test('V5 programming detail pages render frontmatter and markdown body', () => {
+  const zhVideoto3d = page('/projects/programming/videoto3d');
+  const enVideoto3d = page('/en/projects/programming/videoto3d');
+  const zhWebsite = page('/projects/programming/personal-website');
+
+  assert.match(zhVideoto3d, /<h1[^>]*>Videoto3D<\/h1>/);
+  assert.match(zhVideoto3d, /<h2[^>]*>项目简介<\/h2>/);
+  assert.match(zhVideoto3d, /https:\/\/github\.com\/HUliangwei\/Videoto3D/);
+  assert.match(zhVideoto3d, />已完成</);
+  assert.match(zhVideoto3d, /href="\/projects"/);
+
+  assert.match(enVideoto3d, /<h1[^>]*>Videoto3D<\/h1>/);
+  assert.match(enVideoto3d, /<h2[^>]*>Overview<\/h2>/);
+  assert.match(enVideoto3d, />Completed</);
+  assert.match(enVideoto3d, /href="\/en\/projects"/);
+
+  assert.match(zhWebsite, /<h1[^>]*>个人网站<\/h1>/);
+  assert.match(zhWebsite, /<h2[^>]*>项目简介<\/h2>/);
+  assert.match(zhWebsite, /https:\/\/github\.com\/HUliangwei\/personal-website/);
 });
 
 test('V5 Home uses Spark for PLY and bounds-based GLB framing', () => {

@@ -1,0 +1,12 @@
+---
+import { getCollection } from 'astro:content';
+import ProgrammingProjectPage from '../../../components/pages/ProgrammingProjectPage.astro';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('programming', ({ data }) => data.locale === 'zh');
+  return projects.map((project) => ({ params: { slug: project.data.slug }, props: { project } }));
+}
+
+const { project } = Astro.props;
+---
+<ProgrammingProjectPage project={project} locale="zh" />

@@ -7,7 +7,11 @@ import { fileURLToPath } from 'node:url';
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const dist = join(root, 'dist');
-const expectedRoutes = ['/', '/about', '/cv', '/en', '/en/about', '/en/cv', '/en/projects', '/projects'];
+const expectedRoutes = [
+  '/', '/about', '/cv', '/en', '/en/about', '/en/cv', '/en/projects', '/projects',
+  '/en/projects/programming/personal-website', '/en/projects/programming/videoto3d',
+  '/projects/programming/personal-website', '/projects/programming/videoto3d',
+];
 
 const locales = [
   {
@@ -126,7 +130,11 @@ function allPublicHtml() {
 }
 
 function projectDetailLinks(value) {
-  return [...value.matchAll(/href="(?:\/en)?\/projects\/[^"]+"/g)];
+  return [...value.matchAll(/href="(?:\/en)?\/projects\/(?!programming\/)[^"]+"/g)];
+}
+
+function programmingDetailLinks(value) {
+  return [...value.matchAll(/href="(?:\/en)?\/projects\/programming\/[^"]+"/g)];
 }
 
 function singleProjectCtas(value) {
@@ -158,11 +166,12 @@ before(() => {
   });
 });
 
-test('V4 publishes four self-contained project cards on exactly eight public routes', () => {
+test('V4/V5 publishes four self-contained research cards plus programming showcase routes', () => {
   assert.deepEqual(routeSet(), expectedRoutes);
   assert.equal(projectCards('/projects').length, 4);
   assert.equal(projectCards('/en/projects').length, 4);
   assert.equal(projectDetailLinks(allPublicHtml()).length, 0);
+  assert.equal(programmingDetailLinks(allPublicHtml()).length, 4);
   assert.equal(singleProjectCtas(visibleText(allPublicHtml())).length, 0);
 });
 

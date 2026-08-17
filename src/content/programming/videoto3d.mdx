@@ -1,0 +1,56 @@
+---
+title: Videoto3D
+slug: videoto3d
+locale: zh
+status: 已完成
+summary: 本地优先的视频到 3D 重建 Studio：从 FFmpeg 抽帧与 SAM2 主体分割出发，经过 COLMAP，相继支持 OpenMVS Mesh / GLB 与 Brush Gaussian Splat / PLY 两条重建路线。
+technologies:
+  - Python
+  - FFmpeg
+  - SAM2
+  - COLMAP
+  - OpenMVS
+  - Brush
+  - Blender
+date: 2024.08–2025.03
+featured: true
+highlights:
+  - FFmpeg 抽帧 + SAM2 主体分割的输入准备管线
+  - OpenMVS Mesh / GLB 与 Brush Gaussian Splat / PLY 双重建路线
+links:
+  - label: GitHub
+    url: https://github.com/HUliangwei/Videoto3D
+---
+
+## 项目简介
+
+Videoto3D 是一个本地优先的视频到 3D 重建 Studio：输入一段视频，即可在本地完成主体分割、相机恢复与稠密重建，输出 Mesh（GLB）或高斯泼溅（PLY）两类 3D 资产。
+
+## 功能特性
+
+- **输入准备**：FFmpeg 抽帧 + SAM2 主体分割，把视频整理为可重建的干净图像序列。
+- **相机恢复**：COLMAP 完成稀疏重建与相机位姿估计。
+- **双重建路线**：
+  - **OpenMVS 路线**：稠密重建输出 Mesh，可导出 GLB。
+  - **Brush 路线**：Gaussian Splat 训练输出 PLY。
+- **本地优先**：完整流程在本地运行，数据不上传第三方服务。
+
+## 技术架构
+
+- **语言 / 生态**：Python，配 FFmpeg、SAM2、COLMAP、OpenMVS、Brush 与 Blender。
+- **查看器**：`gui/viewer` 使用与本站首页一致的 Spark 渲染路径查看高斯泼溅 PLY。
+- **流程组织**：抽帧 → 分割 → 稀疏重建 → 稠密重建 / 泼溅训练 → 导出 / 预览。
+
+## 关键实现
+
+- 用「主体分割先行」提升重建质量：先通过 SAM2 分离前景主体，再进入 COLMAP 与后续重建，减少背景干扰。
+- 两条路线共用同一输入准备与相机恢复结果，仅在最终重建阶段分流。
+- PLY 查看器与个人网站首页共用 `@sparkjsdev/spark` 的 `SparkRenderer + SplatMesh` 渲染路径。
+
+## 挑战与解决
+
+视频抖动、遮挡与背景噪声会显著影响重建质量；分割管线降低了这些干扰，同时本地执行的特性要求对各步工具做版本锁定与可复现配置。
+
+## 成果与展望
+
+已完成从视频到 Mesh / GLB 与 Gaussian Splat / PLY 的端到端流程。后续计划包括更多拍摄场景的鲁棒性测试、重建参数自动化，以及把成功案例沉淀为可复现的示例脚本。

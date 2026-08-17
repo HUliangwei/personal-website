@@ -1,0 +1,54 @@
+---
+title: 个人网站
+slug: personal-website
+locale: zh
+status: 持续迭代
+summary: 双语静态个人技术作品集，使用 Astro、TypeScript、Tailwind CSS 与 Three.js 构建，通过 Cloudflare Workers Static Assets 部署。
+technologies:
+  - Astro
+  - TypeScript
+  - Tailwind CSS
+  - Three.js
+  - GitHub
+  - Cloudflare
+date: 2024.11–至今
+featured: true
+highlights:
+  - 中英双语路由与内容集合驱动的项目记录
+  - 无框架渐进增强，Node 内置测试守护发布契约
+links:
+  - label: GitHub
+    url: https://github.com/HUliangwei/personal-website
+---
+
+## 项目简介
+
+个人网站（本仓库）是一份面向公开 / HR 场景的双语静态技术作品集。它介绍当前 SPAD 芯片工作、教育背景与技术旅程、核心项目、课程成绩与联系渠道，不暴露私人源文档或内部评审笔记。
+
+## 功能特性
+
+- **中英双语**：中文为默认语言，英文在 `/en` 下镜像全部公开路由，语言切换保留当前页面。
+- **内容集合驱动**：项目记录通过 Astro Content Collections / MDX 维护，首页与项目页复用同一份本地化记录，保证标题、状态、摘要与亮点一致。
+- **可选的 3D 首页**：Three.js 按需加载，支持高斯泼溅 PLY 优先、GLB 回退、程序化场景兜底，并基于真实包围盒自适应相机。
+- **无框架渐进增强**：导航、PDF 预览与页面交互均不依赖 SPA 框架。
+
+## 技术架构
+
+- **框架**：Astro 静态输出 + TypeScript + Tailwind CSS 4（Vite 插件）。
+- **内容**：Astro Content Collections 与 MDX 承载双语项目记录。
+- **测试**：Node 内置测试运行器守护路由、生成产物、隐私、可访问性与部署契约。
+- **部署**：Cloudflare Workers Static Assets，通过 Wrangler 管理。
+
+## 关键实现
+
+- 共享本地化页面组件接收 `locale`，界面文案由 `src/i18n/zh.ts` / `en.ts` 字典独立维护。
+- 首页 3D 模型通过构建期「验证模型门」检查资产存在性与优先级，缺省时平滑回退到 GLB 或程序化场景。
+- 编程项目合集由 `src/content/programming/` 下的项目展示 md 自动生成卡片与详情页（参见 `docs/编程项目 展示规范.md`）。
+
+## 挑战与解决
+
+在静态站里同时满足双语一致性、隐私边界与可维护性：将内容与界面文案分层，用测试锁定公开路由集合，避免私人文档进入构建产物。
+
+## 成果与展望
+
+网站已公开部署并持续迭代。后续计划包括编程项目详情页的持续丰富、更多可公开的技术实践记录，以及页面性能与可访问性打磨。

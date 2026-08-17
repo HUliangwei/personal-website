@@ -27,4 +27,25 @@ const projects = defineCollection({
   }),
 });
 
-export const collections = { projects };
+const programming = defineCollection({
+  loader: glob({
+    pattern: '**/*.{md,mdx}',
+    base: './src/content/programming',
+    generateId: ({ data }) => `${data.locale}/${data.slug}`,
+  }),
+  schema: z.object({
+    title: z.string(),
+    slug: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'slug 必须为小写 kebab-case'),
+    locale: z.enum(['zh', 'en']),
+    status: z.string(),
+    summary: z.string().max(120),
+    technologies: z.array(z.string()),
+    date: z.string(),
+    featured: z.boolean().default(false),
+    highlights: z.array(z.string()).max(3).optional(),
+    cover: z.string().optional(),
+    links: z.array(z.object({ label: z.string(), url: z.string().url() })).optional(),
+  }),
+});
+
+export const collections = { projects, programming };

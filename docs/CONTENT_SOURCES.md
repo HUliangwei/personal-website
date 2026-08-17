@@ -85,6 +85,18 @@ The exact A/B audit is recorded in `.superpowers/sdd/2026-08-12-personal-portfol
 - **B - fixed:** commit `be2dcc7` (`fix: regenerate npm lockfile for cloudflare linux build`) passed exact-environment `npm ci`, the existing **10/10** tests, and the **7-page** build.
 - The install command remains `npm ci`; no `npm install`, `--omit=optional`, disabled lockfile check, Worker rename, or deployment reconfiguration was used.
 
+## Programming showcase sources
+
+The V5 programming collection (`src/content/programming/`) is driven by owner-authored showcase markdown, not by private evidence. The claims it publishes (tech stack, timeline, status, GitHub links) trace to the owner's public GitHub repositories and to this repository's own source:
+
+| Claim | Source and location | Class | Publication decision |
+| --- | --- | --- | --- |
+| Personal website tech stack (Astro, TypeScript, Tailwind CSS, Three.js, Cloudflare) | This repository (`package.json`, `astro.config.mjs`, `wrangler.jsonc`) and its public GitHub repo | Public Repository | Publish; keep aligned with the repo as it evolves. |
+| Videoto3D pipeline (FFmpeg, SAM2, COLMAP, OpenMVS, Brush, Blender) | Public GitHub repo `HUliangwei/Videoto3D` | Public Repository | Publish the pipeline description; avoid unsupported quantitative reconstruction claims. |
+| Project dates and status | Owner-authored showcase files in `src/content/programming/` | User-provided | Publish; status must match the linked repository's observable state. |
+
+Adding a programming project to the collection means adding a bilingual showcase file pair per `docs/编程项目 展示规范.md`; the zod schema in `src/content.config.ts` enforces the fields at build time.
+
 ## Maintenance rule
 
 When evidence changes, update this ledger first, preserve conflicts rather than overwriting history, then update the typed public data and its tests. Unknown facts stay `TODO` until a cited source supports them.

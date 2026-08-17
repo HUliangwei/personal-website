@@ -1,0 +1,312 @@
+---
+import { render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { localizedPath } from '../../i18n/utils';
+import type { Locale } from '../../i18n/types';
+import { programmingByLocale } from '../../data/programming';
+
+interface Props {
+  project: CollectionEntry<'programming'>;
+  locale: Locale;
+}
+
+const { project, locale } = Astro.props;
+const content = programmingByLocale[locale];
+const { Content } = await render(project);
+const github = project.data.links?.find((link) => link.label === 'GitHub');
+const otherLinks = project.data.links?.filter((link) => link.label !== 'GitHub') ?? [];
+---
+
+<BaseLayout
+  locale={locale}
+  title={`${project.data.title} | ${content.title}`}
+  description={project.data.summary}
+>
+  <section class="section programming-detail-page" aria-labelledby="programming-detail-title">
+    <div class="container">
+      <a class="programming-back-link" href={localizedPath('/projects', locale)}>
+        <span aria-hidden="true">←</span> {content.detail.back}
+      </a>
+
+      <header class="programming-detail-header">
+        <p class="eyebrow">{content.eyebrow}</p>
+        <h1 id="programming-detail-title">{project.data.title}</h1>
+        <p class="programming-detail-summary">{project.data.summary}</p>
+
+        {
+          project.data.cover ? (
+            <img class="programming-detail-cover" src={project.data.cover} alt={`${project.data.title} cover`} loading="lazy" />
+          ) : null
+        }
+
+        {
+          project.data.highlights?.length ? (
+            <ul class="programming-detail-highlights">
+              {project.data.highlights.map((highlight) => <li>{highlight}</li>)}
+            </ul>
+          ) : null
+        }
+
+        <dl class="programming-detail-meta">
+          <div>
+            <dt>{content.detail.status}</dt>
+            <dd>{project.data.status}</dd>
+          </div>
+          <div>
+            <dt>{content.detail.date}</dt>
+            <dd>{project.data.date}</dd>
+          </div>
+        </dl>
+
+        {
+          project.data.technologies.length ? (
+            <div class="programming-detail-tech">
+              <p>{content.detail.technologies}</p>
+              <ul class="programming-tech-list">
+                {project.data.technologies.map((technology) => <li>{technology}</li>)}
+              </ul>
+            </div>
+          ) : null
+        }
+
+        {
+          project.data.links?.length ? (
+            <div class="programming-detail-links">
+              {github ? (
+                <a class="programming-github-link" href={github.url} target="_blank" rel="noopener noreferrer external">
+                  GitHub <span aria-hidden="true">↗</span>
+                </a>
+              ) : null}
+              {otherLinks.map((link) => (
+                <a href={link.url} target="_blank" rel="noopener noreferrer external">
+                  {link.label} <span aria-hidden="true">↗</span>
+                </a>
+              ))}
+            </div>
+          ) : null
+        }
+      </header>
+
+      <div class="programming-detail-body">
+        <Content />
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .programming-detail-page {
+    min-width: 0;
+  }
+
+  .programming-back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-bottom: 1.25rem;
+    color: var(--color-accent-strong);
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .programming-back-link:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .programming-detail-header {
+    max-width: 48rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .programming-detail-header h1 {
+    margin: 0;
+    font-size: clamp(2.25rem, 5.5vw, 4rem);
+    letter-spacing: -0.045em;
+    line-height: 1.08;
+  }
+
+  .programming-detail-summary {
+    margin: 1rem 0 0;
+    color: var(--color-muted);
+    font-size: 1.08rem;
+    line-height: 1.65;
+  }
+
+  .programming-detail-cover {
+    display: block;
+    width: 100%;
+    margin-top: 1.5rem;
+    border: 1px solid var(--color-line);
+    border-radius: 0.8rem;
+  }
+
+  .programming-detail-highlights {
+    display: grid;
+    gap: 0.45rem;
+    margin: 1.5rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .programming-detail-highlights li {
+    border-left: 3px solid var(--color-accent);
+    background: #eef5fd;
+    border-radius: 0 0.4rem 0.4rem 0;
+    color: var(--color-ink);
+    padding: 0.5rem 0.8rem;
+    font-size: 0.92rem;
+  }
+
+  .programming-detail-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.9rem 1.75rem;
+    margin: 1.4rem 0 0;
+  }
+
+  .programming-detail-meta div {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+
+  .programming-detail-meta dt {
+    color: var(--color-muted);
+    font-size: 0.82rem;
+    font-weight: 750;
+  }
+
+  .programming-detail-meta dd {
+    margin: 0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.84rem;
+    font-weight: 750;
+  }
+
+  .programming-detail-tech {
+    margin-top: 1.4rem;
+  }
+
+  .programming-detail-tech > p {
+    margin: 0 0 0.5rem;
+    color: var(--color-muted);
+    font-size: 0.82rem;
+    font-weight: 750;
+  }
+
+  .programming-tech-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .programming-tech-list li {
+    border: 1px solid var(--color-line);
+    border-radius: 999px;
+    color: var(--color-muted);
+    padding: 0.18rem 0.55rem;
+    font-size: 0.8rem;
+  }
+
+  .programming-detail-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.9rem;
+    margin-top: 1.5rem;
+  }
+
+  .programming-detail-links a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    border: 1px solid var(--color-line);
+    border-radius: 999px;
+    background: var(--color-surface);
+    color: var(--color-accent-strong);
+    padding: 0.45rem 0.9rem;
+    font-size: 0.86rem;
+    font-weight: 750;
+    text-decoration: none;
+  }
+
+  .programming-detail-links a:hover {
+    border-color: var(--color-accent);
+    background: #eef5fd;
+  }
+</style>
+
+<style is:global>
+  .programming-detail-body {
+    max-width: 48rem;
+    border-top: 1px solid var(--color-line);
+    padding-top: 2rem;
+  }
+
+  .programming-detail-body h2 {
+    margin: 2.25rem 0 0.8rem;
+    font-size: 1.5rem;
+    letter-spacing: -0.03em;
+    line-height: 1.25;
+  }
+
+  .programming-detail-body h3 {
+    margin: 1.75rem 0 0.6rem;
+    font-size: 1.15rem;
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+  }
+
+  .programming-detail-body p {
+    margin: 0.85rem 0;
+    line-height: 1.75;
+  }
+
+  .programming-detail-body ul,
+  .programming-detail-body ol {
+    margin: 0.85rem 0;
+    padding-left: 1.4rem;
+  }
+
+  .programming-detail-body li {
+    margin: 0.4rem 0;
+    line-height: 1.7;
+  }
+
+  .programming-detail-body strong {
+    font-weight: 800;
+  }
+
+  .programming-detail-body a {
+    color: var(--color-accent-strong);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .programming-detail-body code {
+    border-radius: 0.3rem;
+    background: #eef1f6;
+    color: #24314d;
+    padding: 0.12em 0.35em;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.88em;
+  }
+
+  .programming-detail-body blockquote {
+    margin: 1rem 0;
+    border-left: 3px solid var(--color-accent);
+    color: var(--color-muted);
+    padding: 0.15rem 0 0.15rem 1rem;
+  }
+
+  .programming-detail-body hr {
+    border: 0;
+    border-top: 1px solid var(--color-line);
+    margin: 2rem 0;
+  }
+</style>

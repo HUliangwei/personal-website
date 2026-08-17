@@ -1,5 +1,7 @@
 ---
+import { getCollection } from 'astro:content';
 import type { Locale } from '../../i18n/types';
+import { localizedPath } from '../../i18n/utils';
 import { programmingByLocale } from '../../data/programming';
 
 interface Props {
@@ -8,13 +10,16 @@ interface Props {
 
 const { locale } = Astro.props;
 const content = programmingByLocale[locale];
+
+const projects = (await getCollection('programming', ({ data }) => data.locale === locale))
+  .sort((a, b) => Number(b.data.featured) - Number(a.data.featured) || b.data.date.localeCompare(a.data.date));
 ---
 
 <details class="programming-collection" data-programming-collection>
   <summary class="programming-summary">
     <div class="programming-visual" aria-hidden="true">
       <span class="programming-code">&lt;/&gt;</span>
-      <span class="programming-count">{String(content.projects.length).padStart(2, '0')}</span>
+      <span class="programming-count">{String(projects.length).padStart(2, '0')}</span>
     </div>
 
     <div class="programming-summary-copy">
@@ -35,38 +40,48 @@ const content = programmingByLocale[locale];
   <div class="programming-body" aria-label={content.itemsLabel}>
     <div class="programming-project-grid">
       {
-        content.projects.map((project, index) => {
-          const github = project.links?.find((link) => link.label === 'GitHub');
+        projects.map((project, index) => {
+          const github = project.data.links?.find((link) => link.label === 'GitHub');
+          const detailHref = localizedPath(`/projects/programming/${project.data.slug}`, locale);
 
-          return github ? (
-            <a
+          return (
+            <article
               class="programming-project-card"
-              href={github.url}
-              target="_blank"
-              rel="noopener noreferrer external"
-              data-programming-project={project.id}
+              data-programming-project={project.data.slug}
             >
-              <article>
-                <div class="programming-project-heading">
-                  <div>
-                    <p class="programming-project-status">{project.status}</p>
-                    <h3>{project.title}</h3>
-                  </div>
-                  <span class="programming-index" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+              <div class="programming-project-heading">
+                <div>
+                  <p class="programming-project-status">{project.data.status}</p>
+                  <h3><a href={detailHref}>{project.data.title}</a></h3>
                 </div>
+                <span class="programming-index" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+              </div>
 
-                <p class="programming-project-description">{project.description}</p>
+              <p class="programming-project-description">{project.data.summary}</p>
 
-                <ul class="programming-tech-list" aria-label={`${project.title} technologies`}>
-                  {project.technologies.map((technology) => <li>{technology}</li>)}
-                </ul>
+              <ul class="programming-tech-list" aria-label={`${project.data.title} technologies`}>
+                {project.data.technologies.map((technology) => <li>{technology}</li>)}
+              </ul>
 
-                <span class="programming-github-link">
-                  GitHub <span aria-hidden="true">↗</span>
-                </span>
-              </article>
-            </a>
-          ) : null;
+              <div class="programming-project-actions">
+                <a class="programming-detail-link" href={detailHref}>
+                  {content.detailLabel} <span aria-hidden="true">→</span>
+                </a>
+                {
+                  github ? (
+                    <a
+                      class="programming-github-link"
+                      href={github.url}
+                      target="_blank"
+                      rel="noopener noreferrer external"
+                    >
+                      GitHub <span aria-hidden="true">↗</span>
+                    </a>
+                  ) : null
+                }
+              </div>
+            </article>
+          );
         })
       }
     </div>
@@ -212,7 +227,6 @@ const content = programmingByLocale[locale];
     border-radius: 0.75rem;
     background: rgb(255 255 255 / 0.8);
     color: inherit;
-    text-decoration: none;
     transition: border-color 180ms ease-out, transform 180ms ease-out, box-shadow 180ms ease-out;
   }
 
@@ -238,6 +252,17 @@ const content = programmingByLocale[locale];
     margin: 0.2rem 0 0;
     font-size: 1.12rem;
     letter-spacing: -0.025em;
+  }
+
+  .programming-project-heading h3 a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .programming-project-heading h3 a:hover {
+    color: var(--color-accent-strong);
+    text-decoration: underline;
+    text-underline-offset: 3px;
   }
 
   .programming-project-status {
@@ -274,12 +299,26 @@ const content = programmingByLocale[locale];
     font-size: 0.76rem;
   }
 
-  .programming-github-link {
-    display: inline-block;
+  .programming-project-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
     margin-top: 0.9rem;
+  }
+
+  .programming-detail-link,
+  .programming-github-link {
     color: var(--color-accent-strong);
     font-size: 0.84rem;
     font-weight: 800;
+    text-decoration: none;
+  }
+
+  .programming-detail-link:hover,
+  .programming-github-link:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
   }
 
   @media (max-width: 44rem) {

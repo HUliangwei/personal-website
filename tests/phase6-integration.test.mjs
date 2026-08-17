@@ -77,7 +77,7 @@ test('final content semantics and truthful fallbacks are present', () => {
   assert.match(projects, /<h2[^>]*>Vision-Guided Mobile Robot<\/h2>/);
   assert.match(home, /<h3[^>]*>Vision-Guided Mobile Robot<\/h3>/);
   assert.match(projects, /Learning Topics[\s\S]*?<li>ROS2<\/li>/);
-  assert.doesNotMatch(projects, /href="\/en\/projects\//);
+  assert.doesNotMatch(projects, /href="\/en\/projects\/(?!programming\/)/);
   assert.match(home, /href="\/en\/cv"[^>]*>CV<\/a>/);
   assert.match(home, /href="mailto:3036064607@qq\.com"/);
 

@@ -13,6 +13,8 @@ const routePairs = [
   ['/about', '/en/about'],
   ['/projects', '/en/projects'],
   ['/cv', '/en/cv'],
+  ['/projects/programming/personal-website', '/en/projects/programming/personal-website'],
+  ['/projects/programming/videoto3d', '/en/projects/programming/videoto3d'],
 ];
 const routes = routePairs.flat();
 const maximumPublicationBytes = 10 * 1024 * 1024;
@@ -136,7 +138,7 @@ before(() => {
   });
 });
 
-test('V4 publishes exactly eight bilingual routes with valid links and page landmarks', () => {
+test('V4/V5 publishes the bilingual route set with valid links and page landmarks', () => {
   const generatedRoutes = filesUnder(dist)
     .filter((file) => file.endsWith(`${sep}index.html`) || file === join(dist, 'index.html'))
     .map(routeForIndex)

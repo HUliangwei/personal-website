@@ -17,7 +17,7 @@ test('V4 builds a collection-backed four-card overview without filters or case s
   }
   assert.match(list, /Conceptual project diagram/);
   assert.match(list, /<ul class="project-highlights"/);
-  assert.doesNotMatch(list, /data-project-filter|View project|href="\/en\/projects\//);
+  assert.doesNotMatch(list, /data-project-filter|View project|href="\/en\/projects\/(?!programming\/)/);
   assert.doesNotMatch(list, /TODO: Add project cover image/);
   assert.doesNotMatch(list, /<img[^>]*src="TODO"/);
 

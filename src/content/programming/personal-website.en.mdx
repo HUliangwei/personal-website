@@ -1,0 +1,54 @@
+---
+title: Personal Website
+slug: personal-website
+locale: en
+status: Actively Iterated
+summary: A bilingual static portfolio built with Astro, TypeScript, Tailwind CSS, and Three.js, deployed on Cloudflare Workers.
+technologies:
+  - Astro
+  - TypeScript
+  - Tailwind CSS
+  - Three.js
+  - GitHub
+  - Cloudflare
+date: 2024.11–Present
+featured: true
+highlights:
+  - Bilingual routes and content-collection-driven project records
+  - Framework-free progressive enhancement with Node test-runner release gates
+links:
+  - label: GitHub
+    url: https://github.com/HUliangwei/personal-website
+---
+
+## Overview
+
+The personal website (this repository) is a bilingual, static technical portfolio organized for public / HR-facing use. It introduces current SPAD IC work, education and technical journey, core projects, coursework, and contact channels without exposing private source documents or internal review notes.
+
+## Features
+
+- **Bilingual**: Chinese is the default locale; English mirrors every public route under `/en`, and the language switch preserves the current page.
+- **Content-driven**: Project records are maintained with Astro Content Collections / MDX, so Home and Projects reuse the same localized records for consistent titles, status, summaries, and highlights.
+- **Optional 3D Home**: Three.js loads on demand with Gaussian-splat PLY preferred, GLB fallback, and a procedural scene as the final fallback, with bounds-based camera fitting.
+- **Framework-free enhancement**: Navigation, PDF preview, and page interactions need no SPA framework.
+
+## Architecture
+
+- **Framework**: Astro static output + TypeScript + Tailwind CSS 4 via the Vite plugin.
+- **Content**: Astro Content Collections and MDX for bilingual project records.
+- **Testing**: Node's built-in test runner guards routes, generated output, privacy, accessibility, and deployment contracts.
+- **Deployment**: Cloudflare Workers Static Assets managed with Wrangler.
+
+## Key Implementation
+
+- Shared locale-aware page components receive a `locale`, while `src/i18n/zh.ts` / `en.ts` own interface copy.
+- The Home 3D model is gated at build time to verify asset presence and priority, degrading cleanly to GLB or the procedural scene.
+- The programming collection auto-generates cards and detail pages from project showcase markdown in `src/content/programming/` (see `docs/编程项目 展示规范.md`).
+
+## Challenges & Decisions
+
+Keeping bilingual consistency, privacy boundaries, and maintainability in a static site: content and interface copy live in separate layers, and tests lock the public route set so private documents never reach the build output.
+
+## Results & Next Steps
+
+The site is publicly deployed and continuously iterated. Next steps include enriching programming detail pages, adding more public technical practice records, and polishing performance and accessibility.
