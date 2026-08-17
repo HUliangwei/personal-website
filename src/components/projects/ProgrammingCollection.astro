@@ -1,0 +1,317 @@
+---
+import type { Locale } from '../../i18n/types';
+import { programmingByLocale } from '../../data/programming';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const content = programmingByLocale[locale];
+---
+
+<details class="programming-collection" data-programming-collection>
+  <summary class="programming-summary">
+    <div class="programming-visual" aria-hidden="true">
+      <span class="programming-code">&lt;/&gt;</span>
+      <span class="programming-count">{String(content.projects.length).padStart(2, '0')}</span>
+    </div>
+
+    <div class="programming-summary-copy">
+      <div class="programming-meta-line">
+        <p class="project-category">{content.eyebrow}</p>
+        <p class="programming-status">{content.status}</p>
+      </div>
+      <h2>{content.title}</h2>
+      <p>{content.description}</p>
+      <span class="programming-toggle">
+        <span class="programming-open-label">{content.openLabel}</span>
+        <span class="programming-close-label">{content.closeLabel}</span>
+        <span class="programming-arrow" aria-hidden="true">↓</span>
+      </span>
+    </div>
+  </summary>
+
+  <div class="programming-body" aria-label={content.itemsLabel}>
+    <div class="programming-project-grid">
+      {
+        content.projects.map((project, index) => {
+          const github = project.links?.find((link) => link.label === 'GitHub');
+
+          return github ? (
+            <a
+              class="programming-project-card"
+              href={github.url}
+              target="_blank"
+              rel="noopener noreferrer external"
+              data-programming-project={project.id}
+            >
+              <article>
+                <div class="programming-project-heading">
+                  <div>
+                    <p class="programming-project-status">{project.status}</p>
+                    <h3>{project.title}</h3>
+                  </div>
+                  <span class="programming-index" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+                </div>
+
+                <p class="programming-project-description">{project.description}</p>
+
+                <ul class="programming-tech-list" aria-label={`${project.title} technologies`}>
+                  {project.technologies.map((technology) => <li>{technology}</li>)}
+                </ul>
+
+                <span class="programming-github-link">
+                  GitHub <span aria-hidden="true">↗</span>
+                </span>
+              </article>
+            </a>
+          ) : null;
+        })
+      }
+    </div>
+  </div>
+</details>
+
+<style>
+  .programming-collection {
+    grid-column: 1 / -1;
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid var(--color-line);
+    border-radius: 0.8rem;
+    background:
+      radial-gradient(circle at 90% 0%, rgb(11 99 206 / 0.09), transparent 34%),
+      var(--color-surface);
+  }
+
+  .programming-summary {
+    display: grid;
+    align-items: center;
+    cursor: pointer;
+    gap: 1.25rem;
+    grid-template-columns: 8rem minmax(0, 1fr);
+    list-style: none;
+    padding: 1.25rem;
+  }
+
+  .programming-summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .programming-summary:focus-visible {
+    outline: 3px solid var(--color-accent);
+    outline-offset: -3px;
+  }
+
+  .programming-visual {
+    display: grid;
+    width: 8rem;
+    min-height: 6.5rem;
+    border: 1px solid var(--color-line);
+    border-radius: 0.65rem;
+    background:
+      linear-gradient(rgb(11 99 206 / 0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(11 99 206 / 0.08) 1px, transparent 1px),
+      #eef5fd;
+    background-size: 1.5rem 1.5rem;
+    color: var(--color-accent-strong);
+    padding: 0.7rem;
+    place-items: center;
+  }
+
+  .programming-code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 2.2rem;
+    font-weight: 800;
+    letter-spacing: -0.08em;
+  }
+
+  .programming-count {
+    align-self: end;
+    justify-self: end;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.7rem;
+    font-weight: 800;
+  }
+
+  .programming-summary-copy {
+    min-width: 0;
+  }
+
+  .programming-meta-line {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .programming-meta-line p {
+    margin-block: 0;
+  }
+
+  .programming-status,
+  .programming-project-status {
+    color: var(--color-accent-strong);
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.72rem;
+    font-weight: 750;
+  }
+
+  .programming-summary h2 {
+    margin: 0.3rem 0 0;
+    font-size: 1.35rem;
+    letter-spacing: -0.03em;
+  }
+
+  .programming-summary-copy > p {
+    margin: 0.55rem 0 0;
+    color: var(--color-muted);
+  }
+
+  .programming-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 0.75rem;
+    color: var(--color-accent-strong);
+    font-size: 0.82rem;
+    font-weight: 750;
+  }
+
+  .programming-close-label {
+    display: none;
+  }
+
+  .programming-collection[open] .programming-open-label {
+    display: none;
+  }
+
+  .programming-collection[open] .programming-close-label {
+    display: inline;
+  }
+
+  .programming-collection[open] .programming-arrow {
+    transform: rotate(180deg);
+  }
+
+  .programming-body {
+    border-top: 1px solid var(--color-line);
+    padding: 1rem 1.25rem 1.25rem;
+  }
+
+  .programming-project-grid {
+    display: grid;
+    gap: 0.9rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .programming-project-card {
+    min-width: 0;
+    border: 1px solid var(--color-line);
+    border-radius: 0.75rem;
+    background: rgb(255 255 255 / 0.8);
+    color: inherit;
+    text-decoration: none;
+    transition: border-color 180ms ease-out, transform 180ms ease-out, box-shadow 180ms ease-out;
+  }
+
+  .programming-project-card:hover {
+    border-color: var(--color-accent);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .programming-project-card article {
+    height: 100%;
+    padding: 1.1rem;
+  }
+
+  .programming-project-heading {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .programming-project-heading h3 {
+    margin: 0.2rem 0 0;
+    font-size: 1.12rem;
+    letter-spacing: -0.025em;
+  }
+
+  .programming-project-status {
+    margin: 0;
+  }
+
+  .programming-index {
+    flex: none;
+    color: var(--color-muted);
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.72rem;
+  }
+
+  .programming-project-description {
+    margin: 0.7rem 0 0;
+    color: var(--color-muted);
+    line-height: 1.6;
+  }
+
+  .programming-tech-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin: 0.9rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .programming-tech-list li {
+    border: 1px solid var(--color-line);
+    border-radius: 999px;
+    color: var(--color-muted);
+    padding: 0.18rem 0.5rem;
+    font-size: 0.76rem;
+  }
+
+  .programming-github-link {
+    display: inline-block;
+    margin-top: 0.9rem;
+    color: var(--color-accent-strong);
+    font-size: 0.84rem;
+    font-weight: 800;
+  }
+
+  @media (max-width: 44rem) {
+    .programming-summary {
+      grid-template-columns: 5.5rem minmax(0, 1fr);
+    }
+
+    .programming-visual {
+      width: 5.5rem;
+      min-height: 5.5rem;
+    }
+
+    .programming-project-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 25rem) {
+    .programming-summary {
+      grid-template-columns: 1fr;
+    }
+
+    .programming-visual {
+      width: 100%;
+      min-height: 5rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .programming-project-card,
+    .programming-arrow {
+      transition: none;
+    }
+  }
+</style>

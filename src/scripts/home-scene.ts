@@ -86,19 +86,157 @@ function createResearchScene() {
   return { root, signalCurve, pulses };
 }
 
-async function loadVerifiedModel(modelUrl: string, signal?: AbortSignal) {
-  const { GLTFLoader } = await import('three/addons/loaders/GLTFLoader.js');
-  const loader = new GLTFLoader();
+interface LoadedFeaturedModel {
+  object: THREE.Object3D;
+  box: THREE.Box3;
+  viewDirection: THREE.Vector3;
+  dispose?: () => void;
+}
+
+async function loadSplatModel(
+  modelUrl: string,
+  renderer: THREE.WebGLRenderer,
+  scene: THREE.Scene,
+  signal?: AbortSignal,
+): Promise<LoadedFeaturedModel> {
+  const { SparkRenderer, SplatMesh } = await import('@sparkjsdev/spark');
+
+  if (signal?.aborted) throw signal.reason;
+
+  const spark = new SparkRenderer({ renderer });
+  scene.add(spark);
+
+  let splat: (THREE.Object3D & { dispose?: () => void }) | undefined;
+
+  try {
+    return await new Promise<LoadedFeaturedModel>((resolve, reject) => {
+      let settled = false;
+
+      const abort = () => {
+        if (settled) return;
+        settled = true;
+        splat?.dispose?.();
+        if (splat) scene.remove(splat);
+        (spark as unknown as { dispose?: () => void }).dispose?.();
+        scene.remove(spark);
+        reject(signal?.reason ?? new DOMException('Aborted', 'AbortError'));
+      };
+
+      signal?.addEventListener('abort', abort, { once: true });
+
+      try {
+        const mesh = new SplatMesh({
+          url: modelUrl,
+          onLoad: (loadedMesh) => {
+            if (settled) return;
+            settled = true;
+            signal?.removeEventListener('abort', abort);
+
+            let box = new THREE.Box3();
+            try {
+              box = loadedMesh.getBoundingBox(true).clone();
+            } catch {
+              // Keep an empty box; the procedural camera remains as fallback.
+            }
+
+            resolve({
+              object: loadedMesh,
+              box,
+              // Match Videoto3D's explicit Front view for the Home splat.
+              viewDirection: new THREE.Vector3(0, 0, 1),
+              dispose: () => {
+                loadedMesh.dispose?.();
+                (spark as unknown as { dispose?: () => void }).dispose?.();
+                scene.remove(loadedMesh);
+                scene.remove(spark);
+              },
+            });
+          },
+        });
+
+        splat = mesh as unknown as THREE.Object3D & { dispose?: () => void };
+        scene.add(mesh);
+      } catch (error) {
+        signal?.removeEventListener('abort', abort);
+        settled = true;
+        (spark as unknown as { dispose?: () => void }).dispose?.();
+        scene.remove(spark);
+        reject(error);
+      }
+    });
+  } catch (error) {
+    splat?.dispose?.();
+    if (splat) scene.remove(splat);
+    (spark as unknown as { dispose?: () => void }).dispose?.();
+    scene.remove(spark);
+    throw error;
+  }
+}
+
+async function loadGlbModel(
+  modelUrl: string,
+  scene: THREE.Scene,
+  signal?: AbortSignal,
+): Promise<LoadedFeaturedModel> {
   const response = await fetch(modelUrl, { signal });
   if (!response.ok) throw new Error(`Model request failed with ${response.status}`);
+
   const data = await response.arrayBuffer();
   if (signal?.aborted) throw signal.reason;
+
+  const { GLTFLoader } = await import('three/addons/loaders/GLTFLoader.js');
+  const loader = new GLTFLoader();
   const resourcePath = new URL('.', new URL(modelUrl, window.location.href)).href;
   const model = await loader.parseAsync(data, resourcePath);
+
   model.scene.name = 'verified-hlw-model';
-  model.scene.position.set(0, -0.35, 0);
-  model.scene.scale.setScalar(1.1);
-  return model.scene;
+  scene.add(model.scene);
+
+  return {
+    object: model.scene,
+    box: new THREE.Box3().setFromObject(model.scene),
+    viewDirection: new THREE.Vector3(0.8, 0.5, 1),
+  };
+}
+
+async function loadFeaturedModel(
+  modelUrl: string,
+  renderer: THREE.WebGLRenderer,
+  scene: THREE.Scene,
+  signal?: AbortSignal,
+): Promise<LoadedFeaturedModel> {
+  const path = new URL(modelUrl, window.location.href).pathname.toLowerCase();
+
+  if (path.endsWith('.ply')) return loadSplatModel(modelUrl, renderer, scene, signal);
+  if (path.endsWith('.glb')) return loadGlbModel(modelUrl, scene, signal);
+
+  throw new Error(`Unsupported Home model format: ${path}`);
+}
+
+function fitCameraToBox(
+  box: THREE.Box3,
+  viewDirection: THREE.Vector3,
+  camera: THREE.PerspectiveCamera,
+  cameraTarget: THREE.Vector3,
+  lookTarget: THREE.Vector3,
+) {
+  if (box.isEmpty()) return false;
+
+  const center = box.getCenter(new THREE.Vector3());
+  const size = box.getSize(new THREE.Vector3());
+  const maxDim = Math.max(size.x, size.y, size.z, 0.001);
+
+  const distance = (maxDim / (2 * Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2))) * 1.55;
+  const direction = viewDirection.clone().normalize();
+
+  lookTarget.copy(center);
+  cameraTarget.copy(center).addScaledVector(direction, distance);
+
+  camera.near = Math.max(distance / 1000, 0.001);
+  camera.far = Math.max(distance * 100, 100);
+  camera.updateProjectionMatrix();
+
+  return true;
 }
 
 function disposeObject3D(root: THREE.Object3D) {
@@ -108,7 +246,8 @@ function disposeObject3D(root: THREE.Object3D) {
 
   root.traverse((object) => {
     if (object instanceof THREE.SkinnedMesh) object.skeleton.dispose();
-    if (!(object instanceof THREE.Mesh)) return;
+    if (!(object instanceof THREE.Mesh) && !(object instanceof THREE.Points)) return;
+
     geometries.add(object.geometry);
     const objectMaterials = Array.isArray(object.material) ? object.material : [object.material];
     for (const material of objectMaterials) {
@@ -151,11 +290,17 @@ export async function initHomeScene({ canvas, host, modelUrl, signal }: HomeScen
 
   const { root, signalCurve, pulses } = createResearchScene();
   scene.add(root);
+
   const timer = new THREE.Timer();
   const cameraTarget = new THREE.Vector3(...CAMERA_PRESETS.device);
+  const lookTarget = new THREE.Vector3(0, 0.85, 0);
   const pointerTarget = new THREE.Vector2();
   const pointerCurrent = new THREE.Vector2();
   const finePointer = window.matchMedia('(pointer: fine)').matches;
+
+  let featuredModel: THREE.Object3D | undefined;
+  let featuredBox: THREE.Box3 | undefined;
+  let featuredDispose: (() => void) | undefined;
   let frame = 0;
   let inViewport = true;
   let documentVisible = !document.hidden;
@@ -168,33 +313,44 @@ export async function initHomeScene({ canvas, host, modelUrl, signal }: HomeScen
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
   };
+
   const resizeObserver = new ResizeObserver(resize);
   resizeObserver.observe(host);
   resize();
 
   const render = () => {
     if (disposed || !inViewport || !documentVisible) return;
+
     timer.update();
     const elapsed = timer.getElapsed();
     pointerCurrent.lerp(pointerTarget, 0.045);
+
     root.rotation.y = Math.sin(elapsed * 0.23) * 0.08 + pointerCurrent.x * 0.08;
     root.rotation.x = pointerCurrent.y * 0.035;
+
     pulses.forEach((pulse, index) => {
       const progress = (elapsed * 0.09 + pulse.userData.phase) % 1;
       pulse.position.copy(signalCurve.getPoint(progress));
       pulse.scale.setScalar(0.75 + Math.sin(elapsed * 2.2 + index) * 0.18);
     });
+
     camera.position.lerp(cameraTarget, 0.025);
-    camera.lookAt(pointerCurrent.x * 0.25, 0.85 + pointerCurrent.y * 0.12, 0);
+    camera.lookAt(
+      lookTarget.x + pointerCurrent.x * 0.08,
+      lookTarget.y + pointerCurrent.y * 0.06,
+      lookTarget.z,
+    );
     renderer.render(scene, camera);
     frame = requestAnimationFrame(render);
   };
+
   const resume = () => {
     if (!disposed && inViewport && documentVisible && frame === 0) {
       timer.reset();
       frame = requestAnimationFrame(render);
     }
   };
+
   const pause = () => {
     if (frame !== 0) cancelAnimationFrame(frame);
     frame = 0;
@@ -212,18 +368,26 @@ export async function initHomeScene({ canvas, host, modelUrl, signal }: HomeScen
       .filter((entry) => entry.isIntersecting)
       .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
     if (!active) return;
+
+    if (featuredBox) return;
+
     const focus = (active.target as HTMLElement).dataset.sceneFocus ?? 'overview';
     cameraTarget.set(...(CAMERA_PRESETS[focus] ?? CAMERA_PRESETS.overview));
   }, { rootMargin: '-20% 0px -55%', threshold: [0, 0.25, 0.6] });
   focusElements.forEach((element) => focusObserver.observe(element));
 
   const handlePointer = (event: PointerEvent) => {
-    pointerTarget.set((event.clientX / window.innerWidth - 0.5) * 2, (event.clientY / window.innerHeight - 0.5) * -2);
+    pointerTarget.set(
+      (event.clientX / window.innerWidth - 0.5) * 2,
+      (event.clientY / window.innerHeight - 0.5) * -2,
+    );
   };
+
   const handleVisibility = () => {
     documentVisible = !document.hidden;
     documentVisible ? resume() : pause();
   };
+
   if (finePointer) window.addEventListener('pointermove', handlePointer, { passive: true });
   document.addEventListener('visibilitychange', handleVisibility);
 
@@ -238,7 +402,15 @@ export async function initHomeScene({ canvas, host, modelUrl, signal }: HomeScen
     focusObserver.disconnect();
     window.removeEventListener('pointermove', handlePointer);
     document.removeEventListener('visibilitychange', handleVisibility);
-    disposeObject3D(scene);
+
+    if (featuredDispose) {
+      featuredDispose();
+    } else if (featuredModel) {
+      scene.remove(featuredModel);
+      disposeObject3D(featuredModel);
+    }
+
+    disposeObject3D(root);
     grid.geometry.dispose();
     gridMaterials.forEach((material) => material.dispose());
     renderer.dispose();
@@ -247,6 +419,7 @@ export async function initHomeScene({ canvas, host, modelUrl, signal }: HomeScen
   };
 
   signal?.addEventListener('abort', dispose, { once: true });
+
   if (signal?.aborted) {
     dispose();
     return dispose;
@@ -257,14 +430,32 @@ export async function initHomeScene({ canvas, host, modelUrl, signal }: HomeScen
 
   if (modelUrl) {
     try {
-      const model = await loadVerifiedModel(modelUrl, signal);
-      if (disposed) disposeObject3D(model);
-      else {
-        scene.add(model);
+      const loaded = await loadFeaturedModel(modelUrl, renderer, scene, signal);
+
+      if (disposed) {
+        loaded.dispose?.();
+        if (!loaded.dispose) disposeObject3D(loaded.object);
+      } else {
+        featuredModel = loaded.object;
+        featuredBox = loaded.box;
+        featuredDispose = loaded.dispose;
+
+        if (fitCameraToBox(loaded.box, loaded.viewDirection, camera, cameraTarget, lookTarget)) {
+          camera.position.copy(cameraTarget);
+          camera.lookAt(lookTarget);
+        }
+
         root.visible = false;
       }
     } catch {
-      if (!disposed) root.visible = true;
+      if (!disposed) {
+        featuredModel = undefined;
+        featuredBox = undefined;
+        featuredDispose = undefined;
+        lookTarget.set(0, 0.85, 0);
+        cameraTarget.set(...CAMERA_PRESETS.device);
+        root.visible = true;
+      }
     }
   }
 

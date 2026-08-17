@@ -301,9 +301,19 @@ test('V4 publication excludes transcript identifiers, local paths, reference ass
     assert.deepEqual(publicationSecurityViolations(entry), [], `${entry.path} content is publication-safe`);
   }
 
-  const modelExists = existsSync(join(root, 'public', 'models', 'hlw.glb'));
+  const plyModelExists = existsSync(join(root, 'public', 'models', 'hlw.ply'));
+  const glbModelExists = existsSync(join(root, 'public', 'models', 'hlw.glb'));
   const homeHtml = `${page('/')}\n${page('/en')}`;
-  assert.equal(homeHtml.includes('/models/hlw.glb'), modelExists, 'the optional model URL is emitted only when the verified file exists');
+  assert.equal(
+    homeHtml.includes('/models/hlw.ply'),
+    plyModelExists,
+    'the preferred PLY model URL is emitted exactly when the verified PLY exists',
+  );
+  assert.equal(
+    homeHtml.includes('/models/hlw.glb'),
+    !plyModelExists && glbModelExists,
+    'the GLB model URL is emitted only when it is the selected fallback model',
+  );
 });
 
 test('V4 CSS exposes static prerequisites for browser viewport QA', () => {

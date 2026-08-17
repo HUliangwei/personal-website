@@ -34,24 +34,41 @@ test('Home keeps complete bilingual semantic content beside a non-interactive 3D
     ['/en', 'Liangwei Hu', 'Explore projects'],
   ]) {
     const html = page(route);
-    assert.match(html, new RegExp(`<section[^>]*class="[^"]*hero[^"]*"[^>]*aria-labelledby="hero-title"`));
+    assert.match(html, new RegExp(`<section[^>]*class="[^\"]*hero[^\"]*"[^>]*aria-labelledby="hero-title"`));
     assert.match(html, new RegExp(`<h1 id="hero-title">${title}</h1>`));
     assert.match(html, new RegExp(`<a[^>]+href="${route === '/' ? '/projects' : '/en/projects'}"[^>]*>${primaryAction}`));
     assert.match(html, /<canvas[^>]*data-home-scene-canvas[^>]*aria-hidden="true"[^>]*tabindex="-1"/);
-    assert.match(html, /<div[^>]*class="[^"]*home-scene-fallback[^"]*"[^>]*>[\s\S]*?<svg[^>]*role="img"/);
+    assert.match(html, /<div[^>]*class="[^\"]*home-scene-fallback[^\"]*"[^>]*>[\s\S]*?<svg[^>]*role="img"/);
     assert.ok((html.match(/data-scene-focus=/g) ?? []).length >= 5, `${route} exposes scroll focus stages`);
   }
 });
 
-test('a missing verified model never emits a GLB URL or request target', async () => {
-  assert.equal(existsSync(join(root, 'public/models/hlw.glb')), false, 'fixture intentionally has no verified model');
+test('the verified Home model gate prefers PLY, falls back to GLB, and emits only the selected model URL', async () => {
+  const plyExists = existsSync(join(root, 'public/models/hlw.ply'));
+  const glbExists = existsSync(join(root, 'public/models/hlw.glb'));
+  const expectedModelUrl = plyExists
+    ? '/models/hlw.ply'
+    : glbExists
+      ? '/models/hlw.glb'
+      : undefined;
+
   const model = await import(`${pathToFileURL(join(root, 'src/utils/model.ts')).href}?test=${Date.now()}`);
-  assert.equal(model.getVerifiedModelUrl(), undefined);
+  assert.equal(model.getVerifiedModelUrl(), expectedModelUrl);
 
   const published = outputFiles('.html').concat(outputFiles('.js'))
     .map((file) => readFileSync(file, 'utf8'))
     .join('\n');
-  assert.doesNotMatch(published, /\/models\/hlw\.glb/);
+
+  assert.equal(
+    published.includes('/models/hlw.ply'),
+    plyExists,
+    'the PLY URL is emitted exactly when the preferred verified PLY exists',
+  );
+  assert.equal(
+    published.includes('/models/hlw.glb'),
+    !plyExists && glbExists,
+    'the GLB URL is emitted only as a fallback when no preferred PLY exists',
+  );
 });
 
 test('Three.js is isolated to a dynamically imported Home scene bundle', () => {
