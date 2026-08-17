@@ -137,6 +137,7 @@ test('V5 Home uses Spark for PLY and bounds-based GLB framing', () => {
   // applied before the bounds-based camera framing.
   assert.match(scene, /loadedMesh\.rotation\.x = Math\.PI/);
   assert.match(scene, /loadedMesh\.rotation\.y = Math\.PI/);
+  assert.match(scene, /loadedMesh\.rotateY\(Math\.PI\)/);
   assert.match(scene, /applyMatrix4\(loadedMesh\.matrixWorld\)/);
 
   assert.doesNotMatch(scene, /PLYLoader/);

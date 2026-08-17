@@ -3,20 +3,24 @@ title: Videoto3D
 slug: videoto3d
 locale: zh
 status: 已完成
-summary: 本地优先的视频到 3D 重建 Studio：从 FFmpeg 抽帧与 SAM2 主体分割出发，经过 COLMAP，相继支持 OpenMVS Mesh / GLB 与 Brush Gaussian Splat / PLY 两条重建路线。
+summary: 本地优先的视频到3D工作台，按采集方式分流重建，并输出 GLB 网格与 Gaussian Splat PLY。
 technologies:
   - Python
   - FFmpeg
-  - SAM2
   - COLMAP
   - OpenMVS
   - Brush
   - Blender
-date: 2024.08–2025.03
+  - FastAPI
+  - React
+  - TypeScript
+  - SAM2
+date: 2026.08–至今
 featured: true
 highlights:
-  - FFmpeg 抽帧 + SAM2 主体分割的输入准备管线
-  - OpenMVS Mesh / GLB 与 Brush Gaussian Splat / PLY 双重建路线
+  - 按 Orbit Camera 与 Turntable 两种真实采集方式建立并列工作流
+  - 从视频、分割、SfM 到 GLB / Gaussian PLY 的本地一体化管线
+  - 将稳定工程链与 Turntable 前沿位姿研究隔离，便于独立验证与迭代
 links:
   - label: GitHub
     url: https://github.com/HUliangwei/Videoto3D
@@ -24,33 +28,105 @@ links:
 
 ## 项目简介
 
-Videoto3D 是一个本地优先的视频到 3D 重建 Studio：输入一段视频，即可在本地完成主体分割、相机恢复与稠密重建，输出 Mesh（GLB）或高斯泼溅（PLY）两类 3D 资产。
+Videoto3D 是一个 local-first 的视频到 3D 重建工作台，目标是把视频输入、环境检查、帧提取、主体分割、相机/物体位姿恢复、三维重建与结果预览整合到统一的 Run 工作空间中。
+
+V1.4 开始，项目不再把所有视频都塞进同一套 SfM 假设，而是按照真实采集方式拆分为 **Orbit Camera** 与 **Turntable** 两条并列工作流：前者面向“目标静止、相机运动”的稳定工程路线，后者面向“相机静止、目标旋转”的研究路线。
 
 ## 功能特性
 
-- **输入准备**：FFmpeg 抽帧 + SAM2 主体分割，把视频整理为可重建的干净图像序列。
-- **相机恢复**：COLMAP 完成稀疏重建与相机位姿估计。
-- **双重建路线**：
-  - **OpenMVS 路线**：稠密重建输出 Mesh，可导出 GLB。
-  - **Brush 路线**：Gaussian Splat 训练输出 PLY。
-- **本地优先**：完整流程在本地运行，数据不上传第三方服务。
+- **统一 Run 工作空间**：每次重建都使用独立的 `workspace/runs/<run_id>/`，集中保存视频、帧、Mask、中间结果、日志与最终资产。
+- **两种采集工作流**：创建 Run 时直接选择 Orbit Camera 或 Turntable，采集方式在 Run 生命周期内保持固定。
+- **视频预处理**：使用 FFmpeg 抽帧，并通过 SAM2 生成目标 Mask 与分割质量检查结果。
+- **Orbit Camera 稳定重建**：使用完整 RGB 特征执行 COLMAP incremental SfM，让背景纹理继续参与相机位姿恢复。
+- **Turntable 研究工作流**：隔离固定相机、旋转刚体场景，保留 V1.3 constrained-pose baseline，并为 structured essential、global orbit 与 SfM-free Gaussian 研究预留接口。
+- **双输出路线**：Geometry Route 输出 GLB；Gaussian Route 输出 Gaussian Splat PLY。
+- **本地网页 Studio**：通过 FastAPI + React/TypeScript 管理 Run、ROI、任务日志、质量信息、路径信息与 3D 结果查看。
+- **统一命令入口**：V1.4 使用 `python Videoto3D.py ...` 作为规范化 CLI 入口。
 
 ## 技术架构
 
-- **语言 / 生态**：Python，配 FFmpeg、SAM2、COLMAP、OpenMVS、Brush 与 Blender。
-- **查看器**：`gui/viewer` 使用与本站首页一致的 Spark 渲染路径查看高斯泼溅 PLY。
-- **流程组织**：抽帧 → 分割 → 稀疏重建 → 稠密重建 / 泼溅训练 → 导出 / 预览。
+Videoto3D 将“采集方式”放在 Run 创建阶段决定，而不是等到 Sparse 阶段再切换算法。
+
+```text
+Video + Capture Method
+          │
+          ├── Orbit Camera
+          │      目标静止 / 相机运动
+          │      Full-RGB COLMAP incremental SfM
+          │
+          └── Turntable
+                 相机静止 / 目标旋转
+                 Turntable-specific pose research
+
+          ↓
+    Unified Run Workspace
+          │
+          ├── Geometry Route
+          │      COLMAP / OpenMVS / Blender
+          │      → GLB
+          │
+          └── Gaussian Route
+                 Brush / future SfM-free research
+                 → PLY
+```
+
+底层的 COLMAP、OpenMVS、Brush 与 Blender 保持为共享基础设施，而采集方式相关的业务逻辑被放入独立 workflow 边界中。这样 Turntable 的研究性改动不会继续污染 Orbit Camera 的稳定重建路径。
 
 ## 关键实现
 
-- 用「主体分割先行」提升重建质量：先通过 SAM2 分离前景主体，再进入 COLMAP 与后续重建，减少背景干扰。
-- 两条路线共用同一输入准备与相机恢复结果，仅在最终重建阶段分流。
-- PLY 查看器与个人网站首页共用 `@sparkjsdev/spark` 的 `SparkRenderer + SplatMesh` 渲染路径。
+### 1. Local-first 工作空间约束
+
+项目坚持所有输入、中间产物、缓存、日志和最终输出都存放在 Videoto3D 自己的工作空间中，不把项目数据写入 COLMAP、OpenMVS、Brush 或 Blender 的安装目录。
+
+这让每个 Run 都可以被独立检查、复现与清理，同时也降低了外部工具链之间互相污染状态的风险。
+
+### 2. Orbit Camera 与 Turntable 解耦
+
+V1.3 的实践暴露了一个关键问题：固定相机、旋转物体并不是普通“相机绕物体运动”的简单参数变体。背景去除后，旋转角只能从目标自身的视觉变化中恢复，容易出现弱约束、多解和全局轨迹不一致。
+
+因此 V1.4 将两种采集方式提升为并列工作流：
+
+- `orbit_camera`：稳定、完整 RGB、标准 incremental SfM。
+- `turntable`：研究、单轴运动约束、独立的位姿与轨迹求解。
+
+旧的 V1.3 Turntable constrained-pose / adaptive-angle 实现被保留为 research baseline，用于后续算法对比，而不是继续嵌入 Orbit Camera 主流程。
+
+### 3. 双路线结果管理
+
+Geometry 与 Gaussian Splat 共享统一的 Run 管理与最终 Viewer，但允许上游逐步解耦。
+
+Geometry Route 继续面向可导出的 GLB 网格模型；Gaussian Route 面向高质量新视角表达，并为未来 Turntable 场景下不依赖传统 SfM 的 Gaussian 优化路线保留空间。
+
+### 4. CLI 与 Web Studio 共用核心能力
+
+命令行与网页端都调用同一套 Run / pipeline 能力。CLI 用于可复现调试与自动化，网页端提供 ROI 框选、任务进度、日志、Artifact Inspector 与 3D Viewer。
+
+V1.4 将正式命令入口规范为：
+
+`python Videoto3D.py ...`
+
+而 `app.py` 仅保留为内部实现与历史兼容层。
 
 ## 挑战与解决
 
-视频抖动、遮挡与背景噪声会显著影响重建质量；分割管线降低了这些干扰，同时本地执行的特性要求对各步工具做版本锁定与可复现配置。
+### Turntable 位姿恢复
+
+Turntable 视频中，相机保持静止，背景也保持静止，而主体发生旋转。这与传统 SfM 的“静态世界 + 相机运动”假设并不一致。
+
+早期方案尝试通过 SAM2 Mask-guided features、free-span angle graph、constrained Essential fitting 与已知虚拟相机轨迹来恢复旋转角。实际测试证明，即使单对图像的几何残差较低，也可能出现多个角度候选，从而导致相机轨迹突然跳跃、Sparse 点云撕裂以及后续 GLB / PLY 同时退化。
+
+V1.4 因此停止把 Turntable 当作普通 Sparse 的特殊参数，而将其升级为独立研究工作流。后续重点转向共享旋转轴、structured essential、cycle consistency、global orbit refinement，以及 SfM-free Gaussian reconstruction。
+
+### 稳定工程链与实验算法的隔离
+
+项目既需要一个可以稳定演示完整视频到 3D 流程的工程路线，也希望保留对前沿 Turntable 问题的探索。
+
+解决方式不是维护两套项目，而是共享 Run、环境、Viewer 与最终资产管理，同时把不同采集几何的算法实现放入独立 workflow 边界。这样稳定路线可以冻结，研究路线可以快速实验。
 
 ## 成果与展望
 
-已完成从视频到 Mesh / GLB 与 Gaussian Splat / PLY 的端到端流程。后续计划包括更多拍摄场景的鲁棒性测试、重建参数自动化，以及把成功案例沉淀为可复现的示例脚本。
+目前项目已经形成统一的本地 Run 管理、环境检查、视频抽帧、SAM2 分割、COLMAP / OpenMVS / Brush / Blender 工具链集成、GLB / PLY 双输出以及网页端任务与 3D 结果查看能力。
+
+V1.4 正在完成 **Orbit Camera 实际视频回归验证**，目标是重新确认“目标静止、相机运动”路线在新架构下保持稳定可用。验证通过后，将把该架构作为新的稳定基线提交。
+
+Turntable 则会在独立工作流中继续参考单轴约束位姿估计与 SfM-free Gaussian reconstruction 的相关研究，逐步替换 V1.3 baseline，并把角度轨迹、旋转轴、cycle consistency 与 observability 等研究指标直接可视化到网页端。

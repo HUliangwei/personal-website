@@ -137,6 +137,8 @@ async function loadSplatModel(
             // matches the rotated model.
             loadedMesh.rotation.x = Math.PI;
             loadedMesh.rotation.y = Math.PI;
+            // Additional owner-requested horizontal 180掳 turn from the current displayed orientation.
+            loadedMesh.rotateY(Math.PI);
             loadedMesh.updateMatrixWorld(true);
 
             let box = new THREE.Box3();

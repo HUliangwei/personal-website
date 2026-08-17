@@ -3,20 +3,24 @@ title: Videoto3D
 slug: videoto3d
 locale: en
 status: Completed
-summary: "Local-first video-to-3D Studio: FFmpeg and SAM2 input, COLMAP cameras, OpenMVS Mesh / GLB or Brush Splat / PLY output."
+summary: A local-first video-to-3D studio with capture-specific workflows and GLB / Gaussian Splat PLY outputs.
 technologies:
   - Python
   - FFmpeg
-  - SAM2
   - COLMAP
   - OpenMVS
   - Brush
   - Blender
-date: 2024.08–2025.03
+  - FastAPI
+  - React
+  - TypeScript
+  - SAM2
+date: 2026.08–Present
 featured: true
 highlights:
-  - FFmpeg frame extraction + SAM2 subject segmentation input pipeline
-  - Dual OpenMVS Mesh / GLB and Brush Gaussian Splat / PLY reconstruction routes
+  - Peer workflows for Orbit Camera and Turntable capture geometries
+  - Local pipeline from video and segmentation to GLB and Gaussian Splat PLY
+  - Stable engineering path isolated from frontier Turntable pose research
 links:
   - label: GitHub
     url: https://github.com/HUliangwei/Videoto3D
@@ -24,33 +28,105 @@ links:
 
 ## Overview
 
-Videoto3D is a local-first video-to-3D reconstruction Studio: feed it a video, and it performs subject segmentation, camera recovery, and dense reconstruction entirely on your machine, producing Mesh (GLB) or Gaussian Splat (PLY) 3D assets.
+Videoto3D is a local-first video-to-3D reconstruction studio that integrates video ingestion, environment checks, frame extraction, subject segmentation, pose recovery, reconstruction, and result inspection inside a unified Run workspace.
+
+Starting with V1.4, the project no longer treats every video as a variation of the same SfM problem. It provides two peer workflows based on the physical capture setup: **Orbit Camera** for a static object observed by a moving camera, and **Turntable** for a fixed camera observing a rotating rigid object.
 
 ## Features
 
-- **Input preparation**: FFmpeg frame extraction plus SAM2 subject segmentation turns a video into a clean, reconstruction-ready image sequence.
-- **Camera recovery**: COLMAP recovers sparse geometry and camera poses.
-- **Dual reconstruction routes**:
-  - **OpenMVS route**: dense reconstruction produces a Mesh, exportable as GLB.
-  - **Brush route**: Gaussian Splat training produces PLY.
-- **Local-first**: the whole pipeline runs locally; no data is uploaded to third-party services.
+- **Unified Run workspace**: each reconstruction uses an isolated `workspace/runs/<run_id>/` for source video, frames, masks, intermediate artifacts, logs, and final assets.
+- **Capture-specific workflows**: Orbit Camera or Turntable is selected when a Run is created and remains fixed for that Run.
+- **Video preprocessing**: FFmpeg frame extraction plus SAM2 subject masks and segmentation QA.
+- **Stable Orbit Camera reconstruction**: full-RGB COLMAP incremental SfM keeps background texture available for camera pose recovery.
+- **Turntable research workflow**: isolates fixed-camera / rotating-object reconstruction, preserves the V1.3 constrained-pose baseline, and leaves room for structured-essential, global-orbit, and SfM-free Gaussian research.
+- **Dual outputs**: a Geometry Route produces GLB assets, while a Gaussian Route produces Gaussian Splat PLY assets.
+- **Local Web Studio**: FastAPI with React/TypeScript for Run management, ROI selection, job logs, quality information, path inspection, and 3D previews.
+- **Canonical CLI**: V1.4 standardizes the user entry point as `python Videoto3D.py ...`.
 
 ## Architecture
 
-- **Language / ecosystem**: Python with FFmpeg, SAM2, COLMAP, OpenMVS, Brush, and Blender.
-- **Viewer**: `gui/viewer` renders Gaussian-splat PLY with the same Spark path used on this site's Home page.
-- **Pipeline**: frame extraction → segmentation → sparse reconstruction → dense reconstruction / splat training → export / preview.
+Videoto3D resolves the capture geometry when a Run is created rather than switching algorithms late in the sparse-reconstruction stage.
+
+```text
+Video + Capture Method
+          |
+          +-- Orbit Camera
+          |      Static object / moving camera
+          |      Full-RGB COLMAP incremental SfM
+          |
+          +-- Turntable
+                 Fixed camera / rotating object
+                 Turntable-specific pose research
+
+          |
+    Unified Run Workspace
+          |
+          +-- Geometry Route
+          |      COLMAP / OpenMVS / Blender
+          |      -> GLB
+          |
+          +-- Gaussian Route
+                 Brush / future SfM-free research
+                 -> PLY
+```
+
+COLMAP, OpenMVS, Brush, and Blender remain shared low-level infrastructure, while capture-specific behavior is isolated behind workflow boundaries. This prevents experimental Turntable pose work from changing the stable Orbit Camera reconstruction path.
 
 ## Key Implementation
 
-- **Segmentation first**: SAM2 separates the foreground subject before COLMAP and downstream reconstruction, reducing background interference.
-- Both routes share the same input preparation and camera recovery results, diverging only at the final reconstruction stage.
-- The PLY viewer and the portfolio Home share the `SparkRenderer + SplatMesh` rendering path from `@sparkjsdev/spark`.
+### 1. Local-first workspace contract
+
+All inputs, intermediate artifacts, caches, logs, and final outputs are kept inside the Videoto3D workspace. Project data is not written into the installation directories of COLMAP, OpenMVS, Brush, or Blender.
+
+This makes individual Runs reproducible and inspectable while reducing accidental state leakage across external tools.
+
+### 2. Decoupling Orbit Camera and Turntable reconstruction
+
+V1.3 experiments exposed a fundamental difference between the two capture geometries. A fixed camera observing a rotating object is not just a parameter variation of standard moving-camera SfM. After background removal, angular motion has to be inferred from the object itself, which introduces weak constraints, multiple valid local solutions, and global trajectory inconsistencies.
+
+V1.4 therefore promotes the two setups to peer workflows:
+
+- `orbit_camera`: stable, full-RGB, standard incremental SfM.
+- `turntable`: research-oriented, single-axis motion constraints, independent pose and trajectory estimation.
+
+The V1.3 constrained-pose and adaptive-angle implementation is preserved as a research baseline for comparison instead of remaining embedded in the Orbit Camera path.
+
+### 3. Independent Geometry and Gaussian outputs
+
+Geometry and Gaussian Splat routes share Run management and result inspection, but their upstream algorithms are allowed to diverge.
+
+The Geometry Route targets exportable GLB mesh assets. The Gaussian Route targets high-quality novel-view representations and leaves room for future Turntable reconstruction that does not depend on conventional SfM poses.
+
+### 4. Shared core for CLI and Web Studio
+
+Both command-line and Web Studio operations use the same Run and pipeline capabilities. The CLI supports reproducible debugging and automation, while the browser provides ROI selection, task progress, logs, artifact inspection, and interactive 3D viewing.
+
+V1.4 standardizes the public command entry point as:
+
+`python Videoto3D.py ...`
+
+while `app.py` remains an internal implementation and compatibility layer.
 
 ## Challenges & Decisions
 
-Camera shake, occlusion, and background noise significantly affect reconstruction quality; the segmentation pipeline reduces this interference, while the local-first nature requires pinned tool versions and reproducible configuration.
+### Turntable pose recovery
+
+In Turntable capture, the camera and background remain fixed while the foreground subject rotates. This conflicts with the conventional SfM assumption of a static scene observed by a moving camera.
+
+Early experiments used SAM2 mask-guided features, a free-span angle graph, constrained Essential fitting, and known virtual-camera triangulation. Real runs showed that a low pairwise geometric residual does not guarantee the physically correct rotation angle: multiple angle hypotheses can explain the same correspondence set, causing sudden pose jumps, torn sparse geometry, and downstream degradation in both GLB and PLY reconstruction.
+
+V1.4 therefore stops treating Turntable as a special flag inside ordinary sparse reconstruction. Future work focuses on a shared rotation axis, structured-essential constraints, cycle consistency, global-orbit refinement, and SfM-free Gaussian reconstruction.
+
+### Isolating stable engineering from experimental research
+
+The project needs both a reliable end-to-end video-to-3D engineering path and room to explore frontier Turntable reconstruction.
+
+Instead of maintaining two independent applications, Videoto3D shares Run management, environment handling, viewers, and final asset organization while isolating capture-specific algorithms behind separate workflow boundaries. The stable path can be frozen while the research path evolves rapidly.
 
 ## Results & Next Steps
 
-An end-to-end pipeline from video to Mesh / GLB and Gaussian Splat / PLY is complete. Next steps include robustness testing across more shooting scenarios, automated reconstruction parameters, and turning successful cases into reproducible example scripts.
+The project already provides local Run management, environment checks, video frame extraction, SAM2 segmentation, integration with COLMAP / OpenMVS / Brush / Blender, dual GLB / PLY outputs, and a Web Studio for task execution and 3D result inspection.
+
+V1.4 is currently undergoing a **real-video Orbit Camera regression test** to confirm that the static-object / moving-camera workflow remains stable after the architectural split. Once validated, the new capture-workflow architecture will become the next stable project baseline.
+
+Turntable development will then continue independently, informed by recent work on single-axis constrained pose estimation and SfM-free Gaussian reconstruction. Planned research UI additions include rotation-angle trajectories, shared-axis estimates, cycle-consistency diagnostics, and observability/confidence metrics.
