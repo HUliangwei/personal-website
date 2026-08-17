@@ -21,8 +21,8 @@ const en = {
       summary: 'My current graduate work centers on SPAD single-photon detector readout IC design, alongside ongoing exploration of embodied AI, quantum computing, and embedded systems.',
       curiosity: 'I enjoy learning, tinkering with technology, and trying unfamiliar things—while making time for sport, music, games, and friends.',
       projectsAction: 'Explore projects', cvAction: 'View CV',
-      diagramTitle: 'Device to intelligent system diagram',
-      diagramDescription: 'A conceptual flow from device and sensor inputs through signal and integrated circuit compute stages to an intelligent system or robot.',
+      diagramTitle: 'Personal portrait (temporarily a plush-doll model)',
+      diagramDescription: 'A personal 3D portrait, currently represented by a plush-doll model instead of a real likeness.',
       diagramLabels: ['Device / Sensor', 'Signal', 'IC / Compute', 'Intelligent System / Robot'],
     },
     focus: {

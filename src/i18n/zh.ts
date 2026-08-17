@@ -49,8 +49,8 @@ const zh = {
       curiosity: '我喜欢学习、折腾技术，也愿意尝试新事物；运动、唱歌、游戏和朋友同样构成了我的日常。',
       projectsAction: '浏览项目',
       cvAction: '查看简历',
-      diagramTitle: '从器件到智能系统的概念图',
-      diagramDescription: '概念流程从器件和传感器输入开始，经过信号与集成电路计算阶段，最终连接智能系统或机器人。',
+      diagramTitle: '个人画像（暂时拿个玩偶替代）',
+      diagramDescription: '以个人 3D 画像展示，当前用玩偶模型代替真人形象。',
       diagramLabels: ['器件 / 传感器', '信号', '集成电路 / 计算', '智能系统 / 机器人'],
     },
     focus: {

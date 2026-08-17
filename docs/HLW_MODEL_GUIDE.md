@@ -28,13 +28,17 @@ const splat = new SplatMesh({
 
 The portfolio pins `@sparkjsdev/spark` to `2.1.0`.
 
-Do not render Brush splat PLY with `PLYLoader + THREE.Points`, and do not add model-specific manual rotations in the website.
+Do not render Brush splat PLY with `PLYLoader + THREE.Points`.
+
+## PLY orientation
+
+The Home splat is displayed with an owner-requested orientation: **180° up-down and 180° left-right**. `src/scripts/home-scene.ts` applies `loadedMesh.rotation.x = Math.PI` and `loadedMesh.rotation.y = Math.PI` in the `SplatMesh` `onLoad` callback **before** computing the bounding box, then rotates the local box into world space with `applyMatrix4(loadedMesh.matrixWorld)` so the camera framing matches the displayed orientation. Keep that rotation ahead of the bounds computation if the model is replaced.
 
 ## GLB · fallback
 
 If PLY is absent, `hlw.glb` is loaded with `GLTFLoader`.
 
-The site no longer forces a hard-coded scale, Y offset, or model rotation. It computes the real bounds with:
+The site does not force a hard-coded scale or Y offset. The PLY rotation above is the only model-specific transform; the GLB fallback keeps its authored transform. Bounds are computed with:
 
 ```ts
 new THREE.Box3().setFromObject(model.scene)

@@ -36,8 +36,8 @@ test('Home renders the personal V3 overview without scaffold copy', () => {
   }
 
   assert.match(home, /<svg[^>]*role="img"[^>]*aria-labelledby="system-diagram-title system-diagram-description"/);
-  assert.match(home, /<title id="system-diagram-title">Device to intelligent system diagram<\/title>/);
-  assert.match(home, /<desc id="system-diagram-description">A conceptual flow from device and sensor inputs through signal and integrated circuit compute stages to an intelligent system or robot.<\/desc>/);
+  assert.match(home, /<title id="system-diagram-title">Personal portrait \(temporarily a plush-doll model\)<\/title>/);
+  assert.match(home, /<desc id="system-diagram-description">A personal 3D portrait, currently represented by a plush-doll model instead of a real likeness\.<\/desc>/);
   assert.match(home, /<text[^>]*>Device \/ Sensor<\/text>/);
   assert.match(home, /<text[^>]*>Intelligent System \/ Robot<\/text>/);
   assert.doesNotMatch(home, /Cloudflare deployment test|Research &amp; Engineering|Technical trajectory/);

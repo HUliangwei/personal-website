@@ -133,6 +133,12 @@ test('V5 Home uses Spark for PLY and bounds-based GLB framing', () => {
   assert.match(scene, /viewDirection:\s*new THREE\.Vector3\(0,\s*0,\s*1\)/);
   assert.match(scene, /viewDirection:\s*new THREE\.Vector3\(0\.8,\s*0\.5,\s*1\)/);
 
+  // Owner-requested PLY orientation: 180° up-down and 180° left-right,
+  // applied before the bounds-based camera framing.
+  assert.match(scene, /loadedMesh\.rotation\.x = Math\.PI/);
+  assert.match(scene, /loadedMesh\.rotation\.y = Math\.PI/);
+  assert.match(scene, /applyMatrix4\(loadedMesh\.matrixWorld\)/);
+
   assert.doesNotMatch(scene, /PLYLoader/);
   assert.doesNotMatch(scene, /THREE\.ShaderMaterial/);
   assert.doesNotMatch(scene, /geometry\.rotateX\(Math\.PI\)/);

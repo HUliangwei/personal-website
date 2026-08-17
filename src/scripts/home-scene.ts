@@ -132,9 +132,21 @@ async function loadSplatModel(
             settled = true;
             signal?.removeEventListener('abort', abort);
 
+            // Owner-requested orientation: 180° up-down and 180° left-right.
+            // Applied before the bounding box is computed so camera framing
+            // matches the rotated model.
+            loadedMesh.rotation.x = Math.PI;
+            loadedMesh.rotation.y = Math.PI;
+            loadedMesh.updateMatrixWorld(true);
+
             let box = new THREE.Box3();
             try {
-              box = loadedMesh.getBoundingBox(true).clone();
+              // getBoundingBox(true) returns the local-space centers box; rotate
+              // it into world space so the camera fits the displayed orientation.
+              const localBox = loadedMesh.getBoundingBox(true);
+              box = localBox.isEmpty()
+                ? localBox.clone()
+                : localBox.clone().applyMatrix4(loadedMesh.matrixWorld);
             } catch {
               // Keep an empty box; the procedural camera remains as fallback.
             }
