@@ -22,3 +22,7 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# optional local 3D model assets (never committed; see docs/HLW_MODEL_GUIDE.md)
+public/models/hlw.ply
+public/models/hlw.glb
