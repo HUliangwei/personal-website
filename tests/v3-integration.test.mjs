@@ -20,8 +20,10 @@ const routePairs = [
 const routes = routePairs.flat();
 const maximumPublicationBytes = 10 * 1024 * 1024;
 const authorizedCvSuffixes = [
-  '/cv/liangwei-hu-embodied-ai.pdf',
-  '/cv/liangwei-hu-ic-design.pdf',
+  '/cv/liangwei-hu-embodied-ai-en.pdf',
+  '/cv/liangwei-hu-embodied-ai-zh.pdf',
+  '/cv/liangwei-hu-ic-design-en.pdf',
+  '/cv/liangwei-hu-ic-design-zh.pdf',
 ];
 
 function publicationSecurityViolations({ path, size, text }) {
@@ -271,8 +273,10 @@ test('publication security classification catches quoted and unquoted runtime se
   const policy = 'Repository policy forbids PDK, GDS/GDSII, OASIS, SPICE netlists, NDA material, and foundry-confidential assets.';
   assert.deepEqual(publicationSecurityViolations({ path: 'README.md', size: policy.length, text: policy }), []);
   assert.deepEqual(publicationSecurityViolations({ path: 'src/components/Sample.astro', size: 2048, text: '<p>Normal source</p>' }), []);
-  assert.deepEqual(publicationSecurityViolations({ path: 'public/cv/liangwei-hu-ic-design.pdf', size: 319440, text: undefined }), []);
-  assert.deepEqual(publicationSecurityViolations({ path: 'public/cv/liangwei-hu-embodied-ai.pdf', size: 264803, text: undefined }), []);
+  assert.deepEqual(publicationSecurityViolations({ path: 'public/cv/liangwei-hu-ic-design-zh.pdf', size: 319441, text: undefined }), []);
+  assert.deepEqual(publicationSecurityViolations({ path: 'public/cv/liangwei-hu-ic-design-en.pdf', size: 100282, text: undefined }), []);
+  assert.deepEqual(publicationSecurityViolations({ path: 'public/cv/liangwei-hu-embodied-ai-zh.pdf', size: 277282, text: undefined }), []);
+  assert.deepEqual(publicationSecurityViolations({ path: 'public/cv/liangwei-hu-embodied-ai-en.pdf', size: 75560, text: undefined }), []);
 });
 
 test('V4 publication excludes transcript identifiers, local paths, reference assets, and secrets', () => {
@@ -282,13 +286,14 @@ test('V4 publication excludes transcript identifiers, local paths, reference ass
     .filter((file) => extname(file).toLowerCase() === '.pdf')
     .map((file) => relative(join(root, 'public'), file).split(sep).join('/'))
     .sort();
-  assert.deepEqual(publicPdfs, ['cv/liangwei-hu-embodied-ai.pdf', 'cv/liangwei-hu-ic-design.pdf']);
+  assert.deepEqual(publicPdfs, ['cv/liangwei-hu-embodied-ai-en.pdf', 'cv/liangwei-hu-embodied-ai-zh.pdf', 'cv/liangwei-hu-ic-design-en.pdf', 'cv/liangwei-hu-ic-design-zh.pdf']);
 
   const tracked = execFileSync('git', ['ls-files', '-z'], { cwd: root })
     .toString('utf8')
     .split('\0')
     .filter(Boolean)
-    .map((file) => join(root, file));
+    .map((file) => join(root, file))
+    .filter((file) => existsSync(file));
   const allFiles = [...new Set([...tracked, ...publicFiles, ...distFiles])];
 
   for (const file of allFiles) {

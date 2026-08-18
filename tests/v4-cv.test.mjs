@@ -58,8 +58,10 @@ const expectedCoursework = {
 };
 
 const publishedPdfs = {
-  'liangwei-hu-ic-design.pdf': { bytes: 319440, sha256: 'f7c4a31296ff8d4aaae566c5fdf33f732b5b95cca025b84a211c2f1794c38290' },
-  'liangwei-hu-embodied-ai.pdf': { bytes: 264803, sha256: '6ed4a86bd51dab4c5c71b8ab0527ba5830b1c10eb67b909cd038fc200b1a95ae' },
+  'liangwei-hu-ic-design-zh.pdf': { bytes: 319441, sha256: 'd7e2ca46b2ed294359526217b5d693a615e6bb4922a2ae1f5237fcd992d0f48e' },
+  'liangwei-hu-ic-design-en.pdf': { bytes: 100282, sha256: '0bee38339056b5c937487bc53a598266abe0efefc7b1d0e665be94f13824e5de' },
+  'liangwei-hu-embodied-ai-zh.pdf': { bytes: 277282, sha256: '32e6d16a9e769097da2c4d4ed86711cac98a9a7d395c76f4269111c68f2bb9a0' },
+  'liangwei-hu-embodied-ai-en.pdf': { bytes: 75560, sha256: 'ea9554a30495ea8505b5b4298d1181cdb47306561bf85980cb57c2b195193879' },
 };
 
 function escapeRegex(value) {
@@ -151,7 +153,7 @@ test('CV academic copy is HR-facing while preserving the undergraduate GPA snaps
   assert.doesNotMatch(allHtml, /最终毕业 GPA|final graduation GPA/i);
 });
 
-test('CV exposes no transcript interface and preserves the two authorized lazy CV PDFs', () => {
+test('CV exposes no transcript interface and preserves the four localized authorized CV PDFs', () => {
   const allHtml = Object.values(pages).join('\n');
   assert.equal(html('/cv').includes('data-transcripts'), false);
   assert.equal(transcriptControls(allHtml).length, 0);

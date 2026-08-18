@@ -75,14 +75,14 @@ export const cvTracksByLocale: Record<Locale, CvTrack[]> = {
       id: 'integrated-circuits',
       title: '集成电路',
       description: '面向集成电路设计及相关工程工作的简历。',
-      pdf: '/cv/liangwei-hu-ic-design.pdf',
+      pdf: '/cv/liangwei-hu-ic-design-zh.pdf',
       available: true,
     },
     {
       id: 'embodied-ai',
       title: '具身智能',
       description: '面向机器人、具身智能与 AI 系统工作的简历。',
-      pdf: '/cv/liangwei-hu-embodied-ai.pdf',
+      pdf: '/cv/liangwei-hu-embodied-ai-zh.pdf',
       available: true,
     },
     {
@@ -97,14 +97,14 @@ export const cvTracksByLocale: Record<Locale, CvTrack[]> = {
       id: 'integrated-circuits',
       title: 'Integrated Circuits',
       description: 'A CV tailored to integrated-circuit design and related engineering work.',
-      pdf: '/cv/liangwei-hu-ic-design.pdf',
+      pdf: '/cv/liangwei-hu-ic-design-en.pdf',
       available: true,
     },
     {
       id: 'embodied-ai',
       title: 'Embodied AI',
       description: 'A CV tailored to robotics, embodied intelligence, and AI systems work.',
-      pdf: '/cv/liangwei-hu-embodied-ai.pdf',
+      pdf: '/cv/liangwei-hu-embodied-ai-en.pdf',
       available: true,
     },
     {

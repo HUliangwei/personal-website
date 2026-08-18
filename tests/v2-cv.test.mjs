@@ -49,19 +49,23 @@ test('Academic CV renders the verified bilingual education record with HR-facing
   assert.match(en, /Circuit Analysis/);
 });
 
-test('Academic CV keeps exactly two owner-authorized PDF snapshots and a non-link Quantum placeholder', () => {
+test('Academic CV publishes locale-specific owner-authorized PDF snapshots and a non-link Quantum placeholder', () => {
   const zh = read('dist', 'cv', 'index.html');
   const en = read('dist', 'en', 'cv', 'index.html');
-  const expected = [
-    'liangwei-hu-embodied-ai.pdf',
-    'liangwei-hu-ic-design.pdf',
-  ];
+  const expected = {
+    zh: ['liangwei-hu-embodied-ai-zh.pdf', 'liangwei-hu-ic-design-zh.pdf'],
+    en: ['liangwei-hu-embodied-ai-en.pdf', 'liangwei-hu-ic-design-en.pdf'],
+  };
+  const allExpected = [...expected.zh, ...expected.en].sort();
 
-  assert.deepEqual(readdirSync(join(root, 'public', 'cv')).sort(), expected);
-  for (const html of [zh, en]) {
+  assert.deepEqual(readdirSync(join(root, 'public', 'cv')).sort(), allExpected);
+  for (const [locale, html] of [['zh', zh], ['en', en]]) {
     assert.equal((html.match(/data-cv-track/g) ?? []).length, 3);
-    for (const filename of expected) {
+    for (const filename of expected[locale]) {
       assert.match(html, new RegExp(`href="/cv/${filename}"`));
+    }
+    for (const filename of expected[locale === 'zh' ? 'en' : 'zh']) {
+      assert.doesNotMatch(html, new RegExp(`href="/cv/${filename}"`));
     }
     assert.doesNotMatch(html, /quantum[^"']*\.pdf/i);
     assert.doesNotMatch(html, /<object[^>]+application\/pdf/i);

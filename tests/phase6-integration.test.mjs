@@ -46,8 +46,12 @@ test('Phase 6 production output is complete, portable, and internally connected'
     assert.doesNotMatch(allHtml, new RegExp(legacy, 'i'), `legacy copy is absent: ${legacy}`);
   }
   assert.match(htmlPages.find(([route]) => route === '/about')[1], /class="about-hero-visual" role="img" aria-label=/);
-  assert.match(htmlPages.find(([route]) => route === '/cv')[1], /href="\/cv\/liangwei-hu-ic-design\.pdf"/);
-  assert.match(htmlPages.find(([route]) => route === '/cv')[1], /href="\/cv\/liangwei-hu-embodied-ai\.pdf"/);
+  const zhCv = htmlPages.find(([route]) => route === '/cv')[1];
+  const enCv = htmlPages.find(([route]) => route === '/en/cv')[1];
+  assert.match(zhCv, /href="\/cv\/liangwei-hu-ic-design-zh\.pdf"/);
+  assert.match(zhCv, /href="\/cv\/liangwei-hu-embodied-ai-zh\.pdf"/);
+  assert.match(enCv, /href="\/cv\/liangwei-hu-ic-design-en\.pdf"/);
+  assert.match(enCv, /href="\/cv\/liangwei-hu-embodied-ai-en\.pdf"/);
   assert.doesNotMatch(allHtml, /href="[^"]*quantum[^"]*\.pdf"/i);
 
   const astroConfig = readFileSync(join(root, 'astro.config.mjs'), 'utf8');
